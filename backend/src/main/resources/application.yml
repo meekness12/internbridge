@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: internbridge-api
+
+  datasource:
+    # Ensure you have created a database named 'internbridge_db' in pgAdmin!
+    url: jdbc:postgresql://localhost:5432/internbridge_db
+    username: postgres
+    password: postgres # Update this if your pgAdmin password is different
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # Spring will automatically generate the SQL tables!
+    show-sql: true     # Prints SQL queries to the console for easy debugging
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
