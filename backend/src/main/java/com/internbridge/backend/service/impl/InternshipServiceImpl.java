@@ -74,6 +74,20 @@ public class InternshipServiceImpl implements InternshipService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<InternshipResponseDTO> searchInternships(String keyword, String status) {
+        InternshipStatus parsedStatus = null;
+        if (status != null && !status.isBlank()) {
+            parsedStatus = InternshipStatus.valueOf(status);
+        }
+        String parsedKeyword = (keyword != null && !keyword.isBlank()) ? keyword : null;
+
+        return internshipRepository.searchByKeywordAndStatus(parsedKeyword, parsedStatus).stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public InternshipResponseDTO updateInternship(UUID id, InternshipRequestDTO requestDTO) {
         Internship internship = internshipRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Internship", "id", id));

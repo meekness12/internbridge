@@ -54,4 +54,11 @@ public class InternshipController {
         internshipService.deleteInternship(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<InternshipResponseDTO>> searchInternships(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(internshipService.searchInternships(keyword, status));
+    }
 }

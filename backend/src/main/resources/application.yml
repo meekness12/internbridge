@@ -7,9 +7,9 @@ spring:
 
   datasource:
     # Ensure you have created a database named 'internbridge_db' in pgAdmin!
-    url: jdbc:postgresql://localhost:5432/internbridge_db
+    url: jdbc:postgresql://localhost:5433/internbridge_db
     username: postgres
-    password: postgres # Update this if your pgAdmin password is different
+    password: Meekness123 # Update this if your pgAdmin password is different
     driver-class-name: org.postgresql.Driver
 
   jpa:

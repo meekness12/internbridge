@@ -19,4 +19,6 @@ public interface InternshipService {
     InternshipResponseDTO updateInternship(UUID id, InternshipRequestDTO requestDTO);
 
     void deleteInternship(UUID id);
+
+    List<InternshipResponseDTO> searchInternships(String keyword, String status);
 }
