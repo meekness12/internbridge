@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
 import { 
   MapPin, 
   Clock, 
   Calendar, 
   Users,
-  Check,
-  AlertCircle,
-  Loader2
+  Check
 } from 'lucide-react';
-import api from '../../api/axiosConfig';
 
 interface DashboardStats {
   activeApplications: number;
@@ -25,64 +21,20 @@ interface ApplicationData {
 
 /**
  * Intern Dashboard Component (Academic/Editorial Design)
+ * Full Mockup State (No API Integration)
  */
 const InternDashboard: React.FC = () => {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [applications, setApplications] = useState<ApplicationData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Static Mockup Data for immediate display
+  const stats: DashboardStats = {
+    activeApplications: 4,
+    hoursLogged: 128,
+    totalPlacements: 1
+  };
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setIsLoading(true);
-        // Using api import to satisfy integration requirement pattern
-        // const statsRes = await api.get('/interns/me/dashboard-stats');
-        console.log('API Client ready for backend un-scrubbing:', api.defaults.baseURL);
-        
-        // Mocking the successful fetch since backend is currently scrubbed
-        // but using real API structure patterns
-        setTimeout(() => {
-          setStats({
-            activeApplications: 4,
-            hoursLogged: 128,
-            totalPlacements: 1
-          });
-          setApplications([
-            { id: '1', companyName: 'Techwave Technologies', role: 'Software Intern', status: 'APPROVED' },
-            { id: '2', companyName: 'CloudSphere', role: 'Backend Intern', status: 'PENDING' }
-          ]);
-          setIsLoading(false);
-        }, 800);
-
-      } catch (err: any) {
-        setError(err.message || 'Failed to load dashboard data');
-        setIsLoading(false);
-      }
-    };
-
-    fetchDashboardData();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="animate-spin text-[var(--color-forest)]" size={32} />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 text-red-600 p-6 rounded-xl flex items-center gap-4">
-        <AlertCircle size={24} />
-        <div>
-          <h3 className="font-bold">Error Loading Dashboard</h3>
-          <p className="text-sm opacity-80">{error}</p>
-        </div>
-      </div>
-    );
-  }
+  const applications: ApplicationData[] = [
+    { id: '1', companyName: 'Techwave Technologies', role: 'Software Intern', status: 'APPROVED' },
+    { id: '2', companyName: 'CloudSphere', role: 'Backend Intern', status: 'PENDING' }
+  ];
 
   return (
     <div className="space-y-8 animate-fade-in pb-20">
