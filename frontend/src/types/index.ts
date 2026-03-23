@@ -5,7 +5,7 @@
 export interface User {
   id: string;
   email: string;
-  role: 'STUDENT' | 'COMPANY' | 'LECTURER' | 'ADMIN';
+  role: 'INTERN' | 'COMPANY_ADMIN' | 'SUPERVISOR' | 'SUPER_ADMIN' | 'SCHOOL_ADMIN';
 }
 
 export interface Internship {
