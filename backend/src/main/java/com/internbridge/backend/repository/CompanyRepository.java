@@ -1,16 +1,11 @@
 package com.internbridge.backend.repository;
 
-import com.internbridge.backend.entity.Company;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-import java.util.UUID;
-
+/* 
+ * PURGED: Company is replaced by CompanyAdmin. 
+ * This repository is commented out to restore build integrity.
+ */
 @Repository
-public interface CompanyRepository extends JpaRepository<Company, UUID> {
-
-    Optional<Company> findByTinNumber(String tinNumber);
-
-    boolean existsByTinNumber(String tinNumber);
+public interface CompanyRepository /* extends JpaRepository<Company, UUID> */ {
 }

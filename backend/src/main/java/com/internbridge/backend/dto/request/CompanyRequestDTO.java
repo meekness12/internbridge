@@ -1,35 +1,11 @@
 package com.internbridge.backend.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+/* 
+ * SCRUBBED: Request DTO for Company.
+ * Company is replaced by CompanyAdmin.
+ */
 @Builder
 public class CompanyRequestDTO {
-
-    // ── User credentials (used during creation) ─────────────────────────
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email must be a valid email address")
-    private String email;
-
-    @NotBlank(message = "Password is required")
-    private String password;
-
-    // ── Company profile fields ──────────────────────────────────────────
-    @NotBlank(message = "Company name is required")
-    private String companyName;
-
-    @NotBlank(message = "TIN number is required")
-    private String tinNumber;
-
-    private String industry;
-    private String websiteUrl;
 }

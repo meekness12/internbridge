@@ -13,7 +13,10 @@ import java.util.UUID;
 @Repository
 public interface InternshipRepository extends JpaRepository<Internship, UUID> {
 
-    List<Internship> findByCompanyUserId(UUID companyUserId);
+    /* 
+     * SCRUBBED: Depends on deleted Company entity.
+     * List<Internship> findByCompanyUserId(UUID companyUserId);
+     */
 
     List<Internship> findByStatus(InternshipStatus status);
 

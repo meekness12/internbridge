@@ -1,21 +1,14 @@
 package com.internbridge.backend.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.UUID;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+/* 
+ * SCRUBBED: Response DTO for Placement.
+ * Indirectly depends on deleted Student/Company via Application mapping.
+ */
 @Builder
 public class PlacementResponseDTO {
-
+    /*
     private UUID id;
     private UUID applicationId;
     private String studentName;
@@ -24,4 +17,5 @@ public class PlacementResponseDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private String status;
+    */
 }

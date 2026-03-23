@@ -33,9 +33,12 @@ public class Internship {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false)
-    private Company company;
+    /* 
+     * SCRUBBED: Depends on deleted Company entity.
+     * @ManyToOne(fetch = FetchType.LAZY)
+     * @JoinColumn(name = "company_id", nullable = false)
+     * private Company company;
+     */
 
     @Column(nullable = false)
     private String title;

@@ -1,4 +1,5 @@
 package com.internbridge.backend.config;
+import org.springframework.security.config.Customizer;
 
 import com.internbridge.backend.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -30,16 +31,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public: authentication endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
-                        // Public: registration endpoints (POST only)
+                        /* SCRUBBED: legacy registration endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/students").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/companies").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/lecturers").permitAll()
+                        */
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
