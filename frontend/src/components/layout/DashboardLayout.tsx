@@ -15,7 +15,10 @@ import {
 } from 'lucide-react';
 import { ThemeToggle } from '../ThemeToggle';
 
+import { ProfileDropdown } from './ProfileDropdown';
+
 const DashboardLayout: React.FC = () => {
+  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const location = useLocation();
   const role = localStorage.getItem('role') || 'INTERN'; 
   const isCompany = role === 'COMPANY_ADMIN';
@@ -130,22 +133,37 @@ const DashboardLayout: React.FC = () => {
           </div>
 
           {/* User Profile Pill */}
-          <div className="flex items-center gap-3 bg-[#1B2B24] border border-white/10 rounded-full py-1.5 pl-4 pr-1.5 cursor-pointer hover:bg-[#25392F] transition-all">
-            <div className="flex flex-col items-end leading-tight mr-1">
-              <span className="text-sm font-bold text-white">
-                {isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'}
-              </span>
-              <span className="text-[10px] text-white/60 font-medium font-mono uppercase tracking-widest">
-                {isCompany ? 'Company Admin • CTO' : isAdmin ? 'Systems Administrator' : isSchoolAdmin ? 'Academic Registrar' : isLecturer ? 'Academic Supervisor' : 'Intern'} 
-                {!isCompany && !isLecturer && !isAdmin && !isSchoolAdmin && <><span className="mx-1 opacity-40">•</span> Week 7/16</>}
-              </span>
+          <div className="relative">
+            <div 
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="flex items-center gap-3 bg-[#1B2B24] border border-white/10 rounded-full py-1.5 pl-4 pr-1.5 cursor-pointer hover:bg-[#25392F] transition-all"
+            >
+              <div className="flex flex-col items-end leading-tight mr-1 font-sans">
+                <span className="text-sm font-bold text-white tracking-tight">
+                  {isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'}
+                </span>
+                <span className="text-[10px] text-white/60 font-medium font-mono uppercase tracking-widest">
+                  {isCompany ? 'Company Admin • CTO' : isAdmin ? 'Systems Administrator' : isSchoolAdmin ? 'Academic Registrar' : isLecturer ? 'Academic Supervisor' : 'Intern'} 
+                </span>
+              </div>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-black font-bold text-xs border border-white/20 shadow-inner ${
+                isCompany ? 'bg-[#EAB308]' : isAdmin ? 'bg-red-500' : isSchoolAdmin ? 'bg-indigo-400' : isLecturer ? 'bg-purple-400' : 'bg-[var(--color-gold)]'
+              }`}>
+                {isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'}
+              </div>
+              <ChevronDown size={14} className={`text-white/40 ml-0.5 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
             </div>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-black font-bold text-xs border border-white/20 ${
-              isCompany ? 'bg-[#EAB308]' : isAdmin ? 'bg-red-500' : isSchoolAdmin ? 'bg-indigo-400' : isLecturer ? 'bg-purple-400' : 'bg-[var(--color-gold)]'
-            }`}>
-              {isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'}
-            </div>
-            <ChevronDown size={14} className="text-white/40 ml-0.5" />
+
+            <ProfileDropdown 
+              isOpen={isProfileOpen} 
+              onClose={() => setIsProfileOpen(false)} 
+              user={{
+                name: isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim',
+                role: isCompany ? 'Company Admin' : isAdmin ? 'Systems Admin' : isSchoolAdmin ? 'Academic Registrar' : isLecturer ? 'Academic Supervisor' : 'Student Intern',
+                initials: isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI',
+                avatarColor: isCompany ? 'bg-[#EAB308]' : isAdmin ? 'bg-red-500' : isSchoolAdmin ? 'bg-indigo-400' : isLecturer ? 'bg-purple-400' : 'bg-[var(--color-gold)]'
+              }}
+            />
           </div>
         </div>
       </header>
@@ -178,7 +196,7 @@ const DashboardLayout: React.FC = () => {
 
         {/* Main Content Area */}
         <main className="flex-1 bg-[var(--background)] p-12 overflow-y-auto">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <Outlet />
           </div>
         </main>

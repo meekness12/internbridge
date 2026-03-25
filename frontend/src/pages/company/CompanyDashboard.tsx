@@ -6,8 +6,7 @@ import {
   Plus,
   LayoutDashboard,
   CheckCircle2,
-  Bell,
-  Download
+  Bell
 } from 'lucide-react';
 import { PremiumCard } from '../../components/ui/PremiumCard';
 import { PremiumHeader } from '../../components/ui/PremiumHeader';
@@ -106,15 +105,15 @@ const CompanyDashboard: React.FC = () => {
                 <div key={i} className="flex-1 flex flex-col items-center gap-3">
                   <div className={`w-full flex flex-col-reverse rounded-sm overflow-hidden h-32 ${day.dim ? 'opacity-20' : ''}`}>
                     <div style={{ height: `${day.h1}%` }} className={day.special ? 'bg-[var(--color-gold)]' : 'bg-[var(--color-forest)]'}></div>
-                    <div style={{ height: `${day.h2}%` }} className={day.special ? 'bg-[#FBF0DC]' : 'bg-[#EAF0EC]'}></div>
+                    <div style={{ height: `${day.h2}%` }} className={day.special ? 'bg-[#D9A83F]' : 'bg-[var(--color-forest-faint)]'}></div>
                   </div>
-                  <span className="text-[9px] font-mono font-bold text-slate-300 uppercase">{day.label}</span>
+                  <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-widest">{day.label}</span>
                 </div>
               ))}
             </div>
-            <div className="flex gap-1.5 pt-4 border-t border-slate-50">
-               <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 mr-2"><div className="w-2 h-2 bg-[var(--color-forest)] rounded-full"></div> Verified</div>
-               <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 mr-2"><div className="w-2 h-2 bg-[#EAF0EC] rounded-full"></div> Pending</div>
+            <div className="flex gap-4 pt-4 border-t border-slate-100">
+               <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><div className="w-2.5 h-2.5 bg-[var(--color-forest)] rounded-sm"></div> Verified Protocol</div>
+               <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><div className="w-2.5 h-2.5 bg-[var(--color-forest-faint)] rounded-sm"></div> Pending Verification</div>
             </div>
           </div>
         </div>
@@ -122,22 +121,22 @@ const CompanyDashboard: React.FC = () => {
         <div className="lg:col-span-8 xl:col-span-4 card bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
            <div className="p-6 border-b border-slate-50 flex items-center justify-between">
             <div><div className="text-[13px] font-bold text-[var(--color-navy)]">Department Breakdown</div></div>
-            <span className="text-[10px] font-mono font-bold text-slate-300">Cohort 2024</span>
+            <span className="text-[10px] font-mono font-bold text-slate-400">Cohort 2024</span>
           </div>
           <div className="p-6 space-y-5">
             {[
               { label: 'Backend Eng.', value: '45%', color: 'bg-[var(--color-navy)]' },
               { label: 'UI/UX Design', value: '30%', color: 'bg-[var(--color-gold)]' },
-              { label: 'DevOps', value: '15%', color: 'bg-[#D2E0D5]' },
-              { label: 'Data Science', value: '10%', color: 'bg-slate-100' }
+              { label: 'DevOps', value: '15%', color: 'bg-[var(--color-forest-faint)]' },
+              { label: 'Data Science', value: '10%', color: 'bg-slate-200' }
             ].map((d, i) => (
               <div key={i}>
-                <div className="flex justify-between text-[11px] font-bold mb-1.5 text-slate-600">
+                <div className="flex justify-between text-[11px] font-bold mb-1.5 text-slate-700">
                   <span>{d.label}</span>
                   <span>{d.value}</span>
                 </div>
-                <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
-                  <div className={`h-full ${d.color} rounded-full`} style={{ width: d.value }}></div>
+                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className={`h-full ${d.color} rounded-full transition-all`} style={{ width: d.value }}></div>
                 </div>
               </div>
             ))}
