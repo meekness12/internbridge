@@ -1,5 +1,6 @@
 package com.internbridge.backend.controller;
 
+import com.internbridge.backend.dto.request.CompanyAdminRegisterRequest;
 import com.internbridge.backend.dto.request.InternRegisterRequest;
 import com.internbridge.backend.dto.request.LoginRequestDTO;
 import com.internbridge.backend.dto.response.AuthResponseDTO;
@@ -7,9 +8,6 @@ import com.internbridge.backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +23,11 @@ public class AuthController {
     @PostMapping("/register/intern")
     public ResponseEntity<AuthResponseDTO> registerIntern(@Valid @RequestBody InternRegisterRequest request) {
         return ResponseEntity.ok(authService.registerIntern(request));
+    }
+
+    @PostMapping("/register/company-admin")
+    public ResponseEntity<AuthResponseDTO> registerCompanyAdmin(@Valid @RequestBody CompanyAdminRegisterRequest request) {
+        return ResponseEntity.ok(authService.registerCompanyAdmin(request));
     }
 
     @PostMapping("/login")

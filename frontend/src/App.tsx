@@ -22,7 +22,18 @@ import SupervisorLogbookGrading from './pages/supervisor/LogbookGrading';
 import SupervisorPlacements from './pages/supervisor/Placements';
 
 import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard';
+import UserManagement from './pages/superadmin/UserManagement';
+import CompanyPartners from './pages/superadmin/CompanyPartners';
+import SystemReports from './pages/superadmin/SystemReports';
+import AuditLogs from './pages/superadmin/AuditLogs';
+import SystemAlerts from './pages/superadmin/SystemAlerts';
+import GlobalAnalytics from './pages/superadmin/GlobalAnalytics';
 import SchoolAdminDashboard from './pages/schooladmin/SchoolAdminDashboard';
+import FacultyManagement from './pages/schooladmin/FacultyManagement';
+import StudentDirectory from './pages/schooladmin/StudentDirectory';
+import IndustryPartners from './pages/schooladmin/IndustryPartners';
+import ComplianceAudits from './pages/schooladmin/ComplianceAudits';
+import InstitutionalReports from './pages/schooladmin/InstitutionalReports';
 
 /**
  * Component to redirect users based on their role after login
@@ -70,9 +81,36 @@ const PlacementsRouter: React.FC = () => {
   }
 };
 
+/**
+ * Shared Student Directory path router
+ */
+const StudentDirectoryRouter: React.FC = () => {
+  const role = localStorage.getItem('role');
+  switch (role) {
+    case 'SCHOOL_ADMIN': return <StudentDirectory />;
+    case 'SUPERVISOR': 
+    default: return <SupervisorStudents />;
+  }
+};
+
+/**
+ * Shared Reports path router
+ */
+const ReportsRouter: React.FC = () => {
+  const role = localStorage.getItem('role');
+  switch (role) {
+    case 'SUPER_ADMIN': return <SystemReports />;
+    case 'SCHOOL_ADMIN': 
+    default: return <InstitutionalReports />;
+  }
+};
+
+import { ToastProvider } from './context/ToastContext';
+
 const App: React.FC = () => {
   return (
-    <Router>
+    <ToastProvider>
+      <Router>
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
@@ -97,8 +135,17 @@ const App: React.FC = () => {
           {/* Shared Supplemental Pages (Role-based internal routing) */}
           <Route path="logbook" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR']}><LogbookRouter /></ProtectedRoute>} />
           <Route path="messages" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR']}><InternMessages /></ProtectedRoute>} />
-          <Route path="notifications" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN']}><InternNotifications /></ProtectedRoute>} />
-          <Route path="analytics" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN']}><InternAnalytics /></ProtectedRoute>} />
+          <Route path="notifications" element={
+            <ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN', 'SCHOOL_ADMIN']}>
+              {localStorage.getItem('role') === 'SUPER_ADMIN' ? <SystemAlerts /> : <InternNotifications />}
+            </ProtectedRoute>
+          } />
+          <Route path="analytics" element={
+            <ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN', 'SCHOOL_ADMIN']}>
+              {localStorage.getItem('role') === 'SUPER_ADMIN' ? <GlobalAnalytics /> : 
+               localStorage.getItem('role') === 'SCHOOL_ADMIN' ? <InstitutionalReports /> : <InternAnalytics />}
+            </ProtectedRoute>
+          } />
 
           {/* Role Specific Main Dashboards */}
           <Route path="company" element={<ProtectedRoute allowedRoles={['COMPANY_ADMIN']}><CompanyDashboard /></ProtectedRoute>} />
@@ -110,7 +157,16 @@ const App: React.FC = () => {
           <Route path="placements" element={<ProtectedRoute allowedRoles={['SUPERVISOR']}><PlacementsRouter /></ProtectedRoute>} />
 
           <Route path="admin" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><SuperAdminDashboard /></ProtectedRoute>} />
+          <Route path="users" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><UserManagement /></ProtectedRoute>} />
+          <Route path="companies" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><CompanyPartners /></ProtectedRoute>} />
+          <Route path="reports" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><SystemReports /></ProtectedRoute>} />
+          <Route path="logs" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><AuditLogs /></ProtectedRoute>} />
           <Route path="school" element={<ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}><SchoolAdminDashboard /></ProtectedRoute>} />
+          <Route path="faculties" element={<ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}><FacultyManagement /></ProtectedRoute>} />
+          <Route path="students" element={<ProtectedRoute allowedRoles={['SCHOOL_ADMIN', 'SUPERVISOR']}><StudentDirectoryRouter /></ProtectedRoute>} />
+          <Route path="partners" element={<ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}><IndustryPartners /></ProtectedRoute>} />
+          <Route path="compliance" element={<ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}><ComplianceAudits /></ProtectedRoute>} />
+          <Route path="reports" element={<ProtectedRoute allowedRoles={['SCHOOL_ADMIN', 'SUPER_ADMIN']}><ReportsRouter /></ProtectedRoute>} />
         </Route>
 
         {/* Global Redirects */}
@@ -118,6 +174,7 @@ const App: React.FC = () => {
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
+    </ToastProvider>
   );
 };
 

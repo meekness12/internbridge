@@ -10,7 +10,8 @@ import {
   Bell, 
   BarChart2,
   ChevronDown,
-  Users
+  Users,
+  Building
 } from 'lucide-react';
 import { ThemeToggle } from '../ThemeToggle';
 
@@ -20,6 +21,7 @@ const DashboardLayout: React.FC = () => {
   const isCompany = role === 'COMPANY_ADMIN';
   const isLecturer = role === 'SUPERVISOR';
   const isAdmin = role === 'SUPER_ADMIN';
+  const isSchoolAdmin = role === 'SCHOOL_ADMIN';
 
   const sidebarItems = isAdmin ? [
     { icon: <Home size={22} />, path: '/dashboard', label: 'Admin Console' },
@@ -29,6 +31,14 @@ const DashboardLayout: React.FC = () => {
     { icon: <CheckSquare size={22} />, path: '/dashboard/logs', label: 'Audit Logs' },
     { icon: <Bell size={22} />, path: '/dashboard/notifications', label: 'System Alerts', badge: '2' },
     { icon: <BarChart2 size={22} />, path: '/dashboard/analytics', label: 'Global Analytics' },
+  ] : isSchoolAdmin ? [
+    { icon: <Home size={22} />, path: '/dashboard', label: 'Academic Console' },
+    { icon: <Building size={22} />, path: '/dashboard/faculties', label: 'Faculty Management' },
+    { icon: <Users size={22} />, path: '/dashboard/students', label: 'Student Directory' },
+    { icon: <Briefcase size={22} />, path: '/dashboard/partners', label: 'Industry Partners' },
+    { icon: <CheckSquare size={22} />, path: '/dashboard/compliance', label: 'Compliance & Audits' },
+    { icon: <FileText size={22} />, path: '/dashboard/reports', label: 'Academic Reports' },
+    { icon: <BarChart2 size={22} />, path: '/dashboard/analytics', label: 'School Analytics' },
   ] : isLecturer ? [
     { icon: <Home size={22} />, path: '/dashboard', label: 'Supervision Home' },
     { icon: <Users size={22} />, path: '/dashboard/students', label: 'My Students', badge: '18' },
@@ -123,17 +133,17 @@ const DashboardLayout: React.FC = () => {
           <div className="flex items-center gap-3 bg-[#1B2B24] border border-white/10 rounded-full py-1.5 pl-4 pr-1.5 cursor-pointer hover:bg-[#25392F] transition-all">
             <div className="flex flex-col items-end leading-tight mr-1">
               <span className="text-sm font-bold text-white">
-                {isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'}
+                {isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'}
               </span>
               <span className="text-[10px] text-white/60 font-medium font-mono uppercase tracking-widest">
-                {isCompany ? 'Company Admin • CTO' : isAdmin ? 'Systems Administrator' : isLecturer ? 'Academic Supervisor' : 'Intern'} 
-                {!isCompany && !isLecturer && !isAdmin && <><span className="mx-1 opacity-40">•</span> Week 7/16</>}
+                {isCompany ? 'Company Admin • CTO' : isAdmin ? 'Systems Administrator' : isSchoolAdmin ? 'Academic Registrar' : isLecturer ? 'Academic Supervisor' : 'Intern'} 
+                {!isCompany && !isLecturer && !isAdmin && !isSchoolAdmin && <><span className="mx-1 opacity-40">•</span> Week 7/16</>}
               </span>
             </div>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-black font-bold text-xs border border-white/20 ${
-              isCompany ? 'bg-[#EAB308]' : isAdmin ? 'bg-red-500' : isLecturer ? 'bg-purple-400' : 'bg-[var(--color-gold)]'
+              isCompany ? 'bg-[#EAB308]' : isAdmin ? 'bg-red-500' : isSchoolAdmin ? 'bg-indigo-400' : isLecturer ? 'bg-purple-400' : 'bg-[var(--color-gold)]'
             }`}>
-              {isCompany ? 'DO' : isAdmin ? 'SJ' : isLecturer ? 'SM' : 'AI'}
+              {isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'}
             </div>
             <ChevronDown size={14} className="text-white/40 ml-0.5" />
           </div>

@@ -1,11 +1,14 @@
 package com.internbridge.backend.service.impl;
 
+import com.internbridge.backend.dto.request.CompanyAdminRegisterRequest;
 import com.internbridge.backend.dto.request.InternRegisterRequest;
 import com.internbridge.backend.dto.request.LoginRequestDTO;
 import com.internbridge.backend.dto.response.AuthResponseDTO;
+import com.internbridge.backend.entity.CompanyAdmin;
 import com.internbridge.backend.entity.Intern;
 import com.internbridge.backend.entity.Role;
 import com.internbridge.backend.entity.User;
+import com.internbridge.backend.repository.CompanyAdminRepository;
 import com.internbridge.backend.repository.InternRepository;
 import com.internbridge.backend.repository.UserRepository;
 import com.internbridge.backend.security.JwtService;
@@ -23,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final InternRepository internRepository;
+    private final CompanyAdminRepository companyAdminRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -55,6 +59,37 @@ public class AuthServiceImpl implements AuthService {
                 .token(token)
                 .userId(savedIntern.getId())
                 .role(savedIntern.getRole().name())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public AuthResponseDTO registerCompanyAdmin(CompanyAdminRegisterRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        CompanyAdmin companyAdmin = CompanyAdmin.builder()
+                .companyName(request.getCompanyName())
+                .industry(request.getIndustry())
+                .tinNumber(request.getTinNumber())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.COMPANY_ADMIN)
+                .build();
+
+        CompanyAdmin savedAdmin = companyAdminRepository.save(companyAdmin);
+
+        String token = jwtService.generateToken(
+                savedAdmin.getEmail(),
+                savedAdmin.getId(),
+                savedAdmin.getRole().name()
+        );
+
+        return AuthResponseDTO.builder()
+                .token(token)
+                .userId(savedAdmin.getId())
+                .role(savedAdmin.getRole().name())
                 .build();
     }
 

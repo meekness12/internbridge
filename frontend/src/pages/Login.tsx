@@ -12,6 +12,8 @@ import {
   AlertCircle
 } from 'lucide-react';
 
+import authService from '../api/authService';
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,24 +27,20 @@ const Login: React.FC = () => {
     setErrorMessage('');
 
     try {
-      const response = await fetch('http://localhost:8080/api/v1/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userId', data.userId);
-        localStorage.setItem('role', data.role);
-        navigate('/dashboard');
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        setErrorMessage(errorData.message || 'Invalid email or password.');
-      }
-    } catch {
-      setErrorMessage('Network error. Please check if the backend is running.');
+      const data = await authService.login({ email, password });
+      
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('role', data.role);
+      localStorage.setItem('email', data.email);
+      
+      navigate('/dashboard');
+    } catch (error: any) {
+      console.error('Login failure:', error);
+      setErrorMessage(
+        error.response?.data?.message || 
+        'Invalid identity credentials or network protocol failure.'
+      );
     } finally {
       setIsLoading(false);
     }
