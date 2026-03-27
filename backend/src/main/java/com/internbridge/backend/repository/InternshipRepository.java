@@ -10,13 +10,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.UUID;
 
-@Repository
 public interface InternshipRepository extends JpaRepository<Internship, UUID> {
 
-    /* 
-     * SCRUBBED: Depends on deleted Company entity.
-     * List<Internship> findByCompanyUserId(UUID companyUserId);
-     */
+    @Query("SELECT i FROM Internship i WHERE i.companyAdmin.id = :adminId")
+    List<Internship> findByCompanyAdminId(@Param("adminId") UUID adminId);
 
     List<Internship> findByStatus(InternshipStatus status);
 

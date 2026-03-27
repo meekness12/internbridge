@@ -1,11 +1,22 @@
 package com.internbridge.backend.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.time.LocalDate;
+import java.util.UUID;
 
-/* 
- * SCRUBBED: Response DTO for Internship.
- * Depends on deleted Company entity.
- */
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class InternshipResponseDTO {
+    private UUID id;
+    private String title;
+    private String description;
+    private String requiredSkills;
+    private String status;
+    private LocalDate deadline;
+    private String companyName;
 }

@@ -33,12 +33,9 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    /* 
-     * SCRUBBED: Depends on deleted Student entity.
-     * @ManyToOne(fetch = FetchType.LAZY)
-     * @JoinColumn(name = "student_id", nullable = false)
-     * private Student student;
-     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "intern_id", nullable = false)
+    private Intern intern;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "internship_id", nullable = false)

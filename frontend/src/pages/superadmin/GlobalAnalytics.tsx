@@ -9,9 +9,37 @@ import {
 } from 'lucide-react';
 import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import { PremiumCard } from '../../components/ui/PremiumCard';
+import systemService from '../../api/systemService';
+import type { AnalyticsResponse } from '../../api/systemService';
+import { useToast } from '../../context/ToastContext';
 
 const GlobalAnalytics: React.FC = () => {
-  const stats = [
+  const { toast } = useToast();
+  const [data, setData] = React.useState<AnalyticsResponse | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        setIsLoading(true);
+        const analytics = await systemService.getAnalytics();
+        setData(analytics);
+      } catch (error) {
+        toast('Failed to synchronize global analytical indices.', 'error', 'Protocol Error');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAnalytics();
+  }, [toast]);
+
+  const stats = data ? [
+    { label: 'Total Placements', value: data.totalPlacements.toLocaleString(), trend: data.placementTrend, icon: '📍', color: 'ki-1', kpiColor: 'kpi-1' },
+    { label: 'Corporate Partners', value: '1,240', trend: '↑ 4.1%', icon: '🏢', color: 'ki-2', kpiColor: 'kpi-2' },
+    { label: 'Academic Clusters', value: '85', trend: 'Stable', icon: '🏫', color: 'ki-3', kpiColor: 'kpi-3' },
+    { label: 'Certification Rate', value: `${data.certificationRate}%`, trend: '↑ 0.5%', icon: '📜', color: 'ki-5', kpiColor: 'kpi-5' },
+    { label: 'System Uptime', value: '99.98%', trend: 'Nominal', icon: '⚡', color: 'ki-4', kpiColor: 'kpi-4' },
+  ] : [
     { label: 'Total Placements', value: '4,280', trend: '↑ 18.2%', icon: '📍', color: 'ki-1', kpiColor: 'kpi-1' },
     { label: 'Corporate Partners', value: '1,240', trend: '↑ 4.1%', icon: '🏢', color: 'ki-2', kpiColor: 'kpi-2' },
     { label: 'Academic Clusters', value: '85', trend: 'Stable', icon: '🏫', color: 'ki-3', kpiColor: 'kpi-3' },
@@ -20,7 +48,15 @@ const GlobalAnalytics: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-10 animate-fade-in pb-20">
+    <div className="space-y-10 animate-fade-in pb-20 relative">
+      {isLoading && (
+        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-50 flex items-center justify-center rounded-3xl">
+           <div className="flex flex-col items-center gap-4">
+              <div className="w-10 h-10 border-2 border-[var(--color-navy)] border-t-transparent rounded-full animate-spin"></div>
+              <span className="label-mono text-[10px] uppercase font-black tracking-widest text-[var(--color-navy)]">Synchronizing Analytics...</span>
+           </div>
+        </div>
+      )}
       <PremiumHeader 
         eyebrow="Global Intelligence"
         title="Analytical"
@@ -54,16 +90,16 @@ const GlobalAnalytics: React.FC = () => {
           </div>
           
           <div className="h-72 flex items-end justify-between gap-6 px-4 pb-8 border-b border-l border-slate-50 rounded-bl-3xl relative z-10">
-             {[45, 32, 58, 41, 62, 78, 55, 68, 82, 71, 94, 88].map((v, i) => (
+             {(data?.placementVelocity || [45, 32, 58, 41, 62, 78, 55, 68, 82, 71, 94, 88].map((v, i) => ({ month: `M${i+1}`, rate: v }))).map((v, i) => (
                <div key={i} className="flex-1 group/bar relative h-full flex flex-col justify-end">
                   <div 
                     className="w-full bg-[var(--color-navy)] opacity-[0.03] group-hover/bar:opacity-100 transition-all rounded-t-lg shadow-black/10"
-                    style={{ height: `${v}%` }}
+                    style={{ height: `${v.rate}%` }}
                   ></div>
                   <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[var(--color-gold)] text-[var(--color-navy)] font-mono font-black text-[10px] px-3 py-1.5 rounded-lg opacity-0 group-hover/bar:opacity-100 transition-all shadow-xl shadow-[var(--color-gold)]/30 scale-90 group-hover/bar:scale-100">
-                    {v}%
+                    {v.rate}%
                   </div>
-                  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 font-mono text-[9px] font-black text-slate-300 uppercase tracking-tighter group-hover/bar:text-[var(--color-navy)] transition-colors">M{i+1}</div>
+                  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 font-mono text-[9px] font-black text-slate-300 uppercase tracking-tighter group-hover/bar:text-[var(--color-navy)] transition-colors">{v.month}</div>
                </div>
              ))}
           </div>
@@ -100,19 +136,19 @@ const GlobalAnalytics: React.FC = () => {
                 </div>
                 
                 <div className="space-y-10">
-                   {[
-                     { label: 'Software & Engineering', val: 42, color: 'var(--color-gold)' },
-                     { label: 'Design & Creative', val: 28, color: '#f8fafc' },
-                     { label: 'Finance & Business', val: 18, color: 'rgba(255,255,255,0.4)' },
-                     { label: 'Others', val: 12, color: 'rgba(255,255,255,0.1)' }
-                   ].map((cat, i) => (
+                   {(data?.sectorDistribution || [
+                     { sector: 'Software & Engineering', percentage: 42, color: 'var(--color-gold)' },
+                     { sector: 'Design & Creative', percentage: 28, color: '#f8fafc' },
+                     { sector: 'Finance & Business', percentage: 18, color: 'rgba(255,255,255,0.4)' },
+                     { sector: 'Others', percentage: 12, color: 'rgba(255,255,255,0.1)' }
+                   ]).map((cat, i) => (
                      <div key={i} className="group/item">
                         <div className="flex justify-between items-center mb-3">
-                           <span className="text-[10px] font-mono font-black uppercase tracking-[0.2em] text-white/40 group-hover/item:text-white transition-opacity">{cat.label}</span>
-                           <span className="text-[10px] font-mono font-black text-[var(--color-gold)]">{cat.val}%</span>
+                           <span className="text-[10px] font-mono font-black uppercase tracking-[0.2em] text-white/40 group-hover/item:text-white transition-opacity">{cat.sector}</span>
+                           <span className="text-[10px] font-mono font-black text-[var(--color-gold)]">{cat.percentage}%</span>
                         </div>
                         <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/10 shadow-inner">
-                           <div className="h-full transition-all duration-1000 shadow-[0_0_15px_rgba(255,255,255,0.1)]" style={{ width: `${cat.val}%`, backgroundColor: cat.color }}></div>
+                           <div className="h-full transition-all duration-1000 shadow-[0_0_15px_rgba(255,255,255,0.1)]" style={{ width: `${cat.percentage}%`, backgroundColor: cat.color }}></div>
                         </div>
                      </div>
                    ))}
@@ -132,14 +168,14 @@ const GlobalAnalytics: React.FC = () => {
               <div className="relative z-10">
                 <div className="label-mono text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-8">Node Awareness</div>
                 <div className="space-y-6">
-                   {[
+                   {(data?.nodeAwareness || [
                      { label: 'Europe Cluster', city: 'Frankfurt', ping: '12ms', status: 'Optimal' },
                      { label: 'West Africa', city: 'Accra', ping: '24ms', status: 'Optimal' },
                      { label: 'US-East', city: 'N. Virginia', ping: '82ms', status: 'Active' },
-                   ].map((node, i) => (
+                   ]).map((node, i) => (
                      <div key={i} className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-100 shadow-sm group/node hover:border-[var(--color-gold)] transition-all">
                         <div className="flex items-center gap-4">
-                           <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                           <div className={`w-2 h-2 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)] ${node.status === 'Optimal' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
                            <div>
                               <div className="text-[11px] font-serif font-black text-[var(--color-navy)]">{node.label}</div>
                               <div className="text-[9px] font-mono font-bold text-slate-300 uppercase tracking-tighter">{node.city}</div>
@@ -147,7 +183,7 @@ const GlobalAnalytics: React.FC = () => {
                         </div>
                         <div className="text-right">
                            <div className="text-[10px] font-mono font-bold text-[var(--color-navy)] opacity-60">{node.ping}</div>
-                           <div className="text-[8px] font-black uppercase text-emerald-500 tracking-widest">{node.status}</div>
+                           <div className={`text-[8px] font-black uppercase tracking-widest ${node.status === 'Optimal' ? 'text-emerald-500' : 'text-amber-500'}`}>{node.status}</div>
                         </div>
                      </div>
                    ))}

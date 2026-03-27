@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Filter, 
@@ -6,12 +6,34 @@ import {
   ShieldCheck,
   Server,
   Terminal,
-  Download
+  Download,
+  RefreshCw
 } from 'lucide-react';
 import { PremiumHeader } from '../../components/ui/PremiumHeader';
+import systemService from '../../api/systemService';
+import type { AuditLogDTO } from '../../api/systemService';
+import { useToast } from '../../context/ToastContext';
 
 const AuditLogs: React.FC = () => {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
+  const [auditLogs, setAuditLogs] = useState<AuditLogDTO[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        setIsLoading(true);
+        const data = await systemService.getAuditLogs(100);
+        setAuditLogs(data);
+      } catch (error) {
+        toast('Failed to synchronize platform audit trail', 'error', 'Governance Error');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchLogs();
+  }, [toast]);
   
   const logs = [
     { id: 'AUTH-12903', user: 'Admin_Sarah', action: 'Identity Validation', target: 'New Company: CloudSphere', time: '12:04:15 UTC', status: 'SUCCESS', severity: 'INFO' },
@@ -99,40 +121,49 @@ const AuditLogs: React.FC = () => {
                 <Filter size={16} /> Filters
               </button>
            </div>
-
-           <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-              <div className="divide-y divide-slate-50">
-                {logs.map((log) => (
-                  <div key={log.id} className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                    <div className="flex items-start gap-5">
-                       <div className={`mt-1 h-2 w-2 rounded-full shrink-0 ${
-                         log.severity === 'HIGH' ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]' :
-                         log.severity === 'MEDIUM' ? 'bg-amber-500' : 'bg-emerald-500'
-                       }`}></div>
-                       <div>
-                          <div className="flex items-center gap-3 mb-1.5">
-                             <span className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-tighter">{log.id}</span>
-                             <span className="text-sm font-bold text-[var(--color-navy)] group-hover:text-[var(--color-gold)] transition-colors">{log.action}</span>
-                             <span className={`text-[8px] font-black px-1.5 py-0.5 rounded border uppercase tracking-tighter ${
-                               log.status === 'REJECTED' ? 'bg-rose-50 text-rose-600 border-rose-100' :
-                               log.status === 'SUCCESS' || log.status === 'VERIFIED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                               'bg-indigo-50 text-indigo-600 border-indigo-100'
-                             }`}>{log.status}</span>
-                          </div>
-                          <div className="text-[12px] text-slate-400 font-medium leading-none">
-                             Initiated by <span className="text-[var(--color-navy)] font-bold">{log.user}</span> <span className="mx-2 opacity-30">•</span> Target: <span className="italic">{log.target}</span>
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden min-h-[400px]">
+               {isLoading ? (
+                 <div className="flex flex-col items-center justify-center p-20 gap-4">
+                    <RefreshCw size={32} className="text-[var(--color-gold)] animate-spin" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">Synchronizing Governance Trail...</span>
+                 </div>
+               ) : (
+                 <div className="divide-y divide-slate-50">
+                   {(auditLogs.length > 0 ? auditLogs : logs).filter(l => 
+                     l.action.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                     ('userName' in l ? l.userName : l.user).toLowerCase().includes(searchQuery.toLowerCase())
+                   ).map((log: any) => (
+                     <div key={log.id} className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-slate-50/50 transition-colors group cursor-pointer">
+                       <div className="flex items-start gap-5">
+                          <div className={`mt-1 h-2 w-2 rounded-full shrink-0 ${
+                            log.severity === 'HIGH' || log.status === 'FAILED' ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]' :
+                            log.severity === 'MEDIUM' || log.status === 'WARNING' ? 'bg-amber-500' : 'bg-emerald-500'
+                          }`}></div>
+                          <div>
+                             <div className="flex items-center gap-3 mb-1.5">
+                                <span className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-tighter">{log.id.substring(0, 8)}</span>
+                                <span className="text-sm font-bold text-[var(--color-navy)] group-hover:text-[var(--color-gold)] transition-colors">{log.action}</span>
+                                <span className={`text-[8px] font-black px-1.5 py-0.5 rounded border uppercase tracking-tighter ${
+                                  log.status === 'FAILED' || log.status === 'REJECTED' ? 'bg-rose-50 text-rose-600 border-rose-100' :
+                                  log.status === 'SUCCESS' || log.status === 'VERIFIED' || log.status === 'DEPLOYED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                  'bg-indigo-50 text-indigo-600 border-indigo-100'
+                                }`}>{log.status}</span>
+                             </div>
+                             <div className="text-[12px] text-slate-400 font-medium leading-none">
+                                Initiated by <span className="text-[var(--color-navy)] font-bold">{log.userName || log.user}</span> <span className="mx-2 opacity-30">•</span> Target: <span className="italic">{log.details || log.target}</span>
+                             </div>
                           </div>
                        </div>
-                    </div>
-                    <div className="flex items-center gap-6 self-end md:self-center">
-                       <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest">{log.time}</span>
-                       <ChevronRight className="text-slate-200 group-hover:text-[var(--color-navy)] transition-all group-hover:translate-x-1" size={18} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-           </div>
-           <div className="flex justify-center py-4">
+                       <div className="flex items-center gap-6 self-end md:self-center">
+                          <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest">{log.timestamp ? new Date(log.timestamp).toLocaleString() : log.time}</span>
+                          <ChevronRight className="text-slate-200 group-hover:text-[var(--color-navy)] transition-all group-hover:translate-x-1" size={18} />
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+               )}
+            </div>
+   <div className="flex justify-center py-4">
               <button className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 hover:text-[var(--color-navy)] transition-all">Load Earlier Operational Cycles</button>
            </div>
         </div>

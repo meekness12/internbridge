@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "8b1bd7900-1bad-484f-a723-fe26d6511802",
+		"name": "InternBridge API Tests",
+		"description": "Complete collection for testing Company Admin features, including Role Posting and Placement management.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"hr@techwave.rw\",\n    \"password\": \"SecurePassword123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company Dashboard",
+			"item": [
+				{
+					"name": "Get Company Internships",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/internships/company/4ce1eba4-64fb-4491-bb39-afdc9f4b26b5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internships",
+								"company",
+								"4ce1eba4-64fb-4491-bb39-afdc9f4b26b5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post New Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Senior Software Engineer Intern\",\n    \"description\": \"Join our team to build the future of tech.\",\n    \"requiredSkills\": \"Java, Spring Boot, React\",\n    \"deadline\": \"2026-12-31\",\n    \"companyId\": \"4ce1eba4-64fb-4491-bb39-afdc9f4b26b5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/internships",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internships"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company Placements",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/placements/company/4ce1eba4-64fb-4491-bb39-afdc9f4b26b5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"placements",
+								"company",
+								"4ce1eba4-64fb-4491-bb39-afdc9f4b26b5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "YOUR_TOKEN_HERE",
+			"type": "string"
+		}
+	]
+}

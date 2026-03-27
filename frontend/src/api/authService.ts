@@ -40,6 +40,14 @@ const authService = {
    */
   isAuthenticated: () => {
     return !!localStorage.getItem('token');
+  },
+
+  /**
+   * Get current user profile.
+   */
+  getMe: async (): Promise<any> => {
+    const response = await api.get('/auth/me');
+    return response.data;
   }
 };
 

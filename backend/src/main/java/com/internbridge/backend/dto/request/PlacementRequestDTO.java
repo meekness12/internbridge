@@ -1,21 +1,18 @@
 package com.internbridge.backend.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.time.LocalDate;
+import java.util.UUID;
 
-/* 
- * SCRUBBED: Request DTO for Placement.
- * Indirectly depends on deleted Student/Company via Application mapping.
- */
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlacementRequestDTO {
-    /*
-    @NotNull(message = "Application ID is required")
     private UUID applicationId;
-
-    @NotNull(message = "Start date is required")
     private LocalDate startDate;
-
-    @NotNull(message = "End date is required")
     private LocalDate endDate;
-    */
 }

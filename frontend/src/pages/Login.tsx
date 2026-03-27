@@ -33,6 +33,16 @@ const Login: React.FC = () => {
       localStorage.setItem('userId', data.userId);
       localStorage.setItem('role', data.role);
       localStorage.setItem('email', data.email);
+
+      // Fetch profile to get name/institution
+      try {
+        const profile = await authService.getMe();
+        localStorage.setItem('userName', profile.name);
+        localStorage.setItem('institution', profile.institution);
+        localStorage.setItem('email', profile.email); // Fixed email storage
+      } catch (e) {
+        console.warn('Failed to fetch profile details after login');
+      }
       
       navigate('/dashboard');
     } catch (error: any) {

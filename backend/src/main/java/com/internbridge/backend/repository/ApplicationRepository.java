@@ -10,15 +10,9 @@ import java.util.UUID;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
 
-    /* 
-     * SCRUBBED: Depends on deleted Student entity.
-     * List<Application> findByStudentUserId(UUID studentUserId);
-     */
+    List<Application> findByInternId(UUID internId);
 
     List<Application> findByInternshipId(UUID internshipId);
 
-    /* 
-     * SCRUBBED: Depends on deleted Student entity.
-     * boolean existsByStudentUserIdAndInternshipId(UUID studentUserId, UUID internshipId);
-     */
+    boolean existsByInternIdAndInternshipId(UUID internId, UUID internshipId);
 }

@@ -14,13 +14,29 @@ import {
   Building
 } from 'lucide-react';
 import { ThemeToggle } from '../ThemeToggle';
-
 import { ProfileDropdown } from './ProfileDropdown';
+import authService from '../../api/authService';
 
 const DashboardLayout: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const [userProfile, setUserProfile] = React.useState<any>(null);
   const location = useLocation();
   const role = localStorage.getItem('role') || 'INTERN'; 
+  
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        if (authService.isAuthenticated()) {
+          const data = await authService.getMe();
+          setUserProfile(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   const isCompany = role === 'COMPANY_ADMIN';
   const isLecturer = role === 'SUPERVISOR';
   const isAdmin = role === 'SUPER_ADMIN';
@@ -81,7 +97,7 @@ const DashboardLayout: React.FC = () => {
             <span className="font-serif italic text-2xl tracking-tight hidden md:block">InternBridge</span>
           </div>
 
-          {/* Role Indicator - New from image */}
+          {/* Role Indicator */}
           {isCompany && (
             <div className="h-6 w-[1px] bg-white/20 hidden lg:block mx-2"></div>
           )}
@@ -96,7 +112,7 @@ const DashboardLayout: React.FC = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50" size={17} />
             <input 
               type="text" 
-              placeholder="Search interns, contracts, ap" 
+              placeholder="Search interns, contracts, apps..." 
               className="bg-[#1B2B24] border border-white/10 rounded-full py-2 pl-9 pr-4 text-xs w-[320px] placeholder:text-white/40 focus:ring-1 focus:ring-[var(--color-gold)] transition-all outline-none"
             />
           </div>
@@ -140,16 +156,16 @@ const DashboardLayout: React.FC = () => {
             >
               <div className="flex flex-col items-end leading-tight mr-1 font-sans">
                 <span className="text-sm font-bold text-white tracking-tight">
-                  {isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'}
+                  {userProfile?.name || (isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim')}
                 </span>
                 <span className="text-[10px] text-white/60 font-medium font-mono uppercase tracking-widest">
-                  {isCompany ? 'Company Admin • CTO' : isAdmin ? 'Systems Administrator' : isSchoolAdmin ? 'Academic Registrar' : isLecturer ? 'Academic Supervisor' : 'Intern'} 
+                  {userProfile?.role?.replace('_', ' ') || role.replace('_', ' ')} 
                 </span>
               </div>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-black font-bold text-xs border border-white/20 shadow-inner ${
                 isCompany ? 'bg-[#EAB308]' : isAdmin ? 'bg-red-500' : isSchoolAdmin ? 'bg-indigo-400' : isLecturer ? 'bg-purple-400' : 'bg-[var(--color-gold)]'
               }`}>
-                {isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'}
+                {userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI')}
               </div>
               <ChevronDown size={14} className={`text-white/40 ml-0.5 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
             </div>
@@ -158,9 +174,9 @@ const DashboardLayout: React.FC = () => {
               isOpen={isProfileOpen} 
               onClose={() => setIsProfileOpen(false)} 
               user={{
-                name: isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim',
-                role: isCompany ? 'Company Admin' : isAdmin ? 'Systems Admin' : isSchoolAdmin ? 'Academic Registrar' : isLecturer ? 'Academic Supervisor' : 'Student Intern',
-                initials: isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI',
+                name: userProfile?.name || (isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'),
+                role: userProfile?.role?.replace('_', ' ') || role.replace('_', ' '),
+                initials: userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'),
                 avatarColor: isCompany ? 'bg-[#EAB308]' : isAdmin ? 'bg-red-500' : isSchoolAdmin ? 'bg-indigo-400' : isLecturer ? 'bg-purple-400' : 'bg-[var(--color-gold)]'
               }}
             />

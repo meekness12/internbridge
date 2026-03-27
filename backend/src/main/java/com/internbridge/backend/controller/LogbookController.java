@@ -1,16 +1,58 @@
-package com.internbridge.backend.controller;
-
+import com.internbridge.backend.dto.request.LogbookRequestDTO;
+import com.internbridge.backend.dto.response.LogbookResponseDTO;
+import com.internbridge.backend.service.LogbookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-/* 
- * SCRUBBED: Service logic commented out to restore build integrity.
- * Depends on deleted Student/Company/Lecturer in DTOs.
- */
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/logbooks")
 @RequiredArgsConstructor
 public class LogbookController {
-    // private final LogbookService logbookService;
+
+    private final LogbookService logbookService;
+
+    @PostMapping
+    public ResponseEntity<LogbookResponseDTO> createLogbook(@Valid @RequestBody LogbookRequestDTO requestDTO) {
+        return ResponseEntity.ok(logbookService.createLogbook(requestDTO));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LogbookResponseDTO> getLogbookById(@PathVariable UUID id) {
+        return ResponseEntity.ok(logbookService.getLogbookById(id));
+    }
+
+    @GetMapping("/placement/{placementId}")
+    public ResponseEntity<List<LogbookResponseDTO>> getLogbooksByPlacementId(@PathVariable UUID placementId) {
+        return ResponseEntity.ok(logbookService.getLogbooksByPlacementId(placementId));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<LogbookResponseDTO> updateLogbook(@PathVariable UUID id, @Valid @RequestBody LogbookRequestDTO requestDTO) {
+        return ResponseEntity.ok(logbookService.updateLogbook(id, requestDTO));
+    }
+
+    @PatchMapping("/{id}/company-status")
+    public ResponseEntity<LogbookResponseDTO> updateCompanyStatus(
+            @PathVariable UUID id,
+            @RequestParam String status) {
+        return ResponseEntity.ok(logbookService.updateCompanyStatus(id, status));
+    }
+
+    @PatchMapping("/{id}/lecturer-status")
+    public ResponseEntity<LogbookResponseDTO> updateLecturerStatus(
+            @PathVariable UUID id,
+            @RequestParam String status) {
+        return ResponseEntity.ok(logbookService.updateLecturerStatus(id, status));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLogbook(@PathVariable UUID id) {
+        logbookService.deleteLogbook(id);
+        return ResponseEntity.noContent().build();
+    }
 }

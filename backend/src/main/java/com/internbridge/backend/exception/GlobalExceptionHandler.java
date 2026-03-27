@@ -55,17 +55,25 @@ public class GlobalExceptionHandler {
 
     // ── 500: Catch-All ──────────────────────────────────────────────────
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(
+    public ResponseEntity<Map<String, Object>> handleGenericException(
             Exception ex, HttpServletRequest request) {
 
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error("Internal Server Error")
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", 500);
+        body.put("error", "Internal Server Error");
+        body.put("message", ex.getMessage() != null ? ex.getMessage() : "Null pointer or internal exception");
+        body.put("type", ex.getClass().getName());
+        body.put("path", request.getRequestURI());
+        
+        // Add stack trace snippet
+        StringBuilder stack = new StringBuilder();
+        StackTraceElement[] trace = ex.getStackTrace();
+        for (int i = 0; i < Math.min(trace.length, 10); i++) {
+            stack.append(trace[i].toString()).append(" | ");
+        }
+        body.put("trace", stack.toString());
 
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -1,15 +1,12 @@
 package com.internbridge.backend.service;
 
-/* 
- * SCRUBBED: Service contract for Placement.
- * Indirectly depends on deleted Student/Company via Application mapping.
- */
+import com.internbridge.backend.dto.response.PlacementResponseDTO;
+import java.util.List;
+import java.util.UUID;
+
 public interface PlacementService {
-    /*
-    PlacementResponseDTO createPlacement(PlacementRequestDTO requestDTO);
     PlacementResponseDTO getPlacementById(UUID id);
+    List<PlacementResponseDTO> getPlacementsByInternId(UUID internId);
+    List<PlacementResponseDTO> getPlacementsByCompanyId(UUID companyAdminId);
     List<PlacementResponseDTO> getAllPlacements();
-    PlacementResponseDTO updatePlacementStatus(UUID id, String status);
-    void deletePlacement(UUID id);
-    */
 }

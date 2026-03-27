@@ -3,6 +3,7 @@ package com.internbridge.backend.controller;
 import com.internbridge.backend.dto.request.CompanyAdminRegisterRequest;
 import com.internbridge.backend.dto.request.InternRegisterRequest;
 import com.internbridge.backend.dto.request.LoginRequestDTO;
+import com.internbridge.backend.dto.request.SuperAdminRegisterRequest;
 import com.internbridge.backend.dto.response.AuthResponseDTO;
 import com.internbridge.backend.service.AuthService;
 import jakarta.validation.Valid;
@@ -30,8 +31,18 @@ public class AuthController {
         return ResponseEntity.ok(authService.registerCompanyAdmin(request));
     }
 
+    @PostMapping("/register/super-admin")
+    public ResponseEntity<AuthResponseDTO> registerSuperAdmin(@Valid @RequestBody SuperAdminRegisterRequest request) {
+        return ResponseEntity.ok(authService.registerSuperAdmin(request));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @org.springframework.web.bind.annotation.GetMapping("/me")
+    public ResponseEntity<com.internbridge.backend.dto.response.UserResponse> getMe(java.security.Principal principal) {
+        return ResponseEntity.ok(authService.getMe(principal.getName()));
     }
 }
