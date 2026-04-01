@@ -15,6 +15,7 @@ import java.util.UUID;
 public interface PlacementRepository extends JpaRepository<Placement, UUID> {
 
     Optional<Placement> findByApplicationId(UUID applicationId);
+    boolean existsByApplicationId(UUID applicationId);
 
     List<Placement> findByStatus(PlacementStatus status);
 

@@ -7,12 +7,18 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
 
-    List<Application> findByInternId(UUID internId);
+    @Query("SELECT a FROM Application a WHERE a.intern.id = :internId")
+    List<Application> findByInternId(@Param("internId") UUID internId);
 
-    List<Application> findByInternshipId(UUID internshipId);
+    @Query("SELECT a FROM Application a WHERE a.internship.id = :internshipId")
+    List<Application> findByInternshipId(@Param("internshipId") UUID internshipId);
 
-    boolean existsByInternIdAndInternshipId(UUID internId, UUID internshipId);
+    @Query("SELECT COUNT(a) > 0 FROM Application a WHERE a.intern.id = :internId AND a.internship.id = :internshipId")
+    boolean existsByInternIdAndInternshipId(@Param("internId") UUID internId, @Param("internshipId") UUID internshipId);
 }

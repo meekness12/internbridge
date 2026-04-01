@@ -1,3 +1,5 @@
+package com.internbridge.backend.service.impl;
+
 import com.internbridge.backend.dto.request.LogbookRequestDTO;
 import com.internbridge.backend.dto.response.LogbookResponseDTO;
 import com.internbridge.backend.entity.Logbook;

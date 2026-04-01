@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Clock, 
-  CheckCircle2, 
   Plus, 
   FileCheck, 
   ChevronRight,
-  Search,
   AlertCircle,
   RefreshCw,
   X,
@@ -19,11 +17,12 @@ import logbookService from '../../api/logbookService';
 import type { PlacementDTO } from '../../api/placementService';
 import type { LogbookDTO } from '../../api/logbookService';
 import { useToast } from '../../context/ToastContext';
+import { useNavigate } from 'react-router-dom';
 
 const Logbook: React.FC = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [entries, setEntries] = useState<LogbookDTO[]>([]);
-  const [placements, setPlacements] = useState<PlacementDTO[]>([]);
   const [activePlacement, setActivePlacement] = useState<PlacementDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +39,6 @@ const Logbook: React.FC = () => {
       setIsLoading(true);
       try {
         const places = await placementService.getMyPlacements(userId);
-        setPlacements(places);
         if (places.length > 0) {
           setActivePlacement(places[0]);
           const logs = await logbookService.getLogbooksByPlacement(places[0].id);
@@ -74,8 +72,9 @@ const Logbook: React.FC = () => {
       // Refresh entries
       const logs = await logbookService.getLogbooksByPlacement(activePlacement.id);
       setEntries(logs);
-    } catch (error) {
-      toast('Failed to submit logbook entry.', 'error', 'Error');
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || error?.message || 'Failed to submit logbook entry.';
+      toast(msg, 'error', 'Error');
     }
   };
 
@@ -207,7 +206,7 @@ const Logbook: React.FC = () => {
               {activePlacement ? 'No logbook entries yet' : 'No active placement — apply for an internship first'}
             </p>
             <button 
-              onClick={() => activePlacement ? setIsModalOpen(true) : window.location.href = '/intern/placements'}
+              onClick={() => activePlacement ? setIsModalOpen(true) : navigate('/dashboard/internships')}
               className="mt-6 text-[10px] font-bold text-[var(--color-navy)] hover:text-[var(--color-gold)] transition-all uppercase tracking-widest flex items-center gap-2"
             >
               {activePlacement ? 'Create First Entry' : 'Browse Openings'} <ChevronRight size={14} />

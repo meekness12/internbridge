@@ -3,13 +3,11 @@ import {
   Users,
   Clock,
   Check,
-  TrendingUp,
   MapPin,
-  Calendar,
-  Briefcase,
   Plus,
   RefreshCw
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { PremiumCard } from '../../components/ui/PremiumCard';
 import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import { PremiumTimeline } from '../../components/ui/PremiumTimeline';
@@ -122,19 +120,19 @@ const InternDashboard: React.FC = () => {
         subtitle={`${dayName}, ${dateStr}`}
         eyebrowColor="text-[var(--color-gold)]"
         primaryAction={
-          <a href="/intern/logbook" className="btn btn-primary btn-sm bg-[var(--color-navy)] text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 no-underline">
+          <Link to="/dashboard/logbook" className="btn btn-primary btn-sm bg-[var(--color-navy)] text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 no-underline">
             Log Today's Tasks <Plus size={16} />
-          </a>
+          </Link>
         }
         secondaryAction={
-          <a href="/intern/placements" className="btn btn-gold btn-sm bg-[var(--color-gold)] text-[var(--color-navy)] px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 no-underline">
+          <Link to="/dashboard/internships" className="btn btn-gold btn-sm bg-[var(--color-gold)] text-[var(--color-navy)] px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 no-underline">
             Browse Openings <span className="bg-white/20 px-2 py-0.5 rounded-full text-[9px] font-black">{applications.length}</span>
-          </a>
+          </Link>
         }
       />
 
       <div className="flex flex-wrap gap-3">
-        {['All Activity', 'Placements', 'Logbooks', 'Contracts', 'Applications'].map((tab, i) => (
+        {['All Activity', 'Placements', 'Logbooks', 'Applications'].map((tab, i) => (
           <button key={i} className={`filter-chip ${i === 0 ? 'active' : ''}`}>{tab}</button>
         ))}
       </div>
@@ -172,9 +170,9 @@ const InternDashboard: React.FC = () => {
                     <p className="text-xs text-slate-400 font-medium">Deadline: {featuredInternship.deadline || 'Open'}</p>
                   </div>
                 </div>
-                <a href="/intern/placements" className="btn btn-ghost btn-sm border border-slate-200 px-4 py-2 rounded-full text-[10px] font-bold uppercase flex items-center gap-2 tracking-widest hover:bg-slate-50 no-underline text-slate-600">
+                <Link to="/dashboard/internships" className="btn btn-ghost btn-sm border border-slate-200 px-4 py-2 rounded-full text-[10px] font-bold uppercase flex items-center gap-2 tracking-widest hover:bg-slate-50 no-underline text-slate-600">
                   <Check size={14} className="text-emerald-600" /> View All
-                </a>
+                </Link>
               </div>
               <p className="text-slate-600 leading-relaxed mb-8 max-w-2xl">
                 {featuredInternship.description || 'Explore this exciting internship opportunity.'}
@@ -224,10 +222,10 @@ const InternDashboard: React.FC = () => {
                     : 'Browse available internships and apply to start your professional journey.'
                   }
                 </p>
-                <a href={placements.length > 0 ? '/intern/logbook' : '/intern/placements'} 
+                <Link to={placements.length > 0 ? '/dashboard/logbook' : '/dashboard/internships'} 
                    className="block w-full py-3 bg-[var(--color-gold)] text-[var(--color-navy)] rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all text-center no-underline">
                   {placements.length > 0 ? 'Open Logbook' : 'Browse Openings'}
-                </a>
+                </Link>
               </div>
            </div>
         </div>

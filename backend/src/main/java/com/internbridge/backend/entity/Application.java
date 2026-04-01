@@ -49,4 +49,10 @@ public class Application {
     @Column(name = "applied_at", nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime appliedAt = LocalDateTime.now();
+
+    @Column(name = "cv_url")
+    private String cvUrl;
+
+    @Column(name = "cover_letter", nullable = true, columnDefinition = "TEXT")
+    private String coverLetter;
 }

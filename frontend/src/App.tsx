@@ -6,7 +6,6 @@ import ProtectedRoute from './components/layout/ProtectedRoute';
 import InternDashboard from './pages/intern/InternDashboard';
 import InternPlacements from './pages/intern/Placements';
 import InternLogbook from './pages/intern/Logbook';
-import InternContracts from './pages/intern/Contracts';
 import InternMessages from './pages/intern/Messages';
 import InternNotifications from './pages/intern/Notifications';
 import InternAnalytics from './pages/intern/Analytics';
@@ -130,7 +129,6 @@ const App: React.FC = () => {
           {/* Intern Specific Supplemental Pages */}
           <Route path="intern" element={<ProtectedRoute allowedRoles={['INTERN']}><InternDashboard /></ProtectedRoute>} />
           <Route path="internships" element={<ProtectedRoute allowedRoles={['INTERN']}><PlacementsRouter /></ProtectedRoute>} />
-          <Route path="contracts" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN']}><InternContracts /></ProtectedRoute>} />
           
           {/* Shared Supplemental Pages (Role-based internal routing) */}
           <Route path="logbook" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR']}><LogbookRouter /></ProtectedRoute>} />

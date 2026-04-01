@@ -146,7 +146,8 @@ const Applicants: React.FC = () => {
                   <td className="px-8 py-6">
                     <span className={`text-[9px] px-3 py-1.5 rounded-lg font-black uppercase tracking-[0.15em] border ${
                       app.status === 'PENDING' ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm' :
-                      app.status === 'ACCEPTED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                      app.status === 'HIRED' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                      (app.status === 'ACCEPTED' || app.status === 'APPROVED') ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                       app.status === 'REJECTED' ? 'bg-rose-50 text-rose-600 border-rose-100' :
                       'bg-slate-100 text-slate-500 border-slate-200'
                     }`}>
@@ -158,8 +159,8 @@ const Applicants: React.FC = () => {
                       {app.status === 'PENDING' && (
                         <>
                           <button 
-                            onClick={() => handleUpdateStatus(app.id, 'ACCEPTED')}
-                            className="p-2.5 text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all border border-transparent hover:border-emerald-100" title="Approve"
+                            onClick={() => handleUpdateStatus(app.id, 'HIRED')}
+                            className="p-2.5 text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all border border-transparent hover:border-emerald-100" title="Hire Applicant"
                           >
                             <CheckCircle2 size={18} />
                           </button>

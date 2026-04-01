@@ -78,7 +78,6 @@ const DashboardLayout: React.FC = () => {
     { icon: <Home size={22} />, path: '/dashboard', label: 'Home' },
     { icon: <Briefcase size={22} />, path: '/dashboard/internships', label: 'Placements', badge: '3' },
     { icon: <FileText size={22} />, path: '/dashboard/logbook', label: 'Logbooks' },
-    { icon: <CheckSquare size={22} />, path: '/dashboard/contracts', label: 'Contracts' },
     { icon: <MessageSquare size={22} />, path: '/dashboard/messages', label: 'Messages' },
     { icon: <Bell size={22} />, path: '/dashboard/notifications', label: 'Notifications', badge: '7' },
     { icon: <BarChart2 size={22} />, path: '/dashboard/analytics', label: 'Analytics' },
