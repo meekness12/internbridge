@@ -18,23 +18,36 @@ import {
   Lock,
   ChevronRight,
   MapPin,
-  ArrowUpRight
+  ArrowUpRight,
+  FileText,
+  Loader2,
+  Clock,
+  ArrowRight
 } from 'lucide-react';
 import internshipService from '../../api/internshipService';
 import applicationService from '../../api/applicationService';
 import placementService from '../../api/placementService';
+import notificationService from '../../api/notificationService';
+import type { NotificationDTO } from '../../api/notificationService';
 import type { InternshipDTO } from '../../api/internshipService';
 import type { ApplicationDTO } from '../../api/applicationService';
 import type { PlacementDTO } from '../../api/placementService';
 import { useToast } from '../../context/ToastContext';
+import { Link } from 'react-router-dom';
 
+/**
+ * CompanyDashboard Component
+ * High-fidelity recruitment command center with 4-card status grid and recent signal feeds.
+ */
 const CompanyDashboard: React.FC = () => {
   const { toast } = useToast();
   const [internships, setInternships] = useState<InternshipDTO[]>([]);
   const [applications, setApplications] = useState<ApplicationDTO[]>([]);
   const [placements, setPlacements] = useState<PlacementDTO[]>([]);
+  const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showPostModal, setShowPostModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newRole, setNewRole] = useState({ title: '', description: '', requiredSkills: '', deadline: '' });
 
   const userId = localStorage.getItem('userId') || '';
@@ -43,13 +56,15 @@ const CompanyDashboard: React.FC = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [listings, places] = await Promise.allSettled([
+      const [listings, places, alerts] = await Promise.allSettled([
         internshipService.getInternshipsByCompany(userId),
         placementService.getPlacementsByCompany(userId),
+        notificationService.getMyNotifications(userId)
       ]);
 
       if (listings.status === 'fulfilled') {
         setInternships(listings.value);
+        // Fetch applications for all internships
         const allApps: ApplicationDTO[] = [];
         for (const listing of listings.value) {
           try {
@@ -57,11 +72,18 @@ const CompanyDashboard: React.FC = () => {
             allApps.push(...apps);
           } catch { /* silent */ }
         }
+        // Sort applications by date
+        allApps.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setApplications(allApps);
       }
+      
       if (places.status === 'fulfilled') setPlacements(places.value);
+      if (alerts.status === 'fulfilled') {
+        const sortedAlerts = alerts.value.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setNotifications(sortedAlerts);
+      }
     } catch (error) {
-      console.error('Dashboard load failed:', error);
+      console.error('Dashboard synchronization failed:', error);
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +95,7 @@ const CompanyDashboard: React.FC = () => {
 
   const handlePostRole = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       await internshipService.createInternship({
         ...newRole,
@@ -84,232 +107,234 @@ const CompanyDashboard: React.FC = () => {
       fetchData();
     } catch (error) {
       toast('Failed to post role.', 'error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const pendingApps = applications.filter(a => a.status === 'PENDING' || a.status === 'NEW').length;
+  const formatDistanceToNow = (dateString: string) => {
+    const now = new Date();
+    const then = new Date(dateString);
+    const diffInMs = now.getTime() - then.getTime();
+    const diffInMins = Math.floor(diffInMs / (1000 * 60));
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
-  const stats = [
-    { label: 'Talent Pipeline', value: applications.length.toString(), icon: <Target size={16} /> },
-    { label: 'Active Placements', value: placements.length.toString(), icon: <Users size={16} /> },
-    { label: 'Rating', value: '4.9', icon: <Star size={16} /> },
-  ];
+    if (diffInMins < 60) return `${diffInMins}m`;
+    if (diffInHours < 24) return `${diffInHours}h`;
+    return `${diffInDays}d`;
+  };
 
   return (
-    <div className="max-w-[1128px] mx-auto animate-fade-in pb-20">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Left Column: Corporate Snap */}
-        <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
-           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-              <div className="h-14 bg-[var(--color-forest)] w-full"></div>
-              <div className="px-4 pb-4 -mt-7 text-center">
-                 <div className="w-16 h-16 rounded-full border-4 border-white bg-amber-500 mx-auto flex items-center justify-center text-white font-serif font-black text-xl shadow-md mb-3">
-                    {userName.split(' ').map(n => n[0]).join('')}
-                 </div>
-                 <h3 className="text-base font-bold text-slate-900 tracking-tight">{userName}</h3>
-                 <p className="text-xs text-slate-500 font-medium mb-4">Institutional Partner · Corporate</p>
-                 <div className="pt-4 border-t border-slate-100 flex flex-col items-start gap-4">
-                    <div className="flex justify-between w-full text-[11px] font-bold">
-                       <span className="text-slate-500">Pipeline Size</span>
-                       <span className="text-[var(--color-forest)]">{applications.length}</span>
-                    </div>
-                    <div className="flex justify-between w-full text-[11px] font-bold">
-                       <span className="text-slate-500">Postings</span>
-                       <span className="text-[var(--color-forest)]">{internships.length}</span>
-                    </div>
-                 </div>
-              </div>
-           </div>
-
-           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Pipeline Health</h4>
-              {stats.map((s, i) => (
-                <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 last:border-0">
-                   <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-forest)] transition-colors">
-                      {s.icon}
-                   </div>
-                   <div>
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">{s.label}</div>
-                      <div className="text-xs font-bold text-slate-700 leading-none">{s.value}</div>
-                   </div>
-                </div>
-              ))}
-           </div>
-        </div>
-
-        {/* Middle Column: Recruitment Feed */}
-        <div className="lg:col-span-6 space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-             <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-200">
-                   <Briefcase size={24} />
-                </div>
-                <button 
-                  onClick={() => setShowPostModal(true)}
-                  className="flex-1 bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-500 text-left px-6 py-3 rounded-full text-sm font-medium transition-all shadow-inner"
-                >
-                   Publish a new internship role...
-                </button>
-             </div>
-          </div>
-
-          <div className="flex items-center gap-2 py-2">
-             <div className="h-px flex-1 bg-slate-200"></div>
-             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Active Postings & Talent Flow</span>
-             <div className="h-px flex-1 bg-slate-200"></div>
-          </div>
-
-          {isLoading ? (
-             <div className="space-y-4">
-               {[1,2,3].map(i => <div key={i} className="h-40 bg-white border border-slate-200 rounded-xl animate-pulse"></div>)}
-             </div>
-          ) : (
-            <div className="space-y-4">
-               {internships.length > 0 ? (
-                 internships.map((job, i) => (
-                   <div key={job.id} className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                      <div className="flex justify-between items-start mb-4">
-                         <div className="flex gap-4">
-                            <div className="w-12 h-12 rounded-lg bg-[var(--color-forest)] flex items-center justify-center text-white font-serif font-black text-xl shadow-lg group-hover:scale-105 transition-transform">
-                              {job.title.charAt(0)}
-                            </div>
-                            <div>
-                               <h4 className="text-base font-bold text-slate-900 group-hover:text-[var(--color-forest)] transition-colors leading-tight">{job.title}</h4>
-                               <p className="text-xs text-slate-500 font-medium mt-1">Status: <span className="text-[var(--color-gold)] font-bold">{job.status}</span></p>
-                               <div className="flex items-center gap-3 text-[10px] text-slate-400 mt-2 font-mono uppercase tracking-tighter">
-                                  <span>{job.deadline || 'Perpetual Listing'}</span>
-                                  <span className="h-1 w-1 bg-slate-200 rounded-full"></span>
-                                  <span>{job.requiredSkills || 'General Entry'}</span>
-                               </div>
-                            </div>
-                         </div>
-                         <button className="p-2 text-slate-300 hover:text-[var(--color-gold)] transition-colors">
-                            <ArrowUpRight size={20} />
-                         </button>
-                      </div>
-                      
-                      <div className="flex items-center justify-between pt-6 border-t border-slate-50">
-                         <div className="flex -space-x-2">
-                            {[1,2,3].map(j => <div key={j} className="w-6 h-6 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[8px] font-bold text-slate-400">?</div>)}
-                            <div className="w-6 h-6 rounded-full border-2 border-white bg-slate-50 flex items-center justify-center text-[8px] font-bold text-slate-500">+8</div>
-                         </div>
-                         <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{applications.filter(a => a.internshipId === job.id).length} Applicants</span>
-                            <button className="px-5 py-2 bg-white border-2 border-[var(--color-forest)] text-[var(--color-forest)] rounded-full text-xs font-black uppercase tracking-widest hover:bg-[var(--color-forest)] hover:text-white transition-all shadow-sm">
-                               Review Talent
-                            </button>
-                         </div>
-                      </div>
-                   </div>
-                 ))
-               ) : (
-                 <div className="p-20 bg-white rounded-xl border-2 border-dashed border-slate-200 text-center">
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">No Active Listings Found</p>
-                    <button onClick={() => setShowPostModal(true)} className="mt-4 text-[var(--color-gold)] font-black uppercase text-xs hover:underline tracking-widest">Post Role Now</button>
-                 </div>
-               )}
+    <div className="max-w-[1280px] mx-auto animate-fade-in pb-20 mt-6 px-6">
+      
+      {/* Editorial Header */}
+      <div className="flex justify-between items-end mb-12">
+         <div className="flex flex-col">
+            <div className="flex items-center gap-3 mb-2">
+               <div className="h-[1px] w-8 bg-[var(--color-teal)] opacity-30"></div>
+               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-teal)]">Corporate Identity Hub</span>
             </div>
-          )}
-        </div>
-
-        {/* Right Column: Recruitment Hub */}
-        <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
-           {/* Modal-style Quick Stats */}
-           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-gold)]/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1">Engagement Metrics</h4>
-              <div className="space-y-6">
-                <div>
-                   <div className="flex justify-between items-center mb-2 px-1">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Pipeline Efficiency</span>
-                      <span className="text-[10px] font-mono font-bold text-indigo-600">82%</span>
-                   </div>
-                   <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
-                      <div className="h-full bg-indigo-500 w-[82%] rounded-full"></div>
-                   </div>
-                </div>
-                <div>
-                   <div className="flex justify-between items-center mb-2 px-1">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Brand Standing</span>
-                      <span className="text-[10px] font-mono font-bold text-emerald-600">Premium</span>
-                   </div>
-                   <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
-                      <div className="h-full bg-emerald-500 w-[95%] rounded-full"></div>
-                   </div>
-                </div>
-              </div>
-           </div>
-
-           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1 flex items-center justify-between">
-                Recruitment Stream <ArrowUpRight size={14} />
-              </h4>
-              <div className="space-y-5">
-                 {applications.slice(0, 4).map((app, i) => (
-                   <div key={app.id} className="cursor-pointer group flex items-start gap-3">
-                      <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-[var(--color-forest)] font-bold text-[10px] shrink-0">{app.studentName.charAt(0)}</div>
-                      <div className="min-w-0">
-                         <h5 className="text-[12px] font-bold text-slate-800 leading-tight group-hover:text-[var(--color-forest)] transition-all truncate">{app.studentName}</h5>
-                         <span className="text-[9px] text-slate-500 font-medium">Applied for {app.internshipTitle}</span>
-                      </div>
-                   </div>
-                 ))}
-                 {applications.length === 0 && (
-                   <p className="text-[10px] text-slate-400 italic">No recent applicants.</p>
-                 )}
-              </div>
-           </div>
-
-           <div className="px-4 py-8 text-center text-slate-500">
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] font-mono leading-relaxed mb-4">
-                 InternBridge © 2026<br/>Global Identity Registry
-              </div>
-              <div className="flex justify-center gap-4 opacity-50">
-                 <Shield size={16} />
-                 <Globe size={16} />
-                 <Lock size={16} />
-              </div>
-           </div>
-        </div>
+            <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Command <em className="italic text-slate-400 font-normal">Center</em></h1>
+         </div>
+         <button 
+           onClick={() => setShowPostModal(true)}
+           className="h-14 px-10 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-black/20 hover:bg-[var(--color-teal)] transition-all flex items-center gap-3 hover:scale-[1.02] active:scale-[0.98]"
+         >
+            <Plus size={18} /> New Posting
+         </button>
       </div>
 
-      {/* Modal Overlay: Post Role */}
+      {/* KPI Status Grid (4 Cards) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+         {[
+           { label: 'Talent signals', value: applications.length, sub: 'Total Applications', icon: <Target size={20} />, color: 'var(--color-teal)' },
+           { label: 'Managed Interns', value: placements.length, sub: 'Active Workforce', icon: <Users size={20} />, color: '#6366f1' },
+           { label: 'Capacity', value: internships.length, sub: 'Active Openings', icon: <Briefcase size={20} />, color: '#f59e0b' },
+           { label: 'Signal queue', value: notifications.filter(n => !n.isRead).length, sub: 'Unread Alerts', icon: <Bell size={20} />, color: '#ef4444' }
+         ].map((stat, i) => (
+           <div key={i} className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-slate-200 transition-all">
+              <div className="flex justify-between items-start mb-6">
+                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ backgroundColor: stat.color }}>
+                    {stat.icon}
+                 </div>
+                 <div className="flex items-center gap-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+                    <TrendingUp size={12} /> Live
+                 </div>
+              </div>
+              <div className="text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
+              <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.25em]">{stat.label}</div>
+              <div className="mt-4 text-[11px] text-slate-400 font-medium">{stat.sub}</div>
+           </div>
+         ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+         
+         {/* Recent Signals (Alerts) Feed */}
+         <div className="lg:col-span-7 space-y-6">
+            <div className="flex items-center justify-between px-2">
+               <div className="flex items-center gap-4">
+                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">Recent Signals</h3>
+                  <div className="h-px w-12 bg-slate-100"></div>
+               </div>
+               <Link to="/dashboard/notifications" className="text-[10px] font-black text-[var(--color-teal)] uppercase tracking-widest hover:underline">View All Alerts</Link>
+            </div>
+
+            <div className="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-2xl shadow-slate-200/20">
+               {isLoading ? (
+                  <div className="space-y-6">
+                     {[1,2,3].map(i => <div key={i} className="h-20 bg-slate-50 rounded-[1.5rem] animate-pulse"></div>)}
+                  </div>
+               ) : (
+                  <div className="space-y-4">
+                     {notifications.slice(0, 5).map((noti) => (
+                        <div key={noti.id} className="flex gap-6 p-4 rounded-[1.5rem] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
+                           <div className="w-12 h-12 rounded-2xl bg-slate-100 shrink-0 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-teal)] transition-colors">
+                              <Zap size={20} />
+                           </div>
+                           <div className="flex-1 min-w-0">
+                              <div className="flex justify-between items-start mb-1">
+                                 <p className="text-sm font-bold text-slate-800 leading-tight group-hover:text-slate-900">{noti.message}</p>
+                                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest shrink-0 ml-4">{formatDistanceToNow(noti.createdAt)}</span>
+                              </div>
+                              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-[0.1em]">System Dispatch • Authenticated</p>
+                           </div>
+                        </div>
+                     ))}
+                     {notifications.length === 0 && (
+                        <div className="text-center py-10 opacity-40">
+                           <Bell size={40} className="mx-auto mb-4" />
+                           <p className="text-xs font-black uppercase tracking-widest">No signals detected</p>
+                        </div>
+                     )}
+                  </div>
+               )}
+            </div>
+         </div>
+
+         {/* Recent Talent (Applicants) Row */}
+         <div className="lg:col-span-5 space-y-6">
+            <div className="flex items-center justify-between px-2">
+               <div className="flex items-center gap-4">
+                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">New Talent</h3>
+                  <div className="h-px w-12 bg-slate-100"></div>
+               </div>
+               <Link to="/dashboard/applicants" className="text-[10px] font-black text-[var(--color-teal)] uppercase tracking-widest hover:underline">Recruitment Hub</Link>
+            </div>
+
+            <div className="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-2xl shadow-slate-200/20">
+               {isLoading ? (
+                  <div className="space-y-6">
+                     {[1,2,3].map(i => <div key={i} className="h-24 bg-slate-50 rounded-[2rem] animate-pulse"></div>)}
+                  </div>
+               ) : (
+                  <div className="space-y-6">
+                     {applications.slice(0, 5).map((app) => (
+                        <div key={app.id} className="flex items-center justify-between group">
+                           <div className="flex items-center gap-5 min-w-0">
+                              <div className="w-14 h-14 rounded-2xl bg-teal-50 flex items-center justify-center text-[var(--color-teal)] font-black text-lg shadow-sm group-hover:bg-[var(--color-teal)] group-hover:text-white transition-all overflow-hidden shrink-0">
+                                 {app.studentName.charAt(0)}
+                              </div>
+                              <div className="min-w-0">
+                                 <h4 className="text-sm font-black text-slate-900 tracking-tight truncate leading-tight group-hover:text-[var(--color-teal)] transition-colors">{app.studentName}</h4>
+                                 <div className="flex items-center gap-3 mt-1.5 min-w-0">
+                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate">{app.internshipTitle}</span>
+                                    <div className="w-1 h-1 bg-slate-200 rounded-full shrink-0"></div>
+                                    <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest shrink-0">{app.status}</span>
+                                 </div>
+                              </div>
+                           </div>
+                           <button className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-[var(--color-teal)] hover:text-white transition-all group-hover:scale-110 active:scale-95 shadow-sm ml-4">
+                              <ArrowRight size={18} />
+                           </button>
+                        </div>
+                     ))}
+                     {applications.length === 0 && (
+                        <div className="text-center py-10 opacity-40">
+                           <Users size={40} className="mx-auto mb-4" />
+                           <p className="text-xs font-black uppercase tracking-widest">Pipeline Empty</p>
+                        </div>
+                     )}
+                  </div>
+               )}
+            </div>
+
+            <div className="bg-slate-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-teal)]/10 blur-[50px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
+               <Star size={32} className="text-amber-500 mb-6 group-hover:rotate-12 transition-transform" />
+               <h4 className="text-xl font-serif font-bold italic mb-2 leading-tight">Elite <span className="font-normal text-slate-400">Branding</span></h4>
+               <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-8 leading-relaxed">Your corporate standing is synchronized at <span className="text-white">Premium Tier 1</span>.</p>
+               <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-[var(--color-teal)] w-[95%] shadow-glow"></div>
+               </div>
+            </div>
+         </div>
+
+      </div>
+
+      {/* Synchronized Modal: New Posting */}
       {showPostModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[var(--color-forest)]/90 backdrop-blur-xl animate-fade-in">
-          <div className="bg-white rounded-[2rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-in border border-white/20">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-forest)] to-[var(--color-gold)]"></div>
-            <div className="p-10">
-              <div className="flex items-center justify-between mb-8">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xl animate-fade-in">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] animate-scale-in border border-white">
+            <div className="p-8 relative">
+              <div className="flex items-start justify-between mb-8">
                 <div>
-                  <h3 className="text-2xl font-serif text-slate-900 italic font-bold">Initiate Talent Search</h3>
-                  <p className="text-[11px] text-slate-500 font-medium uppercase tracking-widest mt-1">System Directive: Post Role</p>
+                  <div className="flex items-center gap-2 mb-1">
+                     <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--color-teal)]">System Directive</span>
+                  </div>
+                  <h3 className="text-2xl font-serif font-bold text-slate-900 italic leading-tight">Initiate <span className="font-normal text-slate-400">Search</span></h3>
                 </div>
-                <button onClick={() => setShowPostModal(false)} className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-all">
+                <button onClick={() => setShowPostModal(false)} className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all">
                   <X size={20} />
                 </button>
               </div>
-              <form onSubmit={handlePostRole} className="space-y-6">
-                <div>
-                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Position Excellence</label>
-                   <input required type="text" value={newRole.title} onChange={(e) => setNewRole({...newRole, title: e.target.value})} placeholder="e.g. Fintech Operations Analyst" className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-forest)] focus:bg-white transition-all shadow-inner" />
+              
+              <form onSubmit={handlePostRole} className="space-y-8">
+                <div className="space-y-5">
+                   <div className="relative">
+                      <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Position Excellence</label>
+                      <input 
+                        required 
+                        type="text" 
+                        value={newRole.title} 
+                        onChange={(e) => setNewRole({...newRole, title: e.target.value})} 
+                        placeholder="e.g. Fintech Operations Analyst" 
+                        className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-sm font-bold outline-none focus:ring-4 focus:ring-[var(--color-teal)]/5 focus:border-[var(--color-teal)] focus:bg-white transition-all shadow-inner" 
+                      />
+                   </div>
+                   
+                   <div className="relative">
+                      <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Institutional Requirements</label>
+                      <textarea 
+                        required 
+                        value={newRole.description} 
+                        onChange={(e) => setNewRole({...newRole, description: e.target.value})} 
+                        placeholder="Define the scope of this deployment..." 
+                        rows={3} 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl p-5 text-sm font-medium outline-none focus:ring-4 focus:ring-[var(--color-teal)]/5 focus:border-[var(--color-teal)] focus:bg-white transition-all resize-none shadow-inner" 
+                      />
+                   </div>
+                   
+                   <div className="grid grid-cols-2 gap-5">
+                      <div className="relative">
+                         <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Skill Density</label>
+                         <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="SQL, React" className="w-full h-11 bg-slate-50 border border-slate-100 rounded-lg px-5 text-xs font-mono font-bold uppercase outline-none focus:ring-4 focus:ring-[var(--color-teal)]/5 focus:border-[var(--color-teal)] transition-all shadow-inner" />
+                      </div>
+                      <div className="relative">
+                         <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Sync Deadline</label>
+                         <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-11 bg-slate-50 border border-slate-100 rounded-lg px-5 text-xs font-mono font-bold outline-none focus:ring-4 focus:ring-[var(--color-teal)]/5 focus:border-[var(--color-teal)] transition-all shadow-inner" />
+                      </div>
+                   </div>
                 </div>
-                <div>
-                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Institutional Requirements</label>
-                   <textarea required value={newRole.description} onChange={(e) => setNewRole({...newRole, description: e.target.value})} placeholder="Define tasks and expected outcomes..." rows={3} className="w-full bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-forest)] focus:bg-white transition-all resize-none shadow-inner" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Skill Density</label>
-                    <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="e.g. SQL, Python" className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-xs font-mono outline-none focus:ring-1 focus:ring-[var(--color-forest)] transition-all shadow-inner" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Closing Date</label>
-                    <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-xs font-mono outline-none focus:ring-1 focus:ring-[var(--color-forest)] transition-all shadow-inner" />
-                  </div>
-                </div>
-                <button type="submit" className="w-full h-14 bg-[var(--color-forest)] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-xl shadow-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4">
-                  <Zap size={18} className="text-[var(--color-gold)]" fill="currentColor" /> Publish Role
+
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="w-full h-14 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] hover:bg-[var(--color-teal)] transition-all disabled:opacity-50"
+                >
+                  {isSubmitting ? <Loader2 size={18} className="animate-spin text-[var(--color-teal)]" /> : <Zap size={16} className="text-[var(--color-teal)]" fill="currentColor" />} 
+                  {isSubmitting ? 'Transmitting Signal...' : 'Broadcast Deployment'}
                 </button>
               </form>
             </div>

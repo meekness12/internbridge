@@ -117,7 +117,7 @@ const App: React.FC = () => {
           {/* Intern Specific Supplemental Pages */}
           <Route path="intern" element={<ProtectedRoute allowedRoles={['INTERN']}><InternDashboard /></ProtectedRoute>} />
           <Route path="internships" element={<ProtectedRoute allowedRoles={['INTERN']}><PlacementsRouter /></ProtectedRoute>} />
-          <Route path="profile" element={<ProtectedRoute allowedRoles={['INTERN']}><InternProfile /></ProtectedRoute>} />
+          <Route path="profile" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN', 'SCHOOL_ADMIN']}><InternProfile /></ProtectedRoute>} />
           <Route path="settings" element={<ProtectedRoute allowedRoles={['INTERN']}><InternSettings /></ProtectedRoute>} />
           <Route path="help" element={<ProtectedRoute allowedRoles={['INTERN']}><InternHelp /></ProtectedRoute>} />
           

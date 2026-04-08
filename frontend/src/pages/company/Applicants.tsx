@@ -7,7 +7,12 @@ import {
   FileText,
   Clock,
   Briefcase,
-  RefreshCw
+  RefreshCw,
+  Target,
+  ChevronRight,
+  Filter,
+  UserCheck,
+  UserX
 } from 'lucide-react';
 import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import internshipService from '../../api/internshipService';
@@ -16,6 +21,11 @@ import type { InternshipDTO } from '../../api/internshipService';
 import type { ApplicationDTO } from '../../api/applicationService';
 import { useToast } from '../../context/ToastContext';
 
+/**
+ * Applicants Component
+ * High-fidelity Talent Acquisition center with Clean Tech aesthetic.
+ * Replaces standard table with a dense candidate signal feed.
+ */
 const Applicants: React.FC = () => {
   const { toast } = useToast();
   const [applications, setApplications] = useState<ApplicationDTO[]>([]);
@@ -38,6 +48,8 @@ const Applicants: React.FC = () => {
           allApps.push(...apps);
         } catch { /* silent */ }
       }
+      // Sort by newest
+      allApps.sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       setApplications(allApps);
     } catch (error) {
       console.error('Failed to fetch applicants:', error);
@@ -53,10 +65,10 @@ const Applicants: React.FC = () => {
   const handleUpdateStatus = async (appId: string, status: string) => {
     try {
       await applicationService.updateStatus(appId, status);
-      toast(`Application ${status.toLowerCase()}.`, 'success', status);
+      toast(`Candidate ${status.toLowerCase()}.`, 'success', 'Status Synchronized');
       setApplications(prev => prev.map(a => a.id === appId ? { ...a, status } : a));
     } catch (error) {
-      toast('Failed to update status.', 'error');
+      toast('Signal transmission failed.', 'error');
     }
   };
 
@@ -68,165 +80,140 @@ const Applicants: React.FC = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const pendingCount = applications.filter(a => a.status === 'PENDING').length;
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'PENDING': return 'bg-indigo-50 text-indigo-600 border-indigo-100';
+      case 'HIRED': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
+      case 'REJECTED': return 'bg-rose-50 text-rose-600 border-rose-100';
+      default: return 'bg-slate-50 text-slate-400 border-slate-100';
+    }
+  };
 
   return (
-    <div className="space-y-8 animate-fade-in pb-20">
-      <PremiumHeader 
-        eyebrow="Talent Acquisition"
-        title="Incoming"
-        italicTitle="Applicants"
-        subtitle={`${applications.length} total applications · ${pendingCount} pending review`}
-        eyebrowColor="text-[var(--color-navy)]"
-        primaryAction={
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+    <div className="max-w-[1000px] mx-auto animate-fade-in pb-20 px-4 mt-6">
+      
+      {/* Editorial Header Section */}
+      <div className="flex flex-col mb-16 px-4">
+         <div className="flex items-center gap-3 mb-2">
+            <div className="h-[1px] w-8 bg-[var(--color-teal)] opacity-30"></div>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-teal)]">Corporate Acquisition</span>
+         </div>
+         <div className="flex justify-between items-end">
+            <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Incoming <em className="italic text-slate-400 font-normal">Applicants</em></h1>
+            <div className="text-right">
+               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
+                  {applications.length} Detected Signals <br/>
+                  <span className="text-[var(--color-teal)]">{applications.filter(a => a.status === 'PENDING').length} Pending review</span>
+               </p>
+            </div>
+         </div>
+      </div>
+
+      {/* Control Terminal */}
+      <div className="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-2xl shadow-slate-200/20 mb-10 flex flex-wrap items-center gap-6">
+         <div className="flex-1 min-w-[300px] relative group">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-teal)] transition-colors" size={20} />
             <input 
-              type="text"
+              type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Filter by name..." 
-              className="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)] shadow-sm transition-all"
+              placeholder="Search candidate identity..."
+              className="w-full h-14 pl-16 pr-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-bold uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-teal)] transition-all shadow-inner"
             />
-          </div>
-        }
-        secondaryAction={
-          <select 
-            value={filterInternship}
-            onChange={(e) => setFilterInternship(e.target.value)}
-            className="px-4 py-2.5 border border-slate-200 rounded-lg bg-white text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)] shadow-sm"
-          >
-            <option value="all">All Roles</option>
-            {internships.map(i => (
-              <option key={i.id} value={i.id}>{i.title}</option>
-            ))}
-          </select>
-        }
-      />
-
-      {isLoading && (
-        <div className="flex items-center justify-center p-12 gap-4">
-          <RefreshCw size={20} className="animate-spin text-[var(--color-gold)]" />
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Loading applicants...</span>
-        </div>
-      )}
-
-      {filtered.length > 0 ? (
-        <div className="card p-0 overflow-hidden border border-slate-200 shadow-sm transition-all">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-[var(--color-cream)] border-b border-slate-100">
-                <th className="px-8 py-4 label-mono text-[9px] uppercase tracking-widest opacity-50 font-bold">Candidate Identity</th>
-                <th className="px-8 py-4 label-mono text-[9px] uppercase tracking-widest opacity-50 font-bold">Target Position</th>
-                <th className="px-8 py-4 label-mono text-[9px] uppercase tracking-widest opacity-50 font-bold">Applied</th>
-                <th className="px-8 py-4 label-mono text-[9px] uppercase tracking-widest opacity-50 font-bold">Process Status</th>
-                <th className="px-8 py-4 label-mono text-[9px] uppercase tracking-widest opacity-50 font-bold text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {filtered.map((app) => (
-                <tr key={app.id} className="group hover:bg-slate-50 transition-colors">
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-[var(--color-parchment)] rounded-xl flex items-center justify-center font-bold text-[var(--color-navy)] text-xs border border-[var(--color-border)] shadow-inner group-hover:bg-white transition-all">
-                        {app.studentName?.substring(0, 2).toUpperCase() || '??'}
-                      </div>
-                      <div>
-                        <div className="font-bold text-sm text-[var(--color-navy)]">{app.studentName || 'Unknown'}</div>
-                        <div className="text-[11px] opacity-60 uppercase font-black tracking-tighter text-slate-500">
-                          {app.coverLetter ? 'Cover letter attached' : 'No cover letter'}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6 text-[13px] text-slate-700 font-bold">{app.internshipTitle}</td>
-                  <td className="px-8 py-6 text-[11px] text-slate-400 font-mono font-bold uppercase tracking-widest">
-                    {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : '—'}
-                  </td>
-                  <td className="px-8 py-6">
-                    <span className={`text-[9px] px-3 py-1.5 rounded-lg font-black uppercase tracking-[0.15em] border ${
-                      app.status === 'PENDING' ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm' :
-                      app.status === 'HIRED' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                      (app.status === 'ACCEPTED' || app.status === 'APPROVED') ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                      app.status === 'REJECTED' ? 'bg-rose-50 text-rose-600 border-rose-100' :
-                      'bg-slate-100 text-slate-500 border-slate-200'
-                    }`}>
-                      {app.status}
-                    </span>
-                  </td>
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {app.status === 'PENDING' && (
-                        <>
-                          <button 
-                            onClick={() => handleUpdateStatus(app.id, 'HIRED')}
-                            className="p-2.5 text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all border border-transparent hover:border-emerald-100" title="Hire Applicant"
-                          >
-                            <CheckCircle2 size={18} />
-                          </button>
-                          <button 
-                            onClick={() => handleUpdateStatus(app.id, 'REJECTED')}
-                            className="p-2.5 text-rose-700 hover:bg-rose-50 rounded-xl transition-all border border-transparent hover:border-rose-100" title="Reject"
-                          >
-                            <XCircle size={18} />
-                          </button>
-                        </>
-                      )}
-                      <button className="p-2.5 text-slate-400 hover:text-[var(--color-navy)] hover:bg-slate-100 rounded-xl transition-all"><ArrowUpRight size={18} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : !isLoading && (
-        <div className="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50">
-          <Briefcase size={48} className="text-slate-200 mb-6" />
-          <p className="text-sm font-bold text-slate-400 italic mb-2">No applications received</p>
-          <p className="text-xs text-slate-300">Post internship roles to start receiving applications.</p>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="card p-10 bg-[var(--color-forest)] text-white relative overflow-hidden group shadow-xl">
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-8">
-               <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-md border border-white/10 text-[var(--color-gold)]">
-                  <Clock size={24} />
-               </div>
-               <div className="h-[1px] w-12 bg-[var(--color-gold)] opacity-40"></div>
+         </div>
+         <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300">
+               <Filter size={20} />
             </div>
-            <h3 className="text-3xl font-serif mb-3 text-white leading-tight">Review <em className="italic text-[var(--color-gold)]">Queue</em></h3>
-            <p className="text-white/60 text-[10px] mb-10 font-black uppercase tracking-[0.3em] flex items-center gap-2">
-               <span className="w-1.5 h-1.5 bg-[var(--status-success)] rounded-full animate-pulse"></span>
-               {pendingCount} candidates pending review
-            </p>
-            <a href="/company/applicants" className="block w-full bg-[var(--color-gold)] text-[var(--color-forest)] py-4 rounded-xl font-black uppercase tracking-[0.2em] text-[10px] transition-all hover:translate-y-[-2px] hover:shadow-2xl text-center no-underline">
-              Review All Applications
-            </a>
-          </div>
-          <div className="absolute -bottom-10 -right-10 opacity-[0.03] rotate-12 scale-150">
-             <Briefcase size={280} />
-          </div>
-        </div>
-        
-        <div className="card p-10 flex flex-col justify-between border-slate-200 bg-white shadow-xl relative overflow-hidden group hover:border-[var(--color-gold)] transition-all">
-          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-             <FileText size={160} className="rotate-12" />
-          </div>
-          <div className="relative z-10">
-            <div className="p-3 w-fit bg-[var(--color-parchment)] rounded-2xl border border-[var(--color-border)] text-slate-400 mb-8 group-hover:text-[var(--color-gold)] group-hover:border-[var(--color-gold)] transition-all">
-               <Briefcase size={24} />
-            </div>
-            <h3 className="text-3xl font-serif mb-3 text-[var(--color-navy)] leading-tight">Opening <em className="italic text-slate-400">Inventory</em></h3>
-            <p className="text-slate-500 text-[13px] leading-relaxed max-w-sm">You have <strong className="text-[var(--color-navy)]">{internships.length} internship listing(s)</strong> receiving applications.</p>
-          </div>
-          <a href="/company/dashboard" className="relative z-10 mt-10 text-[10px] font-black text-[var(--color-navy)] uppercase tracking-[0.3em] flex items-center gap-3 group/btn hover:text-[var(--color-gold)] transition-all no-underline">
-            Go to Dashboard <ArrowUpRight size={16} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-          </a>
-        </div>
+            <select 
+              value={filterInternship}
+              onChange={(e) => setFilterInternship(e.target.value)}
+              className="h-14 px-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-teal)] transition-all cursor-pointer shadow-inner pr-10"
+            >
+               <option value="all">All Role Deployments</option>
+               {internships.map(i => <option key={i.id} value={i.id}>{i.title}</option>)}
+            </select>
+         </div>
       </div>
+
+      {/* Applicant Signal Feed */}
+      {isLoading ? (
+        <div className="space-y-6">
+           {[1,2,3].map(i => <div key={i} className="h-32 bg-white border border-slate-50 rounded-[2.5rem] animate-pulse"></div>)}
+        </div>
+      ) : (
+        <div className="space-y-6">
+           {filtered.length > 0 ? (
+              filtered.map((app) => (
+                <div key={app.id} className="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-xl shadow-slate-200/20 hover:shadow-2xl transition-all group relative overflow-hidden">
+                   <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-teal)]/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                   
+                   <div className="flex flex-wrap items-center justify-between gap-8 relative z-10">
+                      <div className="flex items-center gap-6 min-w-[300px]">
+                         <div className="w-16 h-16 rounded-[1.5rem] bg-[var(--color-teal)]/5 flex items-center justify-center text-[var(--color-teal)] font-serif font-black text-2xl shadow-sm group-hover:bg-[var(--color-teal)] group-hover:text-white transition-all">
+                            {app.studentName?.charAt(0) || '?'}
+                         </div>
+                         <div>
+                            <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-teal)] transition-colors tracking-tight">{app.studentName}</h4>
+                            <div className="flex items-center gap-4 mt-2">
+                               <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                  <Briefcase size={12} className="text-[var(--color-teal)]" /> {app.internshipTitle}
+                               </div>
+                               <div className="h-1 w-1 bg-slate-200 rounded-full"></div>
+                               <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                  <Clock size={12} /> {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : '—'}
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+
+                      <div className="flex items-center gap-4 ml-auto">
+                         <div className={`px-4 py-2 border rounded-xl text-[9px] font-black uppercase tracking-[0.2em] ${getStatusColor(app.status)}`}>
+                            {app.status}
+                         </div>
+                         
+                         <div className="h-8 w-[1px] bg-slate-100"></div>
+
+                         <div className="flex items-center gap-2">
+                            {app.status === 'PENDING' ? (
+                               <>
+                                 <button 
+                                   onClick={() => handleUpdateStatus(app.id, 'HIRED')}
+                                   className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
+                                   title="Accept Signal"
+                                 >
+                                    <UserCheck size={20} />
+                                 </button>
+                                 <button 
+                                   onClick={() => handleUpdateStatus(app.id, 'REJECTED')}
+                                   className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                                   title="Discard Signal"
+                                 >
+                                    <UserX size={20} />
+                                 </button>
+                               </>
+                            ) : (
+                               <button className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all shadow-sm">
+                                  <FileText size={20} />
+                               </button>
+                            )}
+                            <button className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-[var(--color-teal)] hover:text-white transition-all shadow-sm">
+                               <ArrowUpRight size={20} />
+                            </button>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+              ))
+           ) : (
+              <div className="py-32 flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-[3rem] bg-slate-50/50">
+                 <Target size={64} className="text-slate-100 mb-8" />
+                 <p className="text-sm font-black text-slate-300 uppercase tracking-[0.4em] italic mb-2">No Active Pipeline Signals</p>
+                 <p className="text-xs text-slate-400 font-medium">Verify your internship postings are broadcast correctly.</p>
+              </div>
+           )}
+        </div>
+      )}
     </div>
   );
 };

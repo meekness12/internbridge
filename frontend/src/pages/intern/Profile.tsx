@@ -141,11 +141,11 @@ const Profile: React.FC = () => {
               )}
               <div className="flex items-center gap-6">
                  <div className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-widest">
-                    <BookOpen size={14} className="text-[var(--color-teal)]" /> Computer Science Discipline
+                    <BookOpen size={14} className="text-[var(--color-teal)]" /> {profile?.role === 'INTERN' ? (profile?.major || 'Computer Science Discipline') : (profile?.companyName || 'Institutional Access')}
                  </div>
                  <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
                  <div className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-widest">
-                    <MapPin size={14} className="text-[var(--color-teal)]" /> University of Ghana
+                    <MapPin size={14} className="text-[var(--color-teal)]" /> {profile?.location || 'Digital Presence'}
                  </div>
               </div>
            </div>
