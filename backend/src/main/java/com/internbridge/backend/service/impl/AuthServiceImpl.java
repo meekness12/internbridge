@@ -197,4 +197,18 @@ public class AuthServiceImpl implements AuthService {
                         "N/A")
                 .build();
     }
+
+    @Override
+    @Transactional
+    public UserResponse updateProfileByEmail(String currentEmail, com.internbridge.backend.dto.request.UpdateProfileRequest request) {
+        User user = userRepository.findByEmail(currentEmail)
+                .orElseThrow(() -> new RuntimeException("Authenticated identity not found in central registry"));
+        
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        
+        User savedUser = userRepository.save(user);
+        return getMe(savedUser.getEmail());
+    }
 }

@@ -48,6 +48,14 @@ const authService = {
   getMe: async (): Promise<any> => {
     const response = await api.get('/auth/me');
     return response.data;
+  },
+
+  /**
+   * Update current user profile.
+   */
+  updateMe: async (data: { firstName: string; lastName: string; email: string }): Promise<any> => {
+    const response = await api.patch('/auth/me', data);
+    return response.data;
   }
 };
 

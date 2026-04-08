@@ -11,5 +11,6 @@ public interface UserService {
     List<UserResponse> getAllUsers();
     UserResponse provisionUser(CreateUserRequest request);
     UserResponse updateStatus(UUID userId, UpdateStatusRequest request);
+    UserResponse updateProfileByEmail(String email, com.internbridge.backend.dto.request.UpdateProfileRequest request);
     void deleteUser(UUID userId);
 }

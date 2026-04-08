@@ -4,7 +4,6 @@ import {
   ArrowUpRight, 
   Briefcase,
   Star,
-  MessageSquare,
   TrendingUp,
   MoreHorizontal,
   RefreshCw,
@@ -141,7 +140,6 @@ const Interns: React.FC = () => {
                       </td>
                       <td className="px-8 py-6 text-right">
                          <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                           <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" title="Message"><MessageSquare size={18} /></button>
                            <button className="p-2 text-slate-400 hover:text-[var(--color-navy)] hover:bg-slate-100 rounded-lg transition-all"><ArrowUpRight size={18} /></button>
                            <button className="p-2 text-slate-400 hover:bg-slate-100 rounded-lg transition-all"><MoreHorizontal size={18} /></button>
                          </div>

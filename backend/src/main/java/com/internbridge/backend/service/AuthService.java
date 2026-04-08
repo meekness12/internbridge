@@ -12,4 +12,5 @@ public interface AuthService {
     AuthResponseDTO registerSuperAdmin(SuperAdminRegisterRequest request);
     AuthResponseDTO login(LoginRequestDTO request);
     com.internbridge.backend.dto.response.UserResponse getMe(String email);
+    com.internbridge.backend.dto.response.UserResponse updateProfileByEmail(String email, com.internbridge.backend.dto.request.UpdateProfileRequest request);
 }

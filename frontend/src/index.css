@@ -10,34 +10,39 @@
   --font-sans:     "Epilogue", system-ui, sans-serif;
   --font-mono:     "JetBrains Mono", "Fira Code", monospace;
 
-  /* ── Core Palette ── */
-  --color-parchment:      #F4EFE6;   /* page background */
-  --color-cream:          #FDFCF9;   /* card surface    */
-  --color-cream-2:        #F8F5EF;   /* subtle surface  */
+  /* ── Core Palette (Clean Tech Redesign) ── */
+  --color-bg:             #F9FAFB;   /* main background */
+  --color-surface:        #FFFFFF;   /* cards/modals */
+  --color-surface-dim:    #F3F4F6;   /* chips/inputs */
 
-  --color-forest:         #1A3028;   /* primary brand   */
-  --color-forest-mid:     #254838;   /* hover state     */
-  --color-forest-light:   #EAF0EC;   /* tinted bg       */
-  --color-forest-faint:   #D2E0D5;   /* border/divider  */
+  --color-teal:           #0D9488;   /* brand primary */
+  --color-teal-mid:       #0F766E;   /* hover */
+  --color-teal-light:     #CCFBF1;   /* subtle accent */
+  --color-teal-faint:     #F0FDFA;   /* very subtle bg */
 
-  --color-navy:           #0F172A;   /* deep slate navy */
-  --color-gold:           #B8831A;   /* accent          */
-  --color-gold-light:     #FBF0DC;   /* tinted bg       */
-  --color-gold-faint:     #F3E4C2;   /* subtle border   */
+  --color-slate-900:      #111827;   /* text primary */
+  --color-slate-600:      #4B5563;   /* text muted */
+  --color-slate-400:      #9CA3AF;   /* text faint */
 
-  --color-coral:          #C0533C;   /* destructive/alert */
-  --color-coral-light:    #FAEBE7;
+  --color-border:         #E5E7EB;   /* light borders */
+  --color-border-dark:    #D1D5DB;
 
-  --color-indigo:         #2D3A8C;   /* info/system     */
-  --color-indigo-light:   #EEF0FB;
+  /* ── Legacy Mappings (Redirect Forest to Teal for system compatibility) ── */
+  --color-forest:         var(--color-teal);
+  --color-forest-mid:     var(--color-teal-mid);
+  --color-forest-light:   var(--color-teal-light);
+  --color-forest-faint:   var(--color-teal-faint);
 
-  /* ── Semantic UI ── */
-  --color-text:           #0F172A;
-  --color-muted:          #475569;   /* Accessible Slate-600 */
-  --color-faint:          #64748B;   /* Accessible Slate-500 */
-  --color-border:         #E2E8F0;
-  --color-border-dark:    #CBD5E1;
-  --color-white:          #FFFFFF;
+  --color-parchment:      var(--color-bg);
+  --color-cream:          var(--color-surface);
+  --color-cream-2:        var(--color-surface-dim);
+
+  --color-text:           var(--color-slate-900);
+  --color-muted:          var(--color-slate-600);
+  --color-faint:          var(--color-slate-400);
+
+  --color-gold:           #B8831A;   /* preserving gold for premium hierarchy */
+  --color-gold-light:     #FEF3C7;
 
   /* ── Legacy aliases (keeps existing Tailwind utilities working) ── */
   --color-primary-light:  #254838;   /* was blue  → forest-mid */

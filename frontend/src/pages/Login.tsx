@@ -13,7 +13,8 @@ import {
   Zap,
   Fingerprint,
   Globe,
-  Sparkles
+  Sparkles,
+  RefreshCw
 } from 'lucide-react';
 
 import authService from '../api/authService';

@@ -13,9 +13,14 @@ import {
   Globe,
   Lock,
   MapPin,
-  Target
+  Target,
+  DollarSign,
+  Calendar,
+  X,
+  Briefcase,
+  ChevronRight
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useToast } from '../../context/ToastContext';
 import placementService from '../../api/placementService';
 import applicationService from '../../api/applicationService';
 import internshipService from '../../api/internshipService';
@@ -24,18 +29,17 @@ import type { ApplicationDTO } from '../../api/applicationService';
 import type { PlacementDTO } from '../../api/placementService';
 
 const InternDashboard: React.FC = () => {
+  const { toast } = useToast();
   const [applications, setApplications] = useState<ApplicationDTO[]>([]);
   const [placements, setPlacements] = useState<PlacementDTO[]>([]);
-  const [featuredInternship, setFeaturedInternship] = useState<InternshipDTO | null>(null);
+  const [allInternships, setAllInternships] = useState<InternshipDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filter, setFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedJob, setSelectedJob] = useState<InternshipDTO | null>(null);
 
   const userId = localStorage.getItem('userId') || '';
   const userName = localStorage.getItem('userName') || 'Student';
-  const today = new Date();
-  const dayName = today.toLocaleDateString('en-US', { weekday: 'long' });
-  const dateStr = today.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
-  const hour = today.getHours();
-  const greeting = hour < 12 ? 'Good morning,' : hour < 17 ? 'Good afternoon,' : 'Good evening,';
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -49,9 +53,7 @@ const InternDashboard: React.FC = () => {
 
         if (apps.status === 'fulfilled') setApplications(apps.value);
         if (places.status === 'fulfilled') setPlacements(places.value);
-        if (internships.status === 'fulfilled' && internships.value.length > 0) {
-          setFeaturedInternship(internships.value[0]);
-        }
+        if (internships.status === 'fulfilled') setAllInternships(internships.value);
       } catch (error) {
         console.error('Dashboard data load failed:', error);
       } finally {
@@ -61,180 +63,226 @@ const InternDashboard: React.FC = () => {
     fetchAll();
   }, [userId]);
 
-  const stats = [
-    { label: 'Active Applications', value: applications.length.toString(), trend: applications.length > 0 ? `${applications.filter(a => a.status === 'PENDING').length} pending` : 'No applications yet', icon: <Target size={20} className="text-indigo-600" />, color: 'ki-1', kpiColor: 'kpi-1' },
-    { label: 'Placements', value: placements.length.toString(), trend: placements.length > 0 ? placements[0].companyName : 'Ready to start', icon: <Zap size={20} className="text-[var(--color-gold)]" />, color: 'ki-3', kpiColor: 'kpi-3' },
-    { label: 'Growth Score', value: placements.length > 0 ? '94%' : '---', trend: placements.length > 0 ? 'Consistent performance' : 'Awaiting start', icon: <Sparkles size={20} className="text-emerald-600" />, color: 'ki-5', kpiColor: 'kpi-5' },
-  ];
+  const handleApply = async (internshipId: string) => {
+    try {
+      await applicationService.applyForInternship({ 
+        internshipId, 
+        studentId: userId 
+      });
+      toast('Application transmitted successfully.', 'success', 'Terminal confirmed');
+      setSelectedJob(null);
+      // Refresh apps
+      const apps = await applicationService.getMyApplications(userId);
+      setApplications(apps);
+    } catch (err) {
+      toast('Transmission failed. Institutional protocol error.', 'error');
+    }
+  };
 
-  const hasActivePlacement = placements.length > 0;
+  const filteredInternships = allInternships
+    .filter(job => !applications.some(app => app.internshipId === job.id))
+    .filter(job => {
+      if (filter === 'All') return true;
+      // Note: Filtering logic for Remote/Hybrid/On-site would go here
+      // For now we keep all since the mock data is limited
+      return true; 
+    })
+    .filter(job => 
+      job.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      job.companyName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   return (
-    <div className="max-w-[1128px] mx-auto animate-fade-in pb-20">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Left Column: Identity Snap */}
-        <div className="lg:col-span-3 space-y-4">
-           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-              <div className="h-14 bg-[var(--color-forest)] w-full"></div>
-              <div className="px-4 pb-4 -mt-7 text-center">
-                 <div className="w-16 h-16 rounded-full border-4 border-white bg-[var(--color-gold)] mx-auto flex items-center justify-center text-white font-serif font-black text-xl shadow-md mb-3">
-                    {userName.split(' ').map(n => n[0]).join('')}
-                 </div>
-                 <h3 className="text-base font-bold text-slate-900 tracking-tight">{userName}</h3>
-                 <p className="text-xs text-slate-500 font-medium mb-4">Student at {localStorage.getItem('institution') || 'University of Ghana'}</p>
-                 <div className="pt-4 border-t border-slate-100 flex flex-col items-start gap-4">
-                    <div className="flex justify-between w-full text-[11px] font-bold">
-                       <span className="text-slate-500">Applications</span>
-                       <span className="text-[var(--color-forest)]">{applications.length}</span>
-                    </div>
-                 </div>
-              </div>
-           </div>
-
-           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm sticky top-[95px]">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">My Performance</h4>
-              {stats.map((s, i) => (
-                <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 last:border-0">
-                   <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-forest)] transition-colors">
-                      {React.cloneElement(s.icon as any, { size: 16 })}
-                   </div>
-                   <div>
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">{s.label}</div>
-                      <div className="text-xs font-bold text-slate-700 leading-none">{s.value}</div>
-                   </div>
-                </div>
-              ))}
-           </div>
+    <div className="max-w-[1280px] mx-auto animate-fade-in pb-20 px-4">
+      {/* Search & Filter Header */}
+      <div className="mb-10 mt-4 max-w-2xl mx-auto">
+        <div className="flex flex-col gap-6 items-center">
+          <div className="relative w-full group">
+             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-teal)] transition-colors" />
+             <input 
+               type="text" 
+               placeholder="Search by role, company, or skill..." 
+               value={searchQuery}
+               onChange={(e) => setSearchQuery(e.target.value)}
+               className="w-full h-14 pl-12 pr-6 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-teal)]/10 focus:border-[var(--color-teal)] transition-all shadow-sm"
+             />
+          </div>
+          <div className="flex items-center gap-2 p-1.5 bg-white border border-slate-200 rounded-2xl shadow-sm">
+            {['All', 'Remote', 'On-site', 'Hybrid'].map((f) => (
+              <button 
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-6 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                  filter === f ? 'bg-[var(--color-teal)] text-white shadow-md shadow-teal-500/20' : 'text-slate-500 hover:bg-slate-50'
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
+        <div className="mt-6 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
+          {filteredInternships.length} internships found
+        </div>
+      </div>
 
-        {/* Middle Column: The Internship Feed */}
-        <div className="lg:col-span-6 space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-             <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-200">
-                   <Users size={24} />
-                </div>
-                <button className="flex-1 bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-500 text-left px-6 py-3 rounded-full text-sm font-medium transition-all shadow-inner">
-                   Ask for a recommendation...
-                </button>
-             </div>
-          </div>
-
-          <div className="flex items-center gap-2 py-2">
-             <div className="h-px flex-1 bg-slate-200"></div>
-             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Companies seeking Interns</span>
-             <div className="h-px flex-1 bg-slate-200"></div>
-          </div>
-
-          {placements.length > 0 && (
-             <div className="relative group overflow-hidden bg-[var(--color-forest)] text-white rounded-xl border border-white/10 p-6 shadow-xl animate-fade-up">
-                <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-white/10 to-transparent"></div>
-                <div className="flex items-start justify-between mb-4">
-                   <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-2xl shadow-lg">🏛️</div>
-                      <div>
-                         <h3 className="text-lg font-bold tracking-tight">Active Placement Verified</h3>
-                         <p className="text-xs text-white/70">{placements[0].companyName} • {placements[0].internshipTitle}</p>
-                      </div>
-                   </div>
-                   <div className="flex items-center gap-2 text-[var(--color-gold)] text-[10px] font-black uppercase tracking-widest border border-[var(--color-gold)]/30 px-3 py-1 rounded-full">
-                      <Shield size={12} /> Compliance: Pass
-                   </div>
-                </div>
-             </div>
-          )}
-
+      <div className="max-w-2xl mx-auto space-y-6">
+        {/* Main Internship Feed (Single Column) */}
+        <div className="space-y-6">
           {isLoading ? (
-            <div className="space-y-4">
+            <div className="space-y-6">
                {[1,2,3].map(i => (
-                 <div key={i} className="h-48 bg-white border border-slate-200 rounded-xl animate-pulse"></div>
+                 <div key={i} className="h-64 bg-white border border-slate-100 rounded-[2rem] animate-pulse"></div>
                ))}
             </div>
           ) : (
-            <div className="space-y-4">
-               {(placements.length === 0 ? [featuredInternship, ...placements].filter(Boolean) : [featuredInternship]).map((job: any, i) => (
-                 <div key={i} className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group cursor-pointer animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                    <div className="flex justify-between items-start mb-4">
-                       <div className="flex gap-4">
-                          <div className="w-12 h-12 rounded bg-slate-50 border border-slate-100 flex items-center justify-center text-[var(--color-forest)] font-serif font-black text-xl">
-                            {job.companyName?.[0] || 'I'}
+            <div className="space-y-6">
+               {filteredInternships.map((job: any, i) => (
+                 <div 
+                   key={i} 
+                   onClick={() => setSelectedJob(job)}
+                   className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-xl shadow-slate-200/30 hover:shadow-2xl hover:shadow-teal-500/5 transition-all group cursor-pointer animate-fade-up relative overflow-hidden" 
+                   style={{ animationDelay: `${i * 0.1}s` }}
+                 >
+                    <div className="flex justify-between items-start">
+                       <div className="flex gap-6">
+                          <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-teal)] font-bold text-xl shadow-inner group-hover:scale-110 transition-transform">
+                            {job.companyName?.[0] || 'I'}{job.companyName?.[1] || ''}
                           </div>
                           <div>
-                             <h4 className="text-base font-bold text-slate-800 group-hover:text-[var(--color-forest)] group-hover:underline transition-colors leading-tight">{job.title}</h4>
-                             <p className="text-sm text-slate-600 font-medium">{job.companyName}</p>
-                             <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
-                                <MapPin size={12} /> Remote / Accra
+                             <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-teal)] transition-colors mb-1 leading-tight">{job.title}</h4>
+                             <div className="flex items-center gap-2 mb-4">
+                               <Briefcase size={14} className="text-slate-300" />
+                               <span className="text-sm font-bold text-slate-500">{job.companyName}</span>
+                             </div>
+                             
+                             <div className="flex flex-wrap items-center gap-6 text-xs text-slate-400 font-medium mb-6">
+                                <div className="flex items-center gap-1.5"><MapPin size={14} /> New York, NY</div>
+                                <div className="flex items-center gap-1.5"><Clock size={14} /> 6 months</div>
+                                <div className="flex items-center gap-1.5"><DollarSign size={14} /> $2,000/mo</div>
+                             </div>
+
+                             <div className="flex flex-wrap gap-2">
+                               <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-amber-100">Hybrid</span>
+                               {['Python', 'Machine Learning', 'SQL'].map(skill => (
+                                 <span key={skill} className="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-slate-100">{skill}</span>
+                               ))}
                              </div>
                           </div>
                        </div>
-                       <button className="text-slate-300 hover:text-[var(--color-gold)] transition-colors"><Zap size={20} /></button>
-                    </div>
-                    <div className="py-4 border-t border-slate-50">
-                       <p className="text-[13px] text-slate-600 line-clamp-2 leading-relaxed italic">
-                         "Accelerate your professional path by joining our {job.category || 'tech'} cluster. Seeking highly motivated individuals to assist with {job.title.toLowerCase()} operational excellence."
-                       </p>
-                    </div>
-                    <div className="flex items-center justify-end pt-4">
-                       <button className="px-5 py-2 bg-white border-2 border-[var(--color-forest)] text-[var(--color-forest)] rounded-full text-xs font-black uppercase tracking-widest hover:bg-[var(--color-forest)] hover:text-white transition-all shadow-sm active:scale-95">Apply</button>
+                       <div className="text-[11px] font-bold text-slate-300 uppercase tracking-widest pt-2">
+                         {i + 1} day{i === 0 ? '' : 's'} ago
+                       </div>
                     </div>
                  </div>
                ))}
+
+               {filteredInternships.length === 0 && (
+                 <div className="py-20 bg-white rounded-[3rem] border border-dashed border-slate-200 text-center px-10">
+                    <Sparkles size={48} className="mx-auto text-slate-100 mb-6" />
+                    <h3 className="text-xl font-serif font-bold text-slate-900 italic mb-2">No Active Nodes Available</h3>
+                    <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">Adjust filters to explore more opportunities</p>
+                 </div>
+               )}
             </div>
           )}
         </div>
+      </div>
 
-        {/* Right Column: Suggested & Stats */}
-        <div className="lg:col-span-3 space-y-4">
-           {/* Quick Stats Overlay Card */}
-           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-gold)]/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Growth Index</h4>
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-between items-center px-1">
-                  <span className="text-[11px] font-bold text-slate-600 uppercase tracking-tighter">Skill Density</span>
-                  <span className="text-xs font-black text-emerald-600">84%</span>
-                </div>
-                <div className="flex justify-between items-center px-1">
-                  <span className="text-[11px] font-bold text-slate-600 uppercase tracking-tighter">Node Activity</span>
-                  <span className="text-xs font-black text-indigo-600">High</span>
-                </div>
-                <div className="h-[2px] w-full bg-slate-50 rounded-full overflow-hidden mt-2">
-                  <div className="h-full bg-[var(--color-forest)] w-[94%] animate-progress"></div>
-                </div>
+      {/* Internship Detail Modal */}
+      {selectedJob && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 sm:p-12 animate-fade-in">
+           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl" onClick={() => setSelectedJob(null)}></div>
+           <div className="bg-white rounded-[2.5rem] w-full max-w-2xl overflow-hidden shadow-2xl relative animate-scale-in max-h-[90vh] flex flex-col">
+              <div className="p-8 pb-4 flex justify-between items-start">
+                 <div className="flex gap-6">
+                    <div className="w-20 h-20 rounded-[1.5rem] bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-teal)] font-bold text-2xl shadow-inner">
+                       {selectedJob.companyName?.[0] || 'I'}{selectedJob.companyName?.[1] || ''}
+                    </div>
+                    <div className="pt-1">
+                       <h2 className="text-3xl font-bold text-slate-900 tracking-tight leading-none mb-2">{selectedJob.title}</h2>
+                       <div className="flex items-center gap-2">
+                         <Briefcase size={16} className="text-slate-300" />
+                         <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{selectedJob.companyName}</span>
+                       </div>
+                    </div>
+                 </div>
+                 <button onClick={() => setSelectedJob(null)} className="p-2 rounded-xl hover:bg-slate-50 transition-colors text-slate-400">
+                    <X size={24} />
+                 </button>
               </div>
-           </div>
 
-           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1 flex items-center justify-between">
-                Institutional News <ArrowUpRight size={14} />
-              </h4>
-              <div className="space-y-5">
-                 {[
-                   { t: 'New Techwave Openings', m: '4 hours ago' },
-                   { t: 'Governance Update v2.4', m: '12 hours ago' },
-                   { t: 'Accra Tech Summit 2024', m: '1 day ago' },
-                 ].map((n, i) => (
-                   <div key={i} className="cursor-pointer group">
-                      <h5 className="text-[13px] font-bold text-slate-800 leading-tight group-hover:text-[var(--color-forest)] group-hover:underline transition-all">{n.t}</h5>
-                      <span className="text-[10px] text-slate-500 font-medium">{n.m}</span>
-                   </div>
-                 ))}
-              </div>
-           </div>
+              <div className="flex-1 overflow-y-auto px-8 py-6 space-y-10 custom-scrollbar">
+                 {/* Meta Grid */}
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[
+                      { icon: <MapPin size={16} />, label: 'San Francisco...', bg: 'bg-slate-50' },
+                      { icon: <Clock size={16} />, label: '3 months', bg: 'bg-slate-50' },
+                      { icon: <DollarSign size={16} />, label: '$1,500/mo', bg: 'bg-slate-50' },
+                      { icon: <Calendar size={16} />, label: 'Deadline: Apr...', bg: 'bg-slate-50' },
+                    ].map((m, i) => (
+                      <div key={i} className={`${m.bg} p-3 rounded-2xl flex items-center gap-3 border border-slate-100/50 shadow-sm`}>
+                         <div className="text-slate-400">{m.icon}</div>
+                         <span className="text-[11px] font-bold text-slate-600 truncate">{m.label}</span>
+                      </div>
+                    ))}
+                 </div>
 
-           <div className="px-4 py-8 text-center text-slate-500">
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] font-mono leading-relaxed mb-4">
-                 InternBridge © 2026<br/>Global Identity Registry
+                 {/* Skills */}
+                 <div className="flex flex-wrap gap-2">
+                    {['React', 'TypeScript', 'Tailwind CSS'].map(skill => (
+                      <span key={skill} className="px-4 py-2 bg-slate-50 text-slate-500 rounded-xl text-[11px] font-bold uppercase tracking-widest border border-slate-100">
+                        {skill}
+                      </span>
+                    ))}
+                 </div>
+
+                 {/* Description Section */}
+                 <div>
+                    <h4 className="text-lg font-bold text-slate-900 mb-4">About the Role</h4>
+                    <p className="text-sm text-slate-600 leading-relaxed font-medium">
+                      Join our frontend team to build modern web applications using React, TypeScript, and 
+                      cutting-edge technologies. You'll work alongside senior engineers on real products used by thousands.
+                    </p>
+                 </div>
+
+                 {/* Requirements */}
+                 <div>
+                    <h4 className="text-lg font-bold text-slate-900 mb-4">Requirements</h4>
+                    <ul className="space-y-4">
+                       {[
+                         'React or Vue.js experience',
+                         'HTML/CSS proficiency',
+                         'Git basics',
+                         'Eagerness to learn'
+                       ].map((req, i) => (
+                         <li key={i} className="flex items-center gap-4 text-sm text-slate-600 font-medium">
+                            <div className="w-2 h-2 rounded-full bg-[var(--color-teal)] opacity-60"></div>
+                            {req}
+                         </li>
+                       ))}
+                    </ul>
+                 </div>
               </div>
-              <div className="flex justify-center gap-4 opacity-50">
-                 <Shield size={16} />
-                 <Globe size={16} />
-                 <Lock size={16} />
+
+              {/* Action Buttons */}
+              <div className="p-8 border-t border-slate-50 bg-slate-50/50 flex gap-4">
+                 <button 
+                   onClick={() => handleApply(selectedJob.id)}
+                   className="flex-1 h-14 bg-[var(--color-teal)] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-teal-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                 >
+                   Apply Now
+                 </button>
+                 <button 
+                   onClick={() => setSelectedJob(null)}
+                   className="px-10 h-14 bg-white border border-slate-200 text-slate-500 text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-slate-50 transition-all shadow-sm"
+                 >
+                   Close
+                 </button>
               </div>
            </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

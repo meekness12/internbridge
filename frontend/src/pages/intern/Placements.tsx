@@ -2,18 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Briefcase, 
-  Filter,
-  ArrowUpRight,
+  MapPin,
+  Clock,
+  DollarSign,
+  Calendar,
+  X,
+  Send,
+  Sparkles,
   RefreshCw,
   CheckCircle2,
-  Send,
-  X,
-  Target,
-  Sparkles,
+  AlertCircle,
   Zap,
-  Star
+  ChevronRight,
+  Target
 } from 'lucide-react';
-import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import internshipService from '../../api/internshipService';
 import applicationService from '../../api/applicationService';
 import type { InternshipDTO } from '../../api/internshipService';
@@ -22,6 +24,7 @@ import { useToast } from '../../context/ToastContext';
 
 const Placements: React.FC = () => {
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState<'discover' | 'applied' | 'hired' | 'rejected'>('discover');
   const [searchQuery, setSearchQuery] = useState('');
   const [internships, setInternships] = useState<InternshipDTO[]>([]);
   const [myApplications, setMyApplications] = useState<ApplicationDTO[]>([]);
@@ -30,6 +33,7 @@ const Placements: React.FC = () => {
   const [coverLetter, setCoverLetter] = useState('');
 
   const userId = localStorage.getItem('userId') || '';
+  const userName = localStorage.getItem('userName') || 'Student';
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -49,23 +53,7 @@ const Placements: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
-
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) {
-      fetchData();
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const results = await internshipService.searchInternships(searchQuery);
-      setInternships(results);
-    } catch (error) {
-      console.error('Search failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [userId]);
 
   const handleApply = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,248 +64,271 @@ const Placements: React.FC = () => {
         studentId: userId,
         coverLetter: coverLetter,
       });
-      toast('Application submitted successfully!', 'success', 'Applied');
+      toast('Application transmitted successfully.', 'success', 'Terminal confirmed');
       setApplyingTo(null);
       setCoverLetter('');
       fetchData();
     } catch (error) {
-      toast('Failed to submit application. You may have already applied.', 'error', 'Error');
+      toast('Failed to submit application.', 'error', 'Error');
     }
   };
 
-  const hasApplied = (internshipId: string): ApplicationDTO | undefined => {
-    return myApplications.find(a => a.internshipId === internshipId);
+  const hasApplied = (internshipId: string): boolean => {
+    return myApplications.some(a => a.internshipId === internshipId);
   };
 
-  const filtered = internships.filter(job =>
-    job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    job.companyName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    job.requiredSkills?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const getFilteredData = () => {
+    const query = searchQuery.toLowerCase();
+    
+    if (activeTab === 'discover') {
+      return internships.filter(job => 
+        !hasApplied(job.id) && 
+        (job.title?.toLowerCase().includes(query) || job.companyName?.toLowerCase().includes(query))
+      );
+    }
+    
+    const statusMap: Record<string, string> = {
+      'applied': 'PENDING',
+      'hired': 'ACCEPTED', // Based on user feedback, hired matches ACCEPTED/HIRED statuses
+      'rejected': 'REJECTED'
+    };
+    
+    return myApplications.filter(app => {
+      if (activeTab === 'hired') return app.status === 'ACCEPTED' || app.status === 'HIRED';
+      return app.status === statusMap[activeTab];
+    }).filter(app => 
+      (app.internshipTitle?.toLowerCase().includes(query) || (app as any).companyName?.toLowerCase().includes(query))
+    );
+  };
+
+  const filteredData = getFilteredData();
+
+  const tabs = [
+    { id: 'discover', label: 'New Jobs', count: internships.length - myApplications.length },
+    { id: 'applied', label: 'Applied', count: myApplications.filter(a => a.status === 'PENDING').length },
+    { id: 'hired', label: 'Hired', count: myApplications.filter(a => a.status === 'ACCEPTED' || a.status === 'HIRED').length },
+    { id: 'rejected', label: 'Rejected', count: myApplications.filter(a => a.status === 'REJECTED').length },
+  ];
+
+  const renderStatusBadge = (status: string) => {
+    switch (status.toUpperCase()) {
+      case 'ACCEPTED':
+        return (
+          <span className="px-5 py-2 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-1.5 shadow-sm">
+             <CheckCircle2 size={12} /> Accepted
+          </span>
+        );
+      case 'HIRED':
+        return (
+          <span className="px-5 py-2 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-blue-100 flex items-center gap-1.5 shadow-sm">
+             <CheckCircle2 size={12} /> Hired
+          </span>
+        );
+      case 'REJECTED':
+        return (
+          <span className="px-5 py-2 bg-rose-50 text-rose-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-rose-100 flex items-center gap-1.5 shadow-sm">
+             <AlertCircle size={12} /> Rejected
+          </span>
+        );
+      case 'PENDING':
+      default:
+        return (
+          <span className="px-5 py-2 bg-slate-50 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-widest border border-slate-100 flex items-center gap-1.5 shadow-sm">
+             <RefreshCw size={12} className="animate-spin" /> Pending
+          </span>
+        );
+    }
+  };
 
   return (
-    <div className="space-y-12 animate-fade-in pb-20 max-w-[1400px] mx-auto">
-      <PremiumHeader 
-        eyebrow="Marketplace Intelligence"
-        title="Find your"
-        italicTitle="Future"
-        subtitle={`${internships.length} Verified Industry Placements · Academic Year 2024`}
-        eyebrowColor="text-[var(--color-gold)]"
-        primaryAction={
-           <div className="flex items-center gap-4 w-full md:w-auto">
-             <div className="relative group w-full md:w-96">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[var(--color-gold)] transition-colors" size={20} />
-                <input 
-                  type="text" 
-                  placeholder="Query roles, techs, or partners..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                  className="w-full h-14 bg-white border border-slate-100 rounded-2xl pl-14 pr-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-gold)] transition-all shadow-xl shadow-black/5"
-                />
-             </div>
-             <button 
-               onClick={handleSearch}
-               className="h-14 w-14 flex items-center justify-center bg-[var(--color-navy)] rounded-2xl text-white hover:bg-black transition-all shadow-xl shadow-black/10"
-             >
-               <Filter size={20} />
-             </button>
-           </div>
-        }
-      />
-
-      {/* Global Stats Overlay for the search page */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-up">
-         <div className="card p-8 flex items-center gap-6 group hover:translate-y-[-4px] transition-all">
-            <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 group-hover:rotate-6 transition-all">
-               <Zap size={28} />
-            </div>
-            <div>
-               <div className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-1">Response Time</div>
-               <div className="text-2xl font-serif font-bold text-[var(--color-navy)]">Avg. 48 Hours</div>
-            </div>
-         </div>
-         <div className="card p-8 flex items-center gap-6 group hover:translate-y-[-4px] transition-all">
-            <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 group-hover:rotate-6 transition-all">
-               <Star size={28} fill="currentColor" />
-            </div>
-            <div>
-               <div className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-1">Quality Score</div>
-               <div className="text-2xl font-serif font-bold text-[var(--color-navy)]">Premium Verified</div>
-            </div>
-         </div>
-         <div className="card p-8 flex items-center gap-6 group hover:translate-y-[-4px] transition-all">
-            <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 group-hover:rotate-6 transition-all">
-               <Target size={28} />
-            </div>
-            <div>
-               <div className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-1">Match Accuracy</div>
-               <div className="text-2xl font-serif font-bold text-[var(--color-navy)]">94% Fit Rate</div>
-            </div>
-         </div>
-      </div>
-
-      <div className="flex items-center gap-1 p-1 bg-white/40 backdrop-blur-md border border-white/60 rounded-2xl w-fit shadow-sm">
-        {['Focus Strategy', 'Engineering', 'Creative', 'Operations', 'Global Business'].map((cat, i) => (
-          <button key={i} className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
-            i === 0 ? 'bg-[var(--color-navy)] text-white border-[var(--color-navy)] shadow-xl' : 'bg-transparent text-slate-400 border-transparent hover:text-[var(--color-navy)]'
-          }`}>{cat}</button>
-        ))}
-      </div>
-
-      {isLoading && (
-        <div className="flex items-center justify-center p-24 gap-6 bg-white/30 rounded-[3rem] border border-white/50 animate-pulse">
-          <RefreshCw size={24} className="animate-spin text-[var(--color-gold)]" />
-          <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">Querying Talent Cloud...</span>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {filtered.length > 0 ? filtered.map((job, idx) => {
-          const existing = hasApplied(job.id);
-          return (
-          <div key={job.id} className="card group hover:border-[var(--color-gold)] transition-all cursor-pointer overflow-hidden p-12 flex flex-col h-full bg-white border border-slate-100 rounded-[2.5rem] shadow-xl shadow-black/[0.02] hover:shadow-black/[0.08] relative animate-fade-up" style={{ animationDelay: `${idx * 0.05}s` }}>
-            <div className="flex justify-between items-start mb-10">
-              <div className="flex gap-8">
-                <div className="w-20 h-20 bg-white border border-slate-100 rounded-3xl flex items-center justify-center text-[var(--color-navy)] font-serif font-black text-3xl shrink-0 shadow-2xl group-hover:bg-[var(--color-gold)] group-hover:text-white transition-all duration-500">
-                  {job.companyName?.substring(0, 1).toUpperCase() || 'I'}
-                </div>
-                <div>
-                  <div className="flex items-center gap-4 mb-3">
-                    <h3 className="font-serif font-bold text-3xl text-[var(--color-navy)] tracking-tight leading-none italic">{job.title}</h3>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[12px] text-slate-400 font-mono font-black uppercase tracking-[0.1em]">{job.companyName}</span>
-                    <span className="h-1 w-1 bg-[var(--color-gold)] rounded-full"></span>
-                    <span className="text-[11px] text-[var(--color-gold)] font-bold uppercase tracking-widest">{job.status}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200 group-hover:text-[var(--color-gold)] group-hover:bg-[var(--color-gold-light)] transition-all">
-                <ArrowUpRight size={24} />
-              </div>
-            </div>
-
-            {job.description && (
-              <p className="text-slate-500 text-base leading-relaxed mb-10 font-medium line-clamp-3 opacity-80 group-hover:opacity-100 transition-opacity">{job.description}</p>
-            )}
-
-            <div className="grid grid-cols-2 gap-8 mb-10 p-8 bg-slate-50/50 rounded-3xl border border-slate-100/50">
-               <div className="space-y-2">
-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">Competencies</div>
-                  <div className="text-xs font-bold text-[var(--color-navy)] flex items-center gap-2">
-                     <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full"></div>
-                     {job.requiredSkills?.split(',')[0] || 'Strategic Focus'}
-                  </div>
-               </div>
-               <div className="space-y-2">
-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">Application Window</div>
-                  <div className="text-xs font-bold text-[var(--color-navy)] flex items-center gap-2 font-mono">
-                     <div className="w-1.5 h-1.5 bg-[var(--color-gold)] rounded-full"></div>
-                     {job.deadline || 'Queue Open'}
-                  </div>
-               </div>
-            </div>
-
-            <div className="mt-auto flex items-center justify-between">
-              <div className="flex gap-2">
-                {job.requiredSkills?.split(',').slice(0, 3).map((skill, i) => (
-                  <span key={i} className="text-[9px] px-4 py-2 bg-white border border-slate-100 rounded-full font-black uppercase tracking-widest text-slate-400 group-hover:border-[var(--color-gold-faint)] group-hover:text-[var(--color-gold)] transition-colors">{skill.trim()}</span>
-                ))}
-              </div>
-              {existing ? (
-                <div className="flex flex-col items-end gap-1">
-                   <div className="text-[9px] font-black text-emerald-600 uppercase tracking-[0.3em]">Record Finalized</div>
-                   <div className="text-[11px] font-bold text-[var(--color-navy)] flex items-center gap-2">
-                      <CheckCircle2 size={16} className="text-emerald-600" /> Applied
-                   </div>
-                </div>
-              ) : (
+    <div className="max-w-[1280px] mx-auto animate-fade-in pb-20 px-4">
+      {/* Centralized Feed Column */}
+      <div className="max-w-2xl mx-auto space-y-10 mt-4">
+        
+        {/* Modern Tab Switcher */}
+        <div className="bg-white rounded-3xl border border-slate-200 p-2 flex items-center shadow-sm sticky top-[100px] z-50 transition-all backdrop-blur-xl bg-white/90">
+             {tabs.map((tab) => (
                 <button 
-                  onClick={() => setApplyingTo(job)}
-                  className="btn btn-primary px-10 py-4 h-14 rounded-2xl flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(26,48,40,0.15)] hover:scale-105 active:scale-95 transition-all"
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`flex-1 py-3.5 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all relative group ${
+                    activeTab === tab.id ? 'bg-[var(--color-teal)] text-white shadow-xl shadow-teal-500/20' : 'text-slate-400 hover:bg-slate-50'
+                  }`}
                 >
-                  Apply <Send size={18} />
+                   {tab.label}
+                   {tab.count > 0 && (
+                     <span className={`absolute top-1 right-2 min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center text-[9px] font-black border transition-all ${
+                       activeTab === tab.id ? 'bg-white text-[var(--color-teal)] border-white/20' : 'bg-slate-50 text-slate-500 border-slate-200 group-hover:bg-white'
+                     }`}>
+                        {tab.count}
+                     </span>
+                   )}
                 </button>
-              )}
+             ))}
+        </div>
+
+        {/* Integrated Search */}
+        <div className="relative group">
+             <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-teal)] transition-colors" size={20} />
+             <input 
+               type="text" 
+               placeholder={`Search in ${tabs.find(t => t.id === activeTab)?.label}...`}
+               value={searchQuery}
+               onChange={(e) => setSearchQuery(e.target.value)}
+               className="w-full h-16 bg-white border border-slate-200 rounded-[2rem] pl-14 pr-6 text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-teal)]/10 focus:border-[var(--color-teal)] transition-all shadow-sm"
+             />
+        </div>
+
+        <div className="flex items-center gap-4 py-2 opacity-60">
+           <div className="h-px flex-1 bg-slate-200"></div>
+           <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
+              {activeTab === 'discover' ? 'Talent Hub' : 'Career Dispatch'}
+           </span>
+           <div className="h-px flex-1 bg-slate-200"></div>
+        </div>
+
+        {/* Feed results */}
+        <div className="space-y-6">
+          {isLoading ? (
+            <div className="space-y-6">
+               {[1,2,3].map(i => (
+                 <div key={i} className="h-64 bg-white border border-slate-100 rounded-[2.5rem] animate-pulse"></div>
+               ))}
             </div>
-            
-            <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-10 transition-opacity">
-               <Sparkles size={60} className="text-[var(--color-gold)]" />
+          ) : filteredData.length > 0 ? (
+             <div className="space-y-6">
+                {filteredData.map((item: any, i) => (
+                  <div 
+                    key={item.id} 
+                    className="bg-white rounded-[2.5rem] border border-slate-100 p-10 shadow-xl shadow-slate-200/30 hover:shadow-2xl hover:shadow-teal-500/5 transition-all group animate-fade-up relative overflow-hidden" 
+                    style={{ animationDelay: `${i * 0.05}s` }}
+                  >
+                     <div className="flex justify-between items-start">
+                        <div className="flex gap-8">
+                           <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-teal)] font-bold text-2xl shadow-inner group-hover:scale-110 transition-transform">
+                             {(item.companyName || item.internshipTitle)?.[0] || 'I'}{(item.companyName || item.internshipTitle)?.[1] || ''}
+                           </div>
+                           <div>
+                              <h4 className="text-2xl font-bold text-slate-900 group-hover:text-[var(--color-teal)] transition-colors mb-2 leading-tight">
+                                 {item.title || item.internshipTitle}
+                              </h4>
+                              <div className="flex items-center gap-2 mb-4">
+                                <Briefcase size={16} className="text-slate-300" />
+                                <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">
+                                  {item.companyName || 'University Partner'}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-6 mt-4">
+                                 <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-tighter">
+                                    <MapPin size={14} /> Remote
+                                 </div>
+                                 <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-tighter">
+                                    <Clock size={14} /> Full-time
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        {activeTab === 'discover' && (
+                           <button onClick={() => setApplyingTo(item)} className="p-2 text-slate-200 hover:text-[var(--color-teal)] transition-all">
+                              <Zap size={24} />
+                           </button>
+                        )}
+                     </div>
+
+                     <div className="mt-8 pt-8 border-t border-slate-50 flex items-center justify-between">
+                        <div className="flex gap-2">
+                           {(item.requiredSkills || 'Institutional Alignment').split(',').slice(0, 2).map((s: string, idx: number) => (
+                             <span key={idx} className="px-4 py-1.5 bg-slate-50 text-[10px] font-bold uppercase tracking-widest text-slate-400 rounded-xl border border-slate-100">
+                                {s.trim()}
+                             </span>
+                           ))}
+                        </div>
+                        
+                        {activeTab === 'discover' ? (
+                           <button 
+                             onClick={() => setApplyingTo(item)}
+                             className="px-8 py-3 bg-white border-2 border-[var(--color-teal)] text-[var(--color-teal)] rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[var(--color-teal)] hover:text-white transition-all active:scale-95 shadow-lg shadow-teal-500/5"
+                           >
+                             Quick Apply
+                           </button>
+                        ) : (
+                           renderStatusBadge(item.status)
+                        )}
+                     </div>
+                  </div>
+                ))}
+             </div>
+          ) : (
+            <div className="py-20 bg-white rounded-[3rem] border border-dashed border-slate-200 text-center px-10">
+                <Sparkles size={48} className="mx-auto text-slate-100 mb-6" />
+                <h3 className="text-2xl font-serif font-bold text-slate-900 italic mb-2">No Active Records Found</h3>
+                <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">Adjust filters or check other status tabs</p>
             </div>
-          </div>
-          );
-        }) : !isLoading && (
-          <div className="col-span-1 lg:col-span-2 p-32 text-center border-4 border-dashed border-slate-100 rounded-[4rem] flex flex-col items-center gap-6">
-            <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
-               <Briefcase size={50} />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-2xl font-serif font-bold text-slate-300">No Opportunities Available</h3>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Global talent marketplace is currently synchronizing.</p>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* Modern Modal Overlay */}
+      {/* High-Fidelity Application Modal */}
       {applyingTo && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[var(--color-navy)]/90 backdrop-blur-2xl animate-fade-in">
-          <div className="bg-white rounded-[3rem] w-full max-w-2xl overflow-hidden shadow-[0_60px_120px_rgba(0,0,0,0.5)] animate-scale-in relative border border-white/20">
-            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-navy)] to-[var(--color-gold)]"></div>
-            
-            <div className="p-16">
-              <div className="flex items-center justify-between mb-12">
-                <div>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-10 h-[1px] bg-[var(--color-gold)]"></div>
-                    <span className="text-[11px] font-mono font-black text-[var(--color-gold)] uppercase tracking-[0.4em]">Academic Record</span>
-                  </div>
-                  <h3 className="text-4xl font-serif text-[var(--color-navy)] leading-tight">Apply to <em className="italic">{applyingTo.title}</em></h3>
-                  <div className="text-[10px] font-mono font-black text-slate-300 uppercase mt-3 tracking-widest">{applyingTo.companyName} · Placement ID {applyingTo.id.substring(0,8)}</div>
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 sm:p-12 animate-fade-in">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl" onClick={() => setApplyingTo(null)}></div>
+          <div className="bg-white rounded-[2.5rem] w-full max-w-2xl overflow-hidden shadow-2xl relative animate-scale-in border border-slate-200/50">
+            <div className="p-10 pb-6 flex justify-between items-start">
+              <div className="flex gap-6">
+                <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-teal)] font-bold text-2xl shadow-inner">
+                  {applyingTo.companyName?.[0] || 'I'}{applyingTo.companyName?.[1] || ''}
                 </div>
-                <button onClick={() => setApplyingTo(null)} className="w-14 h-14 rounded-[1.2rem] bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all">
-                  <X size={24} />
-                </button>
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-900 tracking-tight leading-none mb-2">Apply for {applyingTo.title}</h3>
+                  <p className="text-[11px] text-slate-500 font-black uppercase tracking-widest">{applyingTo.companyName} · Institutional Registry</p>
+                </div>
+              </div>
+              <button onClick={() => setApplyingTo(null)} className="p-2 text-slate-300 hover:text-rose-500 transition-all rounded-xl hover:bg-slate-50">
+                <X size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={handleApply} className="p-10 pt-0 space-y-8">
+              <div className="space-y-3">
+                <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 ml-1">Personal Statement</label>
+                <textarea 
+                  required
+                  value={coverLetter}
+                  onChange={(e) => setCoverLetter(e.target.value)}
+                  placeholder="Elaborate on your motivation for this institutional role..."
+                  rows={5}
+                  className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-teal)]/10 focus:border-[var(--color-teal)] transition-all resize-none shadow-inner" 
+                />
               </div>
 
-              <form onSubmit={handleApply} className="space-y-8">
-                <div className="space-y-3">
-                  <label className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400 ml-1">Personal Statement / Motivation</label>
-                  <textarea 
-                    required
-                    value={coverLetter}
-                    onChange={(e) => setCoverLetter(e.target.value)}
-                    placeholder="Articulate your value proposition to the industry partner..."
-                    rows={6}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-6 text-base font-medium outline-none focus:ring-1 focus:ring-[var(--color-gold)] focus:bg-white transition-all resize-none shadow-inner" 
-                  />
-                </div>
-
-                <div className="p-8 bg-slate-50/50 rounded-3xl border border-slate-100">
-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 mb-6">Structural Details</div>
-                  <div className="grid grid-cols-2 gap-8">
-                    <div>
-                       <div className="text-[9px] text-slate-400 uppercase tracking-widest mb-1">Target Skill</div>
-                       <div className="text-sm font-bold text-[var(--color-navy)] uppercase tracking-tight">{applyingTo.requiredSkills || 'Institutional Alignment'}</div>
+              <div className="bg-[var(--color-teal-faint)] rounded-[1.5rem] p-6 border border-[var(--color-teal)]/10">
+                 <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                       <Target size={20} className="text-[var(--color-teal)]" />
                     </div>
                     <div>
-                       <div className="text-[9px] text-slate-400 uppercase tracking-widest mb-1">Submission Cutoff</div>
-                       <div className="text-sm font-bold text-[var(--color-navy)] font-mono">{applyingTo.deadline || 'Rolling Admissions'}</div>
+                       <div className="text-[11px] font-black text-[var(--color-teal)] uppercase tracking-widest">Digital Authentication</div>
+                       <p className="text-[11px] text-slate-500 font-medium mt-1">Your verified scholarship record will be transmitted instantly upon submission.</p>
                     </div>
-                  </div>
-                </div>
+                 </div>
+              </div>
 
-                <div className="pt-6">
-                  <button 
-                    type="submit"
-                    className="w-full h-16 bg-[var(--color-navy)] text-white text-[12px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-2xl flex items-center justify-center gap-4 hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition-all"
-                  >
-                    Authenticate & Submit <Send size={20} className="text-[var(--color-gold)]" />
-                  </button>
-                </div>
-              </form>
-            </div>
+              <div className="flex items-center gap-4">
+                <button 
+                  type="submit"
+                  className="flex-1 h-14 bg-[var(--color-teal)] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-teal-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4"
+                >
+                  Submit Application <Send size={18} className="text-white/70" />
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setApplyingTo(null)}
+                  className="px-10 h-14 bg-white border border-slate-200 text-slate-400 text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-slate-50 transition-all"
+                >
+                  Abort
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

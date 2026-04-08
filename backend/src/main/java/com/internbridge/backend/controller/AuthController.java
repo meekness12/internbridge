@@ -45,4 +45,11 @@ public class AuthController {
     public ResponseEntity<com.internbridge.backend.dto.response.UserResponse> getMe(java.security.Principal principal) {
         return ResponseEntity.ok(authService.getMe(principal.getName()));
     }
+
+    @org.springframework.web.bind.annotation.PatchMapping("/me")
+    public ResponseEntity<com.internbridge.backend.dto.response.UserResponse> updateMe(
+            java.security.Principal principal, 
+            @jakarta.validation.Valid @RequestBody com.internbridge.backend.dto.request.UpdateProfileRequest request) {
+        return ResponseEntity.ok(authService.updateProfileByEmail(principal.getName(), request));
+    }
 }

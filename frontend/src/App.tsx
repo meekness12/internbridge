@@ -5,7 +5,6 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import InternDashboard from './pages/intern/InternDashboard';
 import InternPlacements from './pages/intern/Placements';
-import InternMessages from './pages/intern/Messages';
 import InternNotifications from './pages/intern/Notifications';
 import InternAnalytics from './pages/intern/Analytics';
 
@@ -91,6 +90,9 @@ const ReportsRouter: React.FC = () => {
 };
 
 import { ToastProvider } from './context/ToastContext';
+import InternProfile from './pages/intern/Profile';
+import InternSettings from './pages/intern/Settings';
+import InternHelp from './pages/intern/Help';
 
 const App: React.FC = () => {
   return (
@@ -115,17 +117,19 @@ const App: React.FC = () => {
           {/* Intern Specific Supplemental Pages */}
           <Route path="intern" element={<ProtectedRoute allowedRoles={['INTERN']}><InternDashboard /></ProtectedRoute>} />
           <Route path="internships" element={<ProtectedRoute allowedRoles={['INTERN']}><PlacementsRouter /></ProtectedRoute>} />
+          <Route path="profile" element={<ProtectedRoute allowedRoles={['INTERN']}><InternProfile /></ProtectedRoute>} />
+          <Route path="settings" element={<ProtectedRoute allowedRoles={['INTERN']}><InternSettings /></ProtectedRoute>} />
+          <Route path="help" element={<ProtectedRoute allowedRoles={['INTERN']}><InternHelp /></ProtectedRoute>} />
           
           {/* Shared Supplemental Pages (Role-based internal routing) */}
 
-          <Route path="messages" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR']}><InternMessages /></ProtectedRoute>} />
           <Route path="notifications" element={
             <ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN', 'SCHOOL_ADMIN']}>
               {localStorage.getItem('role') === 'SUPER_ADMIN' ? <SystemAlerts /> : <InternNotifications />}
             </ProtectedRoute>
           } />
           <Route path="analytics" element={
-            <ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN', 'SCHOOL_ADMIN']}>
+            <ProtectedRoute allowedRoles={['COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN', 'SCHOOL_ADMIN']}>
               {localStorage.getItem('role') === 'SUPER_ADMIN' ? <GlobalAnalytics /> : 
                localStorage.getItem('role') === 'SCHOOL_ADMIN' ? <InstitutionalReports /> : <InternAnalytics />}
             </ProtectedRoute>

@@ -10,7 +10,6 @@ import {
   Search,
   BookOpen,
   PieChart,
-  MessageSquare,
   Shield,
   Globe,
   Lock,
@@ -31,7 +30,6 @@ const SupervisorDashboard: React.FC = () => {
   ];
 
   const quickActions = [
-    { label: 'Student Chat', sub: '3 messages', icon: '💬', color: 'bg-indigo-light text-indigo' },
     { label: 'Academic Reports', sub: 'Term summaries', icon: '📊', color: 'bg-emerald-light text-emerald' },
     { label: 'Audit Schedule', sub: 'Next: Monday', icon: '📅', color: 'bg-gold-light text-gold' }
   ];
@@ -41,7 +39,7 @@ const SupervisorDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Faculty Snap */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
               <div className="h-14 bg-[var(--color-forest)] w-full"></div>
               <div className="px-4 pb-4 -mt-7 text-center">
@@ -63,7 +61,7 @@ const SupervisorDashboard: React.FC = () => {
               </div>
            </div>
 
-           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm sticky top-[95px]">
+           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
               <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Supervision Metrics</h4>
               {stats.map((s, i) => (
                 <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 last:border-0">
@@ -154,7 +152,7 @@ const SupervisorDashboard: React.FC = () => {
         </div>
 
         {/* Right Column: Administration */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
               <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1">Management Hub</h4>
               <div className="space-y-3">

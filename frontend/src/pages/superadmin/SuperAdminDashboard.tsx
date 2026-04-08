@@ -68,7 +68,7 @@ const SuperAdminDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: System Identity Snap */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
               <div className="h-14 bg-rose-900 w-full relative overflow-hidden">
                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse"></div>
@@ -92,7 +92,7 @@ const SuperAdminDashboard: React.FC = () => {
               </div>
            </div>
 
-           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm sticky top-[95px]">
+           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
               <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Infrastructure Load</h4>
               {kpis.map((s, i) => (
                 <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 last:border-0">
@@ -204,7 +204,7 @@ const SuperAdminDashboard: React.FC = () => {
         </div>
 
         {/* Right Column: Central Controls */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
               <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1">Control Terminal</h4>
               <div className="space-y-3">
