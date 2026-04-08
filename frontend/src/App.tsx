@@ -5,7 +5,6 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import InternDashboard from './pages/intern/InternDashboard';
 import InternPlacements from './pages/intern/Placements';
-import InternLogbook from './pages/intern/Logbook';
 import InternMessages from './pages/intern/Messages';
 import InternNotifications from './pages/intern/Notifications';
 import InternAnalytics from './pages/intern/Analytics';
@@ -13,11 +12,9 @@ import InternAnalytics from './pages/intern/Analytics';
 import CompanyDashboard from './pages/company/CompanyDashboard';
 import CompanyApplicants from './pages/company/Applicants';
 import CompanyInterns from './pages/company/Interns';
-import CompanyLogbookReview from './pages/company/LogbookReview';
 
 import SupervisorDashboard from './pages/supervisor/SupervisorDashboard';
 import SupervisorStudents from './pages/supervisor/Students';
-import SupervisorLogbookGrading from './pages/supervisor/LogbookGrading';
 import SupervisorPlacements from './pages/supervisor/Placements';
 
 import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard';
@@ -55,18 +52,7 @@ const RoleRedirect: React.FC = () => {
   }
 };
 
-/**
- * Shared Logbook path router
- */
-const LogbookRouter: React.FC = () => {
-  const role = localStorage.getItem('role');
-  switch (role) {
-    case 'COMPANY_ADMIN': return <CompanyLogbookReview />;
-    case 'SUPERVISOR': return <SupervisorLogbookGrading />;
-    case 'INTERN':
-    default: return <InternLogbook />;
-  }
-};
+
 
 /**
  * Shared Placements/Internships path router
@@ -131,7 +117,7 @@ const App: React.FC = () => {
           <Route path="internships" element={<ProtectedRoute allowedRoles={['INTERN']}><PlacementsRouter /></ProtectedRoute>} />
           
           {/* Shared Supplemental Pages (Role-based internal routing) */}
-          <Route path="logbook" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR']}><LogbookRouter /></ProtectedRoute>} />
+
           <Route path="messages" element={<ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR']}><InternMessages /></ProtectedRoute>} />
           <Route path="notifications" element={
             <ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN', 'SCHOOL_ADMIN']}>

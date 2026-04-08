@@ -1,7 +1,9 @@
 package com.internbridge.backend.service.impl;
 import com.internbridge.backend.dto.response.PlacementResponseDTO;
 import com.internbridge.backend.entity.Placement;
+import com.internbridge.backend.entity.User;
 import com.internbridge.backend.repository.PlacementRepository;
+import com.internbridge.backend.repository.UserRepository;
 import com.internbridge.backend.service.PlacementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,17 @@ import java.util.stream.Collectors;
 public class PlacementServiceImpl implements PlacementService {
 
     private final PlacementRepository placementRepository;
+    private final UserRepository userRepository;
+
+    @Override
+    public PlacementResponseDTO assignSupervisor(UUID id, UUID supervisorId) {
+        Placement placement = placementRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Placement not found"));
+        var supervisor = userRepository.findById(supervisorId)
+                .orElseThrow(() -> new RuntimeException("Supervisor not found"));
+        placement.setSupervisor(supervisor);
+        return mapToResponseDTO(placementRepository.save(placement));
+    }
 
     @Override
     @Transactional(readOnly = true)

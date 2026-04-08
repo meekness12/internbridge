@@ -96,16 +96,7 @@ public class ApplicationController {
             result.append("✓ contracts_status_check: constraint dropped\n");
         } catch (Exception e) { result.append("○ contracts_status_check: ").append(e.getMessage()).append("\n"); }
 
-        // Logbooks table
-        try {
-            entityManager.createNativeQuery("ALTER TABLE logbooks DROP CONSTRAINT IF EXISTS logbooks_company_status_check").executeUpdate();
-            result.append("✓ logbooks_company_status_check: constraint dropped\n");
-        } catch (Exception e) { result.append("○ logbooks_company_status_check: ").append(e.getMessage()).append("\n"); }
 
-        try {
-            entityManager.createNativeQuery("ALTER TABLE logbooks DROP CONSTRAINT IF EXISTS logbooks_lecturer_status_check").executeUpdate();
-            result.append("✓ logbooks_lecturer_status_check: constraint dropped\n");
-        } catch (Exception e) { result.append("○ logbooks_lecturer_status_check: ").append(e.getMessage()).append("\n"); }
 
         return ResponseEntity.ok("DATABASE REPAIR COMPLETE:\n\n" + result);
     }

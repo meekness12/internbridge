@@ -16,7 +16,7 @@ const api = axios.create({
 
 /**
  * Axios instance for legacy API routes.
- * Used for: /api/internships, /api/applications, /api/placements, /api/logbooks
+ * Used for: /api/internships, /api/applications, /api/placements
  */
 export const legacyApi = axios.create({
   baseURL: `${API_HOST}/api`,

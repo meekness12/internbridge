@@ -2,7 +2,7 @@
 -- This drops the old tables with incorrect 'INT' types and recreates them
 -- with the 'UUID' types required by the Java code.
 
-DROP TABLE IF EXISTS logbooks CASCADE;
+
 DROP TABLE IF EXISTS placements CASCADE;
 DROP TABLE IF EXISTS applications CASCADE;
 DROP TABLE IF EXISTS internships CASCADE;

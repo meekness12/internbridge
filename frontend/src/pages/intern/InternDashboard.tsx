@@ -3,27 +3,29 @@ import {
   Users,
   Clock,
   Check,
-  MapPin,
   Plus,
-  RefreshCw
+  RefreshCw,
+  Search,
+  ArrowUpRight,
+  Sparkles,
+  Zap,
+  Shield,
+  Globe,
+  Lock,
+  MapPin,
+  Target
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { PremiumCard } from '../../components/ui/PremiumCard';
-import { PremiumHeader } from '../../components/ui/PremiumHeader';
-import { PremiumTimeline } from '../../components/ui/PremiumTimeline';
-import internshipService from '../../api/internshipService';
-import applicationService from '../../api/applicationService';
 import placementService from '../../api/placementService';
-import logbookService from '../../api/logbookService';
+import applicationService from '../../api/applicationService';
+import internshipService from '../../api/internshipService';
 import type { InternshipDTO } from '../../api/internshipService';
 import type { ApplicationDTO } from '../../api/applicationService';
 import type { PlacementDTO } from '../../api/placementService';
-import type { LogbookDTO } from '../../api/logbookService';
 
 const InternDashboard: React.FC = () => {
   const [applications, setApplications] = useState<ApplicationDTO[]>([]);
   const [placements, setPlacements] = useState<PlacementDTO[]>([]);
-  const [logbooks, setLogbooks] = useState<LogbookDTO[]>([]);
   const [featuredInternship, setFeaturedInternship] = useState<InternshipDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -46,16 +48,7 @@ const InternDashboard: React.FC = () => {
         ]);
 
         if (apps.status === 'fulfilled') setApplications(apps.value);
-        if (places.status === 'fulfilled') {
-          setPlacements(places.value);
-          // Fetch logbooks for the first active placement
-          if (places.value.length > 0) {
-            try {
-              const logs = await logbookService.getLogbooksByPlacement(places.value[0].id);
-              setLogbooks(logs);
-            } catch { /* no logs yet */ }
-          }
-        }
+        if (places.status === 'fulfilled') setPlacements(places.value);
         if (internships.status === 'fulfilled' && internships.value.length > 0) {
           setFeaturedInternship(internships.value[0]);
         }
@@ -68,164 +61,176 @@ const InternDashboard: React.FC = () => {
     fetchAll();
   }, [userId]);
 
-  const totalHours = logbooks.reduce((sum, l) => sum + (l.hoursWorked || 0), 0);
-  const approvedLogs = logbooks.filter(l => l.companyStatus === 'APPROVED' || l.lecturerStatus === 'APPROVED').length;
-  const verificationRate = logbooks.length > 0 ? Math.round((approvedLogs / logbooks.length) * 100) : 0;
-
   const stats = [
-    { label: 'Active Applications', value: applications.length.toString(), trend: applications.length > 0 ? `${applications.filter(a => a.status === 'PENDING').length} pending` : 'No applications yet', icon: '📩', color: 'ki-1', kpiColor: 'kpi-1' },
-    { label: 'Hours Logged', value: totalHours.toFixed(0), trend: `${logbooks.length} entries total`, icon: '⏱️', color: 'ki-2', kpiColor: 'kpi-2' },
-    { label: 'Verification', value: `${verificationRate}%`, trend: verificationRate >= 90 ? 'Elite Standing' : 'In Progress', icon: '✅', color: 'ki-4', kpiColor: 'kpi-4' },
-    { label: 'Placements', value: placements.length.toString(), trend: placements.length > 0 ? placements[0].companyName : 'No placement yet', icon: '💼', color: 'ki-3', kpiColor: 'kpi-3' },
-    { label: 'Compliance', value: placements.length > 0 ? '98%' : '---', trend: placements.length > 0 ? 'Active' : 'Awaiting', icon: '🏆', color: 'ki-5', kpiColor: 'kpi-5' },
+    { label: 'Active Applications', value: applications.length.toString(), trend: applications.length > 0 ? `${applications.filter(a => a.status === 'PENDING').length} pending` : 'No applications yet', icon: <Target size={20} className="text-indigo-600" />, color: 'ki-1', kpiColor: 'kpi-1' },
+    { label: 'Placements', value: placements.length.toString(), trend: placements.length > 0 ? placements[0].companyName : 'Ready to start', icon: <Zap size={20} className="text-[var(--color-gold)]" />, color: 'ki-3', kpiColor: 'kpi-3' },
+    { label: 'Growth Score', value: placements.length > 0 ? '94%' : '---', trend: placements.length > 0 ? 'Consistent performance' : 'Awaiting start', icon: <Sparkles size={20} className="text-emerald-600" />, color: 'ki-5', kpiColor: 'kpi-5' },
   ];
 
-  const timelineItems = [
-    ...applications.slice(0, 2).map(app => ({
-      title: `Application: ${app.internshipTitle}`,
-      meta: `Status: ${app.status} · ${app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'Recently'}`,
-      body: app.coverLetter || 'Application submitted for review.',
-      color: app.status === 'ACCEPTED' ? '#15803d' : app.status === 'REJECTED' ? '#dc2626' : 'var(--color-gold)',
-    })),
-    ...placements.slice(0, 1).map(p => ({
-      title: `Placement: ${p.internshipTitle}`,
-      meta: `${p.companyName} · ${p.startDate} to ${p.endDate}`,
-      body: `Placement status: ${p.status}.`,
-      color: 'var(--color-navy)',
-    })),
-    ...logbooks.slice(0, 1).map(l => ({
-      title: `Logbook Entry: ${l.recordDate}`,
-      meta: `${l.hoursWorked} hours · Company: ${l.companyStatus || 'PENDING'}`,
-      body: l.tasksCompleted || 'Tasks documented.',
-      color: 'var(--color-indigo)',
-    })),
-  ];
-
-  // Add a placeholder if no real data yet
-  if (timelineItems.length === 0) {
-    timelineItems.push({
-      title: 'Welcome to InternBridge',
-      meta: 'Getting Started',
-      body: 'Explore available placements and apply for your first internship opportunity.',
-      color: 'var(--color-gold)',
-    });
-  }
+  const hasActivePlacement = placements.length > 0;
 
   return (
-    <div className="space-y-8 animate-fade-in pb-20">
-      <PremiumHeader 
-        eyebrow="Student Dashboard"
-        title={greeting}
-        italicTitle={userName.split(' ')[0]}
-        subtitle={`${dayName}, ${dateStr}`}
-        eyebrowColor="text-[var(--color-gold)]"
-        primaryAction={
-          <Link to="/dashboard/logbook" className="btn btn-primary btn-sm bg-[var(--color-navy)] text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 no-underline">
-            Log Today's Tasks <Plus size={16} />
-          </Link>
-        }
-        secondaryAction={
-          <Link to="/dashboard/internships" className="btn btn-gold btn-sm bg-[var(--color-gold)] text-[var(--color-navy)] px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 no-underline">
-            Browse Openings <span className="bg-white/20 px-2 py-0.5 rounded-full text-[9px] font-black">{applications.length}</span>
-          </Link>
-        }
-      />
-
-      <div className="flex flex-wrap gap-3">
-        {['All Activity', 'Placements', 'Logbooks', 'Applications'].map((tab, i) => (
-          <button key={i} className={`filter-chip ${i === 0 ? 'active' : ''}`}>{tab}</button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {stats.map((stat, i) => (
-          <PremiumCard key={i} {...stat} />
-        ))}
-      </div>
-
+    <div className="max-w-[1128px] mx-auto animate-fade-in pb-20">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Interaction Center */}
-        <div className="lg:col-span-8 space-y-6">
-           {isLoading && (
-             <div className="card p-8 flex items-center justify-center gap-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
-               <RefreshCw size={20} className="animate-spin text-[var(--color-gold)]" />
-               <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Synchronizing your data...</span>
-             </div>
-           )}
-
-           {featuredInternship && (
-             <div className="card p-8">
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold text-lg shrink-0">
-                    {featuredInternship.companyName?.substring(0, 2).toUpperCase() || 'IB'}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <h3 className="font-bold text-lg text-[var(--color-navy)]">{featuredInternship.companyName}</h3>
-                      <span className="badge badge-forest text-[9px] py-1 px-2.5 font-bold flex items-center gap-1.5 rounded-full">
-                        <span className="w-1.5 h-1.5 bg-[var(--color-gold)] rounded-full"></span> {featuredInternship.status || 'Open'}
-                      </span>
+        
+        {/* Left Column: Identity Snap */}
+        <div className="lg:col-span-3 space-y-4">
+           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+              <div className="h-14 bg-[var(--color-forest)] w-full"></div>
+              <div className="px-4 pb-4 -mt-7 text-center">
+                 <div className="w-16 h-16 rounded-full border-4 border-white bg-[var(--color-gold)] mx-auto flex items-center justify-center text-white font-serif font-black text-xl shadow-md mb-3">
+                    {userName.split(' ').map(n => n[0]).join('')}
+                 </div>
+                 <h3 className="text-base font-bold text-slate-900 tracking-tight">{userName}</h3>
+                 <p className="text-xs text-slate-500 font-medium mb-4">Student at {localStorage.getItem('institution') || 'University of Ghana'}</p>
+                 <div className="pt-4 border-t border-slate-100 flex flex-col items-start gap-4">
+                    <div className="flex justify-between w-full text-[11px] font-bold">
+                       <span className="text-slate-500">Applications</span>
+                       <span className="text-[var(--color-forest)]">{applications.length}</span>
                     </div>
-                    <p className="text-xs text-slate-400 font-medium">Deadline: {featuredInternship.deadline || 'Open'}</p>
-                  </div>
+                 </div>
+              </div>
+           </div>
+
+           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm sticky top-[95px]">
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">My Performance</h4>
+              {stats.map((s, i) => (
+                <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 last:border-0">
+                   <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-forest)] transition-colors">
+                      {React.cloneElement(s.icon as any, { size: 16 })}
+                   </div>
+                   <div>
+                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">{s.label}</div>
+                      <div className="text-xs font-bold text-slate-700 leading-none">{s.value}</div>
+                   </div>
                 </div>
-                <Link to="/dashboard/internships" className="btn btn-ghost btn-sm border border-slate-200 px-4 py-2 rounded-full text-[10px] font-bold uppercase flex items-center gap-2 tracking-widest hover:bg-slate-50 no-underline text-slate-600">
-                  <Check size={14} className="text-emerald-600" /> View All
-                </Link>
-              </div>
-              <p className="text-slate-600 leading-relaxed mb-8 max-w-2xl">
-                {featuredInternship.description || 'Explore this exciting internship opportunity.'}
-              </p>
-              <div className="editorial-banner p-10 text-white rounded-2xl relative overflow-hidden group border border-white/5 shadow-2xl">
-                 <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-400/5 rounded-full blur-3xl group-hover:bg-yellow-400/10 transition-colors"></div>
-                 <div className="label-mono-accent text-[9px] tracking-[0.3em] mb-4 opacity-50 uppercase font-bold text-[var(--color-gold)]">
-                   {featuredInternship.requiredSkills || 'INTERNSHIP'}
-                 </div>
-                 <h2 className="text-4xl font-serif mb-2 leading-tight">{featuredInternship.title}</h2>
-                 <p className="text-lg opacity-60 font-sans mb-10 tracking-tight">{featuredInternship.companyName}</p>
-                 <div className="flex flex-wrap gap-8 text-[10px] font-mono tracking-[0.1em] font-bold opacity-90 uppercase">
-                   <div className="flex items-center gap-2.5"><MapPin size={16} className="text-[var(--color-gold)]" /> Open Position</div>
-                   <div className="flex items-center gap-2.5"><Clock size={16} className="text-[var(--color-gold)]" /> {featuredInternship.deadline || 'Ongoing'}</div>
-                   <div className="flex items-center gap-2.5"><Users size={16} className="text-[var(--color-gold)]" /> {featuredInternship.status}</div>
-                 </div>
-              </div>
-             </div>
-           )}
+              ))}
+           </div>
         </div>
 
-        {/* Sidebar */}
-        <div className="lg:col-span-4 space-y-6">
-           <PremiumTimeline 
-             title="My Progress Feed"
-             subtitle="Recent activity"
-             items={timelineItems}
-           />
-
-           <div className="card bg-[var(--color-navy)] text-white border-0 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-6">
-                   <div className="h-4 w-1 bg-[var(--color-gold)] rounded-full"></div>
-                   <span className="text-[10px] font-mono font-bold text-[var(--color-gold)] uppercase tracking-[0.2em]">Quick Stats</span>
+        {/* Middle Column: The Internship Feed */}
+        <div className="lg:col-span-6 space-y-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+             <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-200">
+                   <Users size={24} />
                 </div>
-                <h3 className="text-2xl font-serif mb-4 leading-tight">
-                  {placements.length > 0 ? (
-                    <>{placements[0].companyName} <em className="italic text-slate-400">Placement</em></>
-                  ) : (
-                    <>Find Your <em className="italic text-slate-400">First Role</em></>
-                  )}
-                </h3>
-                <p className="text-white/40 text-[11px] leading-relaxed mb-6">
-                  {placements.length > 0 
-                    ? `Active from ${placements[0].startDate} to ${placements[0].endDate}. Keep logging your progress.`
-                    : 'Browse available internships and apply to start your professional journey.'
-                  }
-                </p>
-                <Link to={placements.length > 0 ? '/dashboard/logbook' : '/dashboard/internships'} 
-                   className="block w-full py-3 bg-[var(--color-gold)] text-[var(--color-navy)] rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all text-center no-underline">
-                  {placements.length > 0 ? 'Open Logbook' : 'Browse Openings'}
-                </Link>
+                <button className="flex-1 bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-500 text-left px-6 py-3 rounded-full text-sm font-medium transition-all shadow-inner">
+                   Ask for a recommendation...
+                </button>
+             </div>
+          </div>
+
+          <div className="flex items-center gap-2 py-2">
+             <div className="h-px flex-1 bg-slate-200"></div>
+             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Companies seeking Interns</span>
+             <div className="h-px flex-1 bg-slate-200"></div>
+          </div>
+
+          {placements.length > 0 && (
+             <div className="relative group overflow-hidden bg-[var(--color-forest)] text-white rounded-xl border border-white/10 p-6 shadow-xl animate-fade-up">
+                <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-white/10 to-transparent"></div>
+                <div className="flex items-start justify-between mb-4">
+                   <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-2xl shadow-lg">🏛️</div>
+                      <div>
+                         <h3 className="text-lg font-bold tracking-tight">Active Placement Verified</h3>
+                         <p className="text-xs text-white/70">{placements[0].companyName} • {placements[0].internshipTitle}</p>
+                      </div>
+                   </div>
+                   <div className="flex items-center gap-2 text-[var(--color-gold)] text-[10px] font-black uppercase tracking-widest border border-[var(--color-gold)]/30 px-3 py-1 rounded-full">
+                      <Shield size={12} /> Compliance: Pass
+                   </div>
+                </div>
+             </div>
+          )}
+
+          {isLoading ? (
+            <div className="space-y-4">
+               {[1,2,3].map(i => (
+                 <div key={i} className="h-48 bg-white border border-slate-200 rounded-xl animate-pulse"></div>
+               ))}
+            </div>
+          ) : (
+            <div className="space-y-4">
+               {(placements.length === 0 ? [featuredInternship, ...placements].filter(Boolean) : [featuredInternship]).map((job: any, i) => (
+                 <div key={i} className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group cursor-pointer animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                    <div className="flex justify-between items-start mb-4">
+                       <div className="flex gap-4">
+                          <div className="w-12 h-12 rounded bg-slate-50 border border-slate-100 flex items-center justify-center text-[var(--color-forest)] font-serif font-black text-xl">
+                            {job.companyName?.[0] || 'I'}
+                          </div>
+                          <div>
+                             <h4 className="text-base font-bold text-slate-800 group-hover:text-[var(--color-forest)] group-hover:underline transition-colors leading-tight">{job.title}</h4>
+                             <p className="text-sm text-slate-600 font-medium">{job.companyName}</p>
+                             <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                                <MapPin size={12} /> Remote / Accra
+                             </div>
+                          </div>
+                       </div>
+                       <button className="text-slate-300 hover:text-[var(--color-gold)] transition-colors"><Zap size={20} /></button>
+                    </div>
+                    <div className="py-4 border-t border-slate-50">
+                       <p className="text-[13px] text-slate-600 line-clamp-2 leading-relaxed italic">
+                         "Accelerate your professional path by joining our {job.category || 'tech'} cluster. Seeking highly motivated individuals to assist with {job.title.toLowerCase()} operational excellence."
+                       </p>
+                    </div>
+                    <div className="flex items-center justify-end pt-4">
+                       <button className="px-5 py-2 bg-white border-2 border-[var(--color-forest)] text-[var(--color-forest)] rounded-full text-xs font-black uppercase tracking-widest hover:bg-[var(--color-forest)] hover:text-white transition-all shadow-sm active:scale-95">Apply</button>
+                    </div>
+                 </div>
+               ))}
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Suggested & Stats */}
+        <div className="lg:col-span-3 space-y-4">
+           {/* Quick Stats Overlay Card */}
+           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-gold)]/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Growth Index</h4>
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-between items-center px-1">
+                  <span className="text-[11px] font-bold text-slate-600 uppercase tracking-tighter">Skill Density</span>
+                  <span className="text-xs font-black text-emerald-600">84%</span>
+                </div>
+                <div className="flex justify-between items-center px-1">
+                  <span className="text-[11px] font-bold text-slate-600 uppercase tracking-tighter">Node Activity</span>
+                  <span className="text-xs font-black text-indigo-600">High</span>
+                </div>
+                <div className="h-[2px] w-full bg-slate-50 rounded-full overflow-hidden mt-2">
+                  <div className="h-full bg-[var(--color-forest)] w-[94%] animate-progress"></div>
+                </div>
+              </div>
+           </div>
+
+           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1 flex items-center justify-between">
+                Institutional News <ArrowUpRight size={14} />
+              </h4>
+              <div className="space-y-5">
+                 {[
+                   { t: 'New Techwave Openings', m: '4 hours ago' },
+                   { t: 'Governance Update v2.4', m: '12 hours ago' },
+                   { t: 'Accra Tech Summit 2024', m: '1 day ago' },
+                 ].map((n, i) => (
+                   <div key={i} className="cursor-pointer group">
+                      <h5 className="text-[13px] font-bold text-slate-800 leading-tight group-hover:text-[var(--color-forest)] group-hover:underline transition-all">{n.t}</h5>
+                      <span className="text-[10px] text-slate-500 font-medium">{n.m}</span>
+                   </div>
+                 ))}
+              </div>
+           </div>
+
+           <div className="px-4 py-8 text-center text-slate-500">
+              <div className="text-[9px] font-black uppercase tracking-[0.3em] font-mono leading-relaxed mb-4">
+                 InternBridge © 2026<br/>Global Identity Registry
+              </div>
+              <div className="flex justify-center gap-4 opacity-50">
+                 <Shield size={16} />
+                 <Globe size={16} />
+                 <Lock size={16} />
               </div>
            </div>
         </div>

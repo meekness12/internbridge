@@ -10,7 +10,13 @@ import {
   Trash2,
   UserCheck,
   UserX,
-  X
+  X,
+  Zap,
+  ArrowUpRight,
+  Database,
+  Lock,
+  Terminal,
+  Fingerprint
 } from 'lucide-react';
 import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import { useToast } from '../../context/ToastContext';
@@ -48,6 +54,8 @@ const UserManagement: React.FC = () => {
       setUsers([
         { id: '1', name: 'Daniel Owusu', role: 'COMPANY_ADMIN', email: 'daniel@techwave.com', status: 'ACTIVE', institution: 'Techwave Technologies', joinedDate: 'Jan 12, 2024' },
         { id: '2', name: 'Aisha Ibrahim', role: 'INTERN', email: 'aisha.i@student.ug.edu.gh', status: 'VERIFIED', institution: 'University of Ghana', joinedDate: 'Feb 01, 2024' },
+        { id: '3', name: 'Dr. Mensah Asante', role: 'SUPERVISOR', email: 'm.asante@cuc.edu.gh', status: 'ACTIVE', institution: 'Central University', joinedDate: 'Dec 05, 2023' },
+        { id: '4', name: 'Sarah Linn', role: 'SCHOOL_ADMIN', email: 's.linn@admin.ug.edu.gh', status: 'ACTIVE', institution: 'Univ. of Ghana', joinedDate: 'Jan 20, 2024' },
       ]);
     } finally {
       setIsLoading(false);
@@ -98,275 +106,309 @@ const UserManagement: React.FC = () => {
   );
 
   return (
-    <div className="space-y-8 animate-fade-in pb-20">
+    <div className="space-y-12 animate-fade-in pb-20 max-w-[1400px] mx-auto">
       <PremiumHeader 
-        eyebrow="Identity Governance"
-        title="User"
-        italicTitle="Directory"
-        subtitle="Global registry of verified platform participants across all institutional clusters"
-        eyebrowColor="text-[var(--color-navy)]"
+        eyebrow="Institutional Oversight"
+        title="Identity"
+        italicTitle="Registry"
+        subtitle="Global directory of verified platform participants across all academic and corporate clusters."
+        eyebrowColor="text-rose-600"
         primaryAction={
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="h-11 px-6 bg-[var(--color-navy)] text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:bg-black transition-all shadow-lg shadow-black/10"
+            className="btn btn-primary h-14 px-10 rounded-2xl flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.25em] shadow-2xl shadow-black/10 hover:scale-[1.02] active:scale-[0.98]"
           >
-            <UserPlus size={18} /> Provision User
+            Provision Identity <UserPlus size={20} />
           </button>
         }
       />
 
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="relative group w-full md:w-96">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[var(--color-gold)] transition-colors" size={18} />
+      {/* Identity Summary KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-fade-up">
+         {[
+           { label: 'Verified Nodes', value: users.length.toString(), icon: <Fingerprint size={20} />, color: 'bg-indigo-50 text-indigo-600' },
+           { label: 'Active Sessions', value: '84', icon: <Zap size={20} />, color: 'bg-emerald-50 text-emerald-600' },
+           { label: 'Policy Violations', value: '0', icon: <ShieldAlert size={20} />, color: 'bg-rose-50 text-rose-600' },
+           { label: 'Governance Auth', value: '99.9%', icon: <Lock size={20} />, color: 'bg-amber-50 text-amber-600' }
+         ].map((k, i) => (
+           <div key={i} className="card p-8 flex items-center gap-6 group hover:translate-y-[-4px] transition-all bg-white border border-slate-100 shadow-xl shadow-black/[0.02]">
+              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${k.color} group-hover:rotate-6 transition-all shadow-inner`}>
+                 {k.icon}
+              </div>
+              <div>
+                 <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 mb-1">{k.label}</div>
+                 <div className="text-2xl font-serif font-black text-[var(--color-navy)] tracking-tight">{k.value}</div>
+              </div>
+           </div>
+         ))}
+      </div>
+
+      {/* Management Toolbar */}
+      <div className="flex flex-col md:flex-row gap-6 items-center justify-between glass-panel glass-light p-6 rounded-3xl border border-white/60 shadow-xl backdrop-blur-md animate-fade-up delay-1">
+        <div className="relative group w-full md:w-[500px]">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-gold)] transition-colors" size={20} />
           <input 
             type="text" 
-            placeholder="Search by name, email, or protocol ID..." 
+            placeholder="Query identity by name, protocol ID, or institutional node..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-11 bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)] transition-all"
+            className="w-full h-14 bg-white/50 border border-slate-100 rounded-[1.5rem] pl-16 pr-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-gold)] focus:bg-white transition-all shadow-inner"
           />
         </div>
-        <div className="flex gap-3 w-full md:w-auto">
-          <button className="flex-1 md:flex-none h-11 px-5 flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 transition-all">
-            <Filter size={16} /> Filters
-          </button>
-          <button className="flex-1 md:flex-none h-11 px-5 flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 transition-all">
-            Export Records
-          </button>
+        <div className="flex gap-4 w-full md:w-auto">
+           <button className="flex-1 md:flex-none h-14 px-8 bg-white border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-[var(--color-navy)] flex items-center justify-center gap-3 hover:bg-slate-50 transition-all shadow-lg shadow-black/[0.02]">
+             <Filter size={18} className="text-slate-300" /> Advanced Filter
+           </button>
+           <button className="flex-1 md:flex-none h-14 px-8 bg-white border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-[var(--color-navy)] flex items-center justify-center gap-3 hover:bg-slate-50 transition-all shadow-lg shadow-black/[0.02]">
+             Export Ledger <Database size={18} className="text-slate-300" />
+           </button>
         </div>
       </div>
 
-      <div className="card overflow-hidden bg-white border border-slate-200 rounded-2xl shadow-sm relative min-h-[400px]">
+      {/* Main Identity Ledger */}
+      <div className="glass-panel glass-light overflow-hidden border-white/60 rounded-[3rem] shadow-2xl relative min-h-[500px] animate-fade-up delay-2">
         {isLoading && (
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-4">
-               <div className="w-10 h-10 border-2 border-[var(--color-navy)] border-t-transparent rounded-full animate-spin"></div>
-               <span className="label-mono text-[10px] uppercase font-black tracking-widest text-[var(--color-navy)]">Syncing Central Registry...</span>
-            </div>
+          <div className="absolute inset-0 bg-white/40 backdrop-blur-md z-20 flex flex-col items-center justify-center gap-6">
+             <RefreshCw size={40} className="animate-spin text-[var(--color-gold)]" />
+             <span className="text-[11px] font-black tracking-[0.45em] uppercase text-slate-400">Synchronizing Global Root...</span>
           </div>
         )}
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-slate-50/50 border-b border-slate-100">
-              <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Identity</th>
-              <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Governance Role</th>
-              <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Protocol Status</th>
-              <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Verification Date</th>
-              <th className="px-8 py-5 text-right"></th>
+            <tr className="bg-slate-50/30 border-b border-slate-100/50">
+              <th className="px-10 py-8 text-left text-[10px] font-black font-mono uppercase tracking-[0.4em] text-slate-300">Identity Record</th>
+              <th className="px-10 py-8 text-left text-[10px] font-black font-mono uppercase tracking-[0.4em] text-slate-300">Auth Tier</th>
+              <th className="px-10 py-8 text-left text-[10px] font-black font-mono uppercase tracking-[0.4em] text-slate-300">Terminal Status</th>
+              <th className="px-10 py-8 text-right text-[10px] font-black font-mono uppercase tracking-[0.4em] text-slate-300">Protocol Date</th>
+              <th className="px-10 py-8 text-right"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
-            {filteredUsers.map((user) => (
-              <tr key={user.id} className="group hover:bg-slate-50/50 transition-colors">
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-[var(--color-cream-2)] border border-slate-200 flex items-center justify-center text-[var(--color-navy)] font-bold text-xs group-hover:bg-white group-hover:border-[var(--color-gold)] transition-all">
+          <tbody className="divide-y divide-slate-100/30">
+            {filteredUsers.length > 0 ? filteredUsers.map((user, idx) => (
+              <tr key={user.id} className="group hover:bg-[var(--color-gold-light)]/5 transition-all animate-fade-up" style={{ animationDelay: `${idx * 0.05}s` }}>
+                <td className="px-10 py-10">
+                  <div className="flex items-center gap-6">
+                    <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-[var(--color-navy)] font-serif font-black text-lg shadow-xl group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all duration-500">
                       {user.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-[var(--color-navy)]">{user.name}</div>
-                      <div className="text-[11px] text-slate-400 font-mono font-bold lowercase opacity-60 tracking-tighter flex items-center gap-1">
-                        <Mail size={10} /> {user.email}
+                      <div className="text-base font-bold text-[var(--color-navy)] tracking-tight group-hover:translate-x-1 transition-transform">{user.name}</div>
+                      <div className="text-[11px] text-slate-300 font-mono font-black lowercase tracking-tighter mt-1 italic opacity-60 flex items-center gap-2">
+                        <Mail size={12} className="text-[var(--color-gold)]" /> {user.email}
                       </div>
                     </div>
                   </div>
                 </td>
-                <td className="px-8 py-6">
-                  <span className={`text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest border ${
-                    user.role === 'SUPER_ADMIN' ? 'bg-rose-50 text-rose-600 border-rose-100' :
-                    user.role === 'COMPANY_ADMIN' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                    user.role === 'SUPERVISOR' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
-                    user.role === 'SCHOOL_ADMIN' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                <td className="px-10 py-10">
+                  <span className={`text-[10px] px-3 py-1 rounded-xl font-black uppercase tracking-widest border transition-all ${
+                    user.role === 'SUPER_ADMIN' ? 'bg-rose-50 text-rose-600 border-rose-100 group-hover:bg-rose-600 group-hover:text-white' :
+                    user.role === 'COMPANY_ADMIN' ? 'bg-amber-50 text-amber-600 border-amber-100 group-hover:bg-amber-600 group-hover:text-white' :
+                    user.role === 'SUPERVISOR' ? 'bg-indigo-50 text-indigo-600 border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white' :
+                    user.role === 'SCHOOL_ADMIN' ? 'bg-blue-50 text-blue-600 border-blue-100 group-hover:bg-blue-600 group-hover:text-white' :
                     'bg-slate-50 text-slate-400 border-slate-100'
                   }`}>
                     {user.role.replace('_', ' ')}
                   </span>
                 </td>
-                <td className="px-8 py-6">
+                <td className="px-10 py-10">
                   <div className="flex items-center gap-3">
-                    <span className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${
+                    <div className={`h-2.5 w-2.5 rounded-full ${user.status === 'ACTIVE' || user.status === 'VERIFIED' ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.5)]' : 'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.5)]'}`}></div>
+                    <span className={`text-[10px] font-black uppercase tracking-[0.25em] ${
                       user.status === 'ACTIVE' || user.status === 'VERIFIED' ? 'text-emerald-600' : 
                       user.status === 'SUSPENDED' ? 'text-amber-600' : 'text-slate-400'
                     }`}>
-                      {user.status === 'ACTIVE' || user.status === 'VERIFIED' ? <ShieldCheck size={14} /> : <ShieldAlert size={14} />}
                       {user.status}
                     </span>
                   </div>
                 </td>
-                <td className="px-8 py-6 text-right">
-                  <span className="text-[11px] font-mono font-bold text-slate-300 uppercase">{user.joinedDate}</span>
+                <td className="px-10 py-10 text-right">
+                  <span className="text-[12px] font-mono font-black text-slate-200 uppercase tracking-tighter">{user.joinedDate || 'Sync Required'}</span>
                 </td>
-                <td className="px-8 py-6 text-right">
-                  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                <td className="px-10 py-10 text-right">
+                <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     {user.status !== 'SUSPENDED' ? (
                       <button 
                         onClick={() => handleStatusChange(user.id, 'SUSPENDED')}
-                        className="p-2 text-amber-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg" 
+                        className="w-11 h-11 bg-amber-50 text-amber-500 hover:bg-amber-600 hover:text-white rounded-xl flex items-center justify-center transition-all shadow-sm" 
                         title="Suspend Identity"
                       >
-                        <UserX size={16} />
+                        <UserX size={18} />
                       </button>
                     ) : (
                       <button 
                          onClick={() => handleStatusChange(user.id, 'ACTIVE')}
-                         className="p-2 text-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg" 
+                         className="w-11 h-11 bg-emerald-50 text-emerald-500 hover:bg-emerald-600 hover:text-white rounded-xl flex items-center justify-center transition-all shadow-sm" 
                          title="Activate Identity"
                       >
-                        <UserCheck size={16} />
+                        <UserCheck size={18} />
                       </button>
                     )}
                     <button 
                       onClick={() => setIsDeleting(user.id)}
-                      className="p-2 text-rose-300 hover:text-rose-600 hover:bg-rose-50 rounded-lg" 
+                      className="w-11 h-11 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-xl flex items-center justify-center transition-all shadow-sm" 
                       title="Purge Identity"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={18} />
                     </button>
-                    <button className="p-2 text-slate-300 hover:text-[var(--color-navy)] hover:bg-slate-100 rounded-lg"><MoreVertical size={16} /></button>
+                    <button className="w-11 h-11 bg-slate-50 text-slate-400 hover:bg-[var(--color-navy)] hover:text-white rounded-xl flex items-center justify-center transition-all shadow-sm">
+                      <ArrowUpRight size={18} />
+                    </button>
                   </div>
                 </td>
               </tr>
-            ))}
+            )) : !isLoading && (
+              <tr>
+                 <td colSpan={5} className="py-32 text-center">
+                    <div className="flex flex-col items-center gap-6 opacity-10">
+                       <Fingerprint size={80} className="text-[var(--color-navy)]" />
+                       <h3 className="text-2xl font-black uppercase tracking-[0.5em]">Ledger Empty</h3>
+                    </div>
+                 </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* Provision Modal */}
+      {/* Modern Provisioning Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/20 animate-slide-up">
-            <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
-              <div className="flex items-center gap-4">
-                 <div className="w-12 h-12 bg-[var(--color-navy)] text-white rounded-2xl flex items-center justify-center shadow-lg"><UserPlus size={24} /></div>
-                 <div>
-                    <h3 className="text-xl font-serif text-[var(--color-navy)]">Provision <em className="italic">Identity</em></h3>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Global Governance Protocol</p>
-                 </div>
-              </div>
-              <button 
-                onClick={() => setIsModalOpen(false)}
-                className="p-2 text-slate-300 hover:text-slate-600 transition-colors"
-              >
-                <X size={24} />
-              </button>
-            </div>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[var(--color-navy)]/90 backdrop-blur-2xl animate-fade-in">
+          <div className="w-full max-w-2xl bg-white rounded-[3.5rem] shadow-[0_60px_150px_rgba(0,0,0,0.4)] overflow-hidden border border-white/20 animate-scale-in relative">
+            <div className="absolute top-0 left-0 w-full h-[6px] bg-gradient-to-r from-rose-600 via-[var(--color-gold)] to-rose-600"></div>
             
-            <form onSubmit={handleProvision} className="p-8 space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">First Name</label>
-                  <input 
-                    type="text" required 
-                    value={newUser.firstName}
-                    onChange={(e) => setNewUser({...newUser, firstName: e.target.value})}
-                    placeholder="Enter first name"
-                    className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)]" 
-                  />
+            <div className="p-16">
+               <div className="flex items-center justify-between mb-12">
+                  <div className="space-y-4">
+                     <div className="flex items-center gap-4">
+                        <div className="w-10 h-[1.5px] bg-rose-600"></div>
+                        <span className="text-[11px] font-mono font-black text-rose-600 uppercase tracking-[0.4em]">Administrative Terminal</span>
+                     </div>
+                     <h3 className="text-4xl font-serif text-[var(--color-navy)] leading-tight font-bold italic">Provision Identity</h3>
+                  </div>
+                  <button onClick={() => setIsModalOpen(false)} className="w-16 h-16 rounded-[1.5rem] bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition-all rotate-[-90deg] hover:rotate-0">
+                    <X size={32} />
+                  </button>
+               </div>
+               
+               <form onSubmit={handleProvision} className="space-y-8">
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 ml-1">Legal Given Name</label>
+                    <input 
+                      type="text" required 
+                      value={newUser.firstName}
+                      onChange={(e) => setNewUser({...newUser, firstName: e.target.value})}
+                      placeholder="e.g., Alexander"
+                      className="w-full h-16 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-base font-medium outline-none focus:ring-1 focus:ring-[var(--color-gold)] focus:bg-white transition-all shadow-inner" 
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 ml-1">Legal Surname</label>
+                    <input 
+                      type="text" required 
+                      value={newUser.lastName}
+                      onChange={(e) => setNewUser({...newUser, lastName: e.target.value})}
+                      placeholder="e.g., Sterling"
+                      className="w-full h-16 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-base font-medium outline-none focus:ring-1 focus:ring-[var(--color-gold)] focus:bg-white transition-all shadow-inner" 
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Last Name</label>
-                  <input 
-                    type="text" required 
-                    value={newUser.lastName}
-                    onChange={(e) => setNewUser({...newUser, lastName: e.target.value})}
-                    placeholder="Enter last name"
-                    className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)]" 
-                  />
+
+                <div className="space-y-3">
+                  <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 ml-1">Verified Digital Origin (Email)</label>
+                  <div className="relative group">
+                    <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-200 group-focus-within:text-[var(--color-gold)] transition-colors" size={20} />
+                    <input 
+                      type="email" required 
+                      value={newUser.email}
+                      onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                      placeholder="identity-root@institutional-cluster.edu"
+                      className="w-full h-16 bg-slate-50 border border-slate-100 rounded-2xl pl-16 pr-6 text-base font-medium outline-none focus:ring-1 focus:ring-[var(--color-gold)] focus:bg-white transition-all shadow-inner" 
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Secure Email Identity</label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                  <input 
-                    type="email" required 
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({...newUser, email: e.target.value})}
-                    placeholder="identity@domain.com"
-                    className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)]" 
-                  />
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 ml-1">Cluster Access Tier</label>
+                    <div className="relative">
+                       <select 
+                        value={newUser.role}
+                        onChange={(e) => setNewUser({...newUser, role: e.target.value as UserDTO['role']})}
+                        className="w-full h-16 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-sm font-black uppercase tracking-widest outline-none focus:ring-1 focus:ring-[var(--color-gold)] focus:bg-white transition-all appearance-none cursor-pointer"
+                       >
+                        <option value="INTERN">Intern Agent</option>
+                        <option value="COMPANY_ADMIN">Company Principal</option>
+                        <option value="SUPERVISOR">Academic Audit</option>
+                        <option value="SCHOOL_ADMIN">Institutional Root</option>
+                       </select>
+                       <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-20"><ArrowUpRight size={20} className="rotate-90" /></div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 ml-1">Security Hash Pattern</label>
+                    <div className="flex gap-3">
+                      <input 
+                        type="password" required 
+                        value={newUser.password || ''}
+                        onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                        placeholder="Secure pass-key"
+                        className="flex-1 h-16 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-base outline-none focus:ring-1 focus:ring-[var(--color-gold)] focus:bg-white transition-all font-mono" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          const pass = Math.random().toString(36).slice(-8) + '@' + Math.floor(100+Math.random()*900) + 'X!';
+                          setNewUser({...newUser, password: pass});
+                          toast('High-entropy hash generated.', 'success', 'Security');
+                        }}
+                        className="h-16 px-6 bg-[var(--color-gold-light)]/20 border border-[var(--color-gold-faint)] text-[var(--color-gold)] rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[var(--color-gold)] hover:text-white transition-all shadow-lg shadow-[var(--color-gold-light)]/10"
+                      >
+                        Gen.
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Governance Role</label>
-                <select 
-                  value={newUser.role}
-                  onChange={(e) => setNewUser({...newUser, role: e.target.value as UserDTO['role']})}
-                  className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)] appearance-none"
-                >
-                  <option value="INTERN">Intern Agent</option>
-                  <option value="COMPANY_ADMIN">Company Administrator</option>
-                  <option value="SUPERVISOR">Academic Supervisor</option>
-                  <option value="SCHOOL_ADMIN">Institutional Lead</option>
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Secure Password Protocol</label>
-                <div className="flex gap-2">
-                  <input 
-                    type="text" required 
-                    value={newUser.password || ''}
-                    onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-                    placeholder="Enter secure password"
-                    className="flex-1 h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)] font-mono" 
-                  />
+                <div className="pt-8 flex gap-6">
                   <button 
-                    type="button"
-                    onClick={() => {
-                      const pass = Math.random().toString(36).slice(-8) + '!' + Math.floor(Math.random()*100);
-                      setNewUser({...newUser, password: pass});
-                      toast('Secure hash generated locally.', 'success', 'Security');
-                    }}
-                    className="h-12 px-4 bg-slate-100 text-slate-500 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-200 transition-all shadow-sm"
+                    type="submit"
+                    className="flex-1 h-16 bg-[var(--color-navy)] text-white rounded-[1.8rem] text-[12px] font-black uppercase tracking-[0.4em] hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_20px_40px_rgba(26,48,40,0.3)] flex items-center justify-center gap-4"
                   >
-                    Generate
+                    Authenticate & Provision <ShieldCheck size={24} className="text-[var(--color-gold)]" />
                   </button>
                 </div>
-              </div>
-
-              <div className="pt-4 flex gap-4">
-                <button 
-                  type="button" 
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1 h-12 border border-slate-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition-all font-mono"
-                >
-                  ABORT
-                </button>
-                <button 
-                  type="submit"
-                  className="flex-[2] h-12 bg-[var(--color-navy)] text-white rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-3"
-                >
-                  <ShieldCheck size={18} /> INITIATE PROVISIONING
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Delete Confirmation */}
+      {/* Delete Confirmation Overlay */}
       {isDeleting && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-red-950/20 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl p-8 border border-red-100 text-center animate-bounce-in">
-            <div className="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm"><Trash2 size={32} /></div>
-            <h3 className="text-xl font-serif text-[var(--color-navy)] mb-2">Purge <em className="italic text-red-600">Identity</em>?</h3>
-            <p className="text-xs text-slate-400 mb-8 px-4 font-medium leading-relaxed">Warning: This action will irrevocably remove the identity from the platform registry. All access tokens will be invalidated immediately.</p>
-            <div className="flex gap-3">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-red-950/80 backdrop-blur-2xl animate-fade-in">
+          <div className="w-full max-w-lg bg-white rounded-[3rem] shadow-[0_60px_100px_rgba(220,38,38,0.2)] p-16 border border-red-50 text-center animate-scale-in relative overflow-hidden">
+            <div className="w-24 h-24 bg-rose-50 text-rose-600 rounded-[2rem] flex items-center justify-center mx-auto mb-10 shadow-2xl animate-pulse"><Trash2 size={48} /></div>
+            <h3 className="text-4xl font-serif text-[var(--color-navy)] mb-6 font-bold">Terminal <em className="italic text-rose-600">Purge</em>?</h3>
+            <p className="text-base text-slate-400 mb-12 px-8 font-medium leading-relaxed italic">Warning: This action will irrevocably decommission the identity from the global register. Protocol sync will cascade to all nodes.</p>
+            <div className="flex gap-6">
                <button 
                 onClick={() => setIsDeleting(null)}
-                className="flex-1 h-11 border border-slate-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition-all"
+                className="flex-1 h-16 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 hover:bg-white hover:text-[var(--color-navy)] transition-all"
                >
                  Cancel
                </button>
                <button 
                  onClick={() => handleDelete(isDeleting)}
-                 className="flex-1 h-11 bg-red-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-red-700 transition-all shadow-lg shadow-red-200"
+                 className="flex-1 h-16 bg-rose-600 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] hover:bg-rose-700 transition-all shadow-2xl shadow-rose-600/30"
                >
-                 Purge
+                 Purge Root
                </button>
+            </div>
+            
+            <div className="absolute -bottom-10 -right-10 opacity-5">
+               <ShieldAlert size={160} className="text-rose-600" />
             </div>
           </div>
         </div>

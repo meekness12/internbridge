@@ -22,17 +22,8 @@ CREATE TABLE INTERNSHIP (
     FOREIGN KEY (Company_ID) REFERENCES COMPANY(Company_ID)
 );
 
--- 4. Create the LOGBOOK table
--- Represents the "RECORDS" 1:N relationship by including Reg_Number
-CREATE TABLE LOGBOOK (
-    Logbook_ID INT PRIMARY KEY AUTO_INCREMENT, -- Added as a surrogate primary key
-    Date DATE NOT NULL,
-    Hours DECIMAL(5,2) NOT NULL,
-    Reg_Number VARCHAR(50),                    -- Foreign Key linking to STUDENT
-    FOREIGN KEY (Reg_Number) REFERENCES STUDENT(Reg_Number)
-);
 
--- 5. Create the APPLIES junction table
+-- 4. Create the APPLIES junction table
 -- Resolves the M:N relationship between STUDENT and INTERNSHIP
 CREATE TABLE APPLIES (
     Reg_Number VARCHAR(50),

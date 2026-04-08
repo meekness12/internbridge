@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Search, 
   Home, 
@@ -11,9 +11,15 @@ import {
   BarChart2,
   ChevronDown,
   Users,
-  Building
+  Building,
+  Globe,
+  Zap,
+  ShieldCheck,
+  Settings,
+  LayoutGrid,
+  Menu
 } from 'lucide-react';
-import { ThemeToggle } from '../ThemeToggle';
+
 import { ProfileDropdown } from './ProfileDropdown';
 import authService from '../../api/authService';
 
@@ -21,6 +27,7 @@ const DashboardLayout: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [userProfile, setUserProfile] = React.useState<any>(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const role = localStorage.getItem('role') || 'INTERN'; 
   
   React.useEffect(() => {
@@ -42,179 +49,144 @@ const DashboardLayout: React.FC = () => {
   const isAdmin = role === 'SUPER_ADMIN';
   const isSchoolAdmin = role === 'SCHOOL_ADMIN';
 
-  const sidebarItems = isAdmin ? [
-    { icon: <Home size={22} />, path: '/dashboard', label: 'Admin Console' },
-    { icon: <Users size={22} />, path: '/dashboard/users', label: 'User Management' },
-    { icon: <Briefcase size={22} />, path: '/dashboard/companies', label: 'Company Partners' },
-    { icon: <FileText size={22} />, path: '/dashboard/reports', label: 'System Reports' },
-    { icon: <CheckSquare size={22} />, path: '/dashboard/logs', label: 'Audit Logs' },
-    { icon: <Bell size={22} />, path: '/dashboard/notifications', label: 'System Alerts', badge: '2' },
-    { icon: <BarChart2 size={22} />, path: '/dashboard/analytics', label: 'Global Analytics' },
+  const navItems = isAdmin ? [
+    { icon: <LayoutGrid size={24} />, path: '/dashboard', label: 'Home' },
+    { icon: <Users size={24} />, path: '/dashboard/users', label: 'Users' },
+    { icon: <Briefcase size={24} />, path: '/dashboard/companies', label: 'Partners' },
+    { icon: <FileText size={24} />, path: '/dashboard/reports', label: 'Reports' },
+    { icon: <CheckSquare size={24} />, path: '/dashboard/logs', label: 'Audit' },
+    { icon: <MessageSquare size={24} />, path: '/dashboard/messages', label: 'Messaging' },
+    { icon: <Bell size={24} />, path: '/dashboard/notifications', label: 'Notifications' },
   ] : isSchoolAdmin ? [
-    { icon: <Home size={22} />, path: '/dashboard', label: 'Academic Console' },
-    { icon: <Building size={22} />, path: '/dashboard/faculties', label: 'Faculty Management' },
-    { icon: <Users size={22} />, path: '/dashboard/students', label: 'Student Directory' },
-    { icon: <Briefcase size={22} />, path: '/dashboard/partners', label: 'Industry Partners' },
-    { icon: <CheckSquare size={22} />, path: '/dashboard/compliance', label: 'Compliance & Audits' },
-    { icon: <FileText size={22} />, path: '/dashboard/reports', label: 'Academic Reports' },
-    { icon: <BarChart2 size={22} />, path: '/dashboard/analytics', label: 'School Analytics' },
+    { icon: <Home size={24} />, path: '/dashboard', label: 'Home' },
+    { icon: <Building size={24} />, path: '/dashboard/faculties', label: 'Faculties' },
+    { icon: <Users size={24} />, path: '/dashboard/students', label: 'Students' },
+    { icon: <Briefcase size={24} />, path: '/dashboard/partners', label: 'Industry' },
+    { icon: <CheckSquare size={24} />, path: '/dashboard/compliance', label: 'Governance' },
+    { icon: <MessageSquare size={24} />, path: '/dashboard/messages', label: 'Messaging' },
+    { icon: <Bell size={24} />, path: '/dashboard/notifications', label: 'Notifications' },
   ] : isLecturer ? [
-    { icon: <Home size={22} />, path: '/dashboard', label: 'Supervision Home' },
-    { icon: <Users size={22} />, path: '/dashboard/students', label: 'My Students', badge: '18' },
-    { icon: <FileText size={22} />, path: '/dashboard/logbook', label: 'Logbook Grading', badge: '7' },
-    { icon: <Briefcase size={22} />, path: '/dashboard/placements', label: 'Placements' },
-    { icon: <MessageSquare size={22} />, path: '/dashboard/messages', label: 'Messages' },
-    { icon: <Bell size={22} />, path: '/dashboard/notifications', label: 'Notifications', badge: '3' },
-    { icon: <BarChart2 size={22} />, path: '/dashboard/analytics', label: 'Academic Analytics' },
+    { icon: <Home size={24} />, path: '/dashboard', label: 'Home' },
+    { icon: <Users size={24} />, path: '/dashboard/students', label: 'Cohort' },
+    { icon: <Briefcase size={24} />, path: '/dashboard/placements', label: 'Placements' },
+    { icon: <MessageSquare size={24} />, path: '/dashboard/messages', label: 'Messaging' },
+    { icon: <Bell size={24} />, path: '/dashboard/notifications', label: 'Notifications' },
+    { icon: <BarChart2 size={24} />, path: '/dashboard/analytics', label: 'Analytics' },
   ] : isCompany ? [
-    { icon: <Home size={22} />, path: '/dashboard', label: 'Home' },
-    { icon: <Users size={22} />, path: '/dashboard/applicants', label: 'Applicants', badge: '12' },
-    { icon: <Briefcase size={22} />, path: '/dashboard/interns', label: 'Interns', badge: '8' },
-    { icon: <FileText size={22} />, path: '/dashboard/logbook', label: 'Logbook Review' },
-    { icon: <MessageSquare size={22} />, path: '/dashboard/messages', label: 'Messages' },
-    { icon: <Bell size={22} />, path: '/dashboard/notifications', label: 'Notifications', badge: '5' },
-    { icon: <BarChart2 size={22} />, path: '/dashboard/analytics', label: 'Analytics' },
+    { icon: <Home size={24} />, path: '/dashboard', label: 'Home' },
+    { icon: <Users size={24} />, path: '/dashboard/applicants', label: 'Talent' },
+    { icon: <Briefcase size={24} />, path: '/dashboard/interns', label: 'Interns' },
+    { icon: <MessageSquare size={24} />, path: '/dashboard/messages', label: 'Messaging' },
+    { icon: <Bell size={24} />, path: '/dashboard/notifications', label: 'Notifications' },
+    { icon: <BarChart2 size={24} />, path: '/dashboard/analytics', label: 'Analytics' },
   ] : [
-    { icon: <Home size={22} />, path: '/dashboard', label: 'Home' },
-    { icon: <Briefcase size={22} />, path: '/dashboard/internships', label: 'Placements', badge: '3' },
-    { icon: <FileText size={22} />, path: '/dashboard/logbook', label: 'Logbooks' },
-    { icon: <MessageSquare size={22} />, path: '/dashboard/messages', label: 'Messages' },
-    { icon: <Bell size={22} />, path: '/dashboard/notifications', label: 'Notifications', badge: '7' },
-    { icon: <BarChart2 size={22} />, path: '/dashboard/analytics', label: 'Analytics' },
+    { icon: <Home size={24} />, path: '/dashboard', label: 'Home' },
+    { icon: <Briefcase size={24} />, path: '/dashboard/internships', label: 'Placements' },
+    { icon: <MessageSquare size={24} />, path: '/dashboard/messages', label: 'Messaging' },
+    { icon: <Bell size={24} />, path: '/dashboard/notifications', label: 'Notifications' },
+    { icon: <BarChart2 size={24} />, path: '/dashboard/analytics', label: 'Performance' },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-[var(--color-navy)]">
-      {/* Top Navbar */}
-      <header className="topnav h-16 flex items-center px-6 justify-between text-white sticky top-0 z-50">
-        <div className="flex items-center gap-8">
-          {/* Logo Section */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[var(--color-gold)] rounded flex items-center justify-center font-serif font-bold text-black text-xl">
+    <div className="min-h-screen flex flex-col font-sans text-slate-900 bg-[#F4F2EE]">
+      {/* LinkedIn-Style Professional Topbar (Forest Edition) */}
+      <header className="h-[75px] flex items-center justify-center sticky top-0 z-[100] bg-[var(--color-forest)] border-b border-white/10 shadow-xl w-full font-sans px-4">
+        <div className="max-w-[1128px] w-full flex items-center justify-between">
+          
+          <div className="flex items-center gap-3 flex-1 lg:flex-none">
+            {/* Logo */}
+            <Link to="/dashboard" className="w-10 h-10 bg-[var(--color-gold)] rounded-lg flex items-center justify-center font-serif font-black text-white text-xl shadow-lg hover:scale-105 transition-all no-underline">
               IB
+            </Link>
+
+            {/* Global Search Interface */}
+            <div className="relative group ml-1 hidden md:block">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-[var(--color-gold)] transition-colors" size={16} />
+              <input 
+                type="text" 
+                placeholder="Search Nodes..." 
+                className="bg-white/10 border-none rounded-md py-2.5 pl-10 pr-4 text-sm w-[280px] text-white placeholder:text-white/40 focus:w-[400px] focus:bg-white/20 focus:ring-2 focus:ring-[var(--color-gold)]/20 transition-all outline-none"
+              />
             </div>
-            <span className="font-serif italic text-2xl tracking-tight hidden md:block">InternBridge</span>
           </div>
 
-          {/* Role Indicator */}
-          {isCompany && (
-            <div className="h-6 w-[1px] bg-white/20 hidden lg:block mx-2"></div>
-          )}
-          {isCompany && (
-            <div className="hidden lg:flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest opacity-90">
-              Techwave Technologies <span className="text-[var(--color-gold)]">•</span> Company Admin
-            </div>
-          )}
+          {/* Navigation Items (Icon over Label) */}
+          <nav className="flex items-center h-full">
+            <div className="flex items-center h-full lg:gap-1">
+              {navItems.map((item, idx) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link 
+                    key={idx} 
+                    to={item.path} 
+                    className={`flex flex-col items-center justify-center min-w-[90px] h-[75px] transition-all relative group no-underline ${
+                      isActive ? 'text-[var(--color-gold)]' : 'text-[var(--color-gold)]/60 hover:text-[var(--color-gold)]'
+                    }`}
+                  >
+                    <div className={`relative mb-1 group-hover:scale-110 transition-transform text-[var(--color-gold)]`}>
+                      {React.cloneElement(item.icon as any, { size: 24 })}
+                      {item.label === 'Notifications' && (
+                        <span className="absolute -top-1 -right-1.5 w-4 h-4 bg-rose-600 text-[10px] font-black text-white rounded-full flex items-center justify-center border-2 border-[var(--color-forest)]">3</span>
+                      )}
+                    </div>
+                    <span className={`text-[11px] font-bold tracking-tight uppercase ${isActive ? 'text-[var(--color-gold)]' : 'text-[var(--color-gold)]/50 group-hover:text-[var(--color-gold)]'}`}>
+                      {item.label}
+                    </span>
+                    {isActive && (
+                      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-[var(--color-gold)] shadow-[0_-2px_10px_rgba(184,131,26,0.6)] rounded-t-full"></div>
+                    )}
+                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--color-gold)]/20 scale-x-0 group-hover:scale-x-100 transition-all"></div>
+                  </Link>
+                );
+              })}
 
-          {/* Search Bar */}
-          <div className="relative hidden xl:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50" size={17} />
-            <input 
-              type="text" 
-              placeholder="Search interns, contracts, apps..." 
-              className="bg-[#1B2B24] border border-white/10 rounded-full py-2 pl-9 pr-4 text-xs w-[320px] placeholder:text-white/40 focus:ring-1 focus:ring-[var(--color-gold)] transition-all outline-none"
-            />
-          </div>
-        </div>
+              <div className="h-8 w-[1px] bg-white/10 mx-4 hidden lg:block"></div>
 
-        {/* Top Right Actions */}
-        <div className="flex items-center gap-6">
-          <div className="hidden md:flex items-center gap-5 text-white/80">
-            {sidebarItems.slice(0, 6).map((item, idx) => (
-              <Link key={idx} to={item.path} className="hover:text-white transition-colors relative">
-                {React.cloneElement(item.icon as any, { 
-                  size: 20, 
-                  className: location.pathname === item.path ? 'fill-[var(--color-gold)] text-[var(--color-gold)]' : '' 
-                })}
-                {item.badge && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                    {item.badge}
-                  </span>
-                )}
-                {location.pathname === item.path && (
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[var(--color-gold)] rounded-full"></div>
-                )}
-              </Link>
-            ))}
-          </div>
+              {/* Profile Selection */}
+              <div className="relative h-full">
+                <button 
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className={`flex flex-col items-center justify-center min-w-[80px] h-[75px] transition-all group ${
+                    isProfileOpen ? 'text-[var(--color-gold)]' : 'text-[var(--color-gold)]/60 hover:text-[var(--color-gold)]'
+                  }`}
+                >
+                  <div className={`w-7 h-7 rounded-full mb-1 flex items-center justify-center text-white font-serif font-black text-[11px] shadow-lg border-2 border-[var(--color-gold)]/30 transition-transform group-hover:scale-110 ${
+                    isCompany ? 'bg-amber-500' : isAdmin ? 'bg-rose-600' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-forest)]'
+                  }`}>
+                    {userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : 'IB'}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className={`text-[11px] font-bold tracking-tight uppercase ${isProfileOpen ? 'text-[var(--color-gold)]' : 'text-[var(--color-gold)]/50 group-hover:text-[var(--color-gold)]'}`}>Me</span>
+                    <ChevronDown size={12} className={`transition-transform text-[var(--color-gold)] ${isProfileOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                </button>
 
-          <div className="flex items-center gap-5 mr-2">
-            <div className="relative text-white/60 hover:text-white transition-colors cursor-pointer">
-              <Bell size={20} />
-              <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-[var(--color-forest)]"></div>
-            </div>
-            <span className="text-[10px] font-mono font-bold text-white/60 opacity-80">(o)</span>
-            <ThemeToggle />
-          </div>
-
-          {/* User Profile Pill */}
-          <div className="relative">
-            <div 
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center gap-3 bg-[#1B2B24] border border-white/10 rounded-full py-1.5 pl-4 pr-1.5 cursor-pointer hover:bg-[#25392F] transition-all"
-            >
-              <div className="flex flex-col items-end leading-tight mr-1 font-sans">
-                <span className="text-sm font-bold text-white tracking-tight">
-                  {userProfile?.name || (isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim')}
-                </span>
-                <span className="text-[10px] text-white/60 font-medium font-mono uppercase tracking-widest">
-                  {userProfile?.role?.replace('_', ' ') || role.replace('_', ' ')} 
-                </span>
+                <ProfileDropdown 
+                  isOpen={isProfileOpen} 
+                  onClose={() => setIsProfileOpen(false)} 
+                  user={{
+                    name: userProfile?.name || (isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'),
+                    role: userProfile?.role?.replace('_', ' ') || role.replace('_', ' '),
+                    initials: userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'),
+                    avatarColor: isCompany ? 'bg-amber-500' : isAdmin ? 'bg-rose-600' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-[var(--color-navy)]' : 'bg-[var(--color-forest)]'
+                  }}
+                />
               </div>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-black font-bold text-xs border border-white/20 shadow-inner ${
-                isCompany ? 'bg-[#EAB308]' : isAdmin ? 'bg-red-500' : isSchoolAdmin ? 'bg-indigo-400' : isLecturer ? 'bg-purple-400' : 'bg-[var(--color-gold)]'
-              }`}>
-                {userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI')}
-              </div>
-              <ChevronDown size={14} className={`text-white/40 ml-0.5 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
-            </div>
 
-            <ProfileDropdown 
-              isOpen={isProfileOpen} 
-              onClose={() => setIsProfileOpen(false)} 
-              user={{
-                name: userProfile?.name || (isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'),
-                role: userProfile?.role?.replace('_', ' ') || role.replace('_', ' '),
-                initials: userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'),
-                avatarColor: isCompany ? 'bg-[#EAB308]' : isAdmin ? 'bg-red-500' : isSchoolAdmin ? 'bg-indigo-400' : isLecturer ? 'bg-purple-400' : 'bg-[var(--color-gold)]'
-              }}
-            />
-          </div>
+            </div>
+          </nav>
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar (Rail) */}
-        <aside className="w-20 bg-[var(--color-cream)] border-r border-[var(--color-border)] flex flex-col items-center py-6 gap-4 shrink-0">
-          {sidebarItems.map((item, idx) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link 
-                key={idx} 
-                to={item.path}
-                className={`rail-item relative ${isActive ? 'active' : ''}`}
-                aria-label={item.label}
-              >
-                {item.icon}
-                {item.badge && (
-                  <span className="absolute top-1 right-1 bg-red-600 text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold border border-[var(--color-cream)]">
-                    {item.badge}
-                  </span>
-                )}
-                {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-[var(--color-navy)] rounded-r-full"></div>
-                )}
-              </Link>
-            );
-          })}
-        </aside>
-
-        {/* Main Content Area */}
-        <main className="flex-1 bg-[var(--background)] p-12 overflow-y-auto">
-          <div className="max-w-7xl mx-auto">
+      {/* Main Workspace Frame */}
+      <div className="flex flex-1 justify-center w-full min-h-screen">
+        <div className="max-w-[1128px] w-full flex gap-6 pt-6 pb-20 px-4">
+          
+          {/* Main Content Area */}
+          <main className="flex-1 min-w-0">
             <Outlet />
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
     </div>
   );

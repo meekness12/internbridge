@@ -74,17 +74,7 @@ The API is primarily versioned under `/api/v1/` for core governance and `/api/` 
 | `/company/{id}` | `GET` | Active placements for company | Company |
 | `/` | `GET` | List all placements | Admin |
 
-### 📔 Academic Tracking (`/api/logbooks`)
 
-| Endpoint | Method | Description | Access |
-| :--- | :---: | :--- | :--- |
-| `/` | `POST` | Submit daily/weekly log entry | Intern |
-| `/{id}` | `GET` | Get specific log entry | User |
-| `/placement/{id}` | `GET` | History of log entries for placement | User |
-| `/{id}` | `PUT` | Update log entry content | Intern |
-| `/{id}/company-status`| `PATCH` | Company supervisor sign-off | Company |
-| `/{id}/lecturer-status`| `PATCH` | Academic lecturer sign-off | Lecturer |
-| `/{id}` | `DELETE` | Remove log entry | Intern |
 
 ### 📜 Agreements & Communication (`/api/contracts` | `/api/messages`)
 
@@ -162,7 +152,7 @@ Roles currently supported:
 - `ROLE_SUPER_ADMIN`: Full system control.
 - `ROLE_SCHOOL_ADMIN`: Institution governance.
 - `ROLE_COMPANY_SUPERVISOR`: Recruitment & placement management.
-- `ROLE_STUDENT`: Applications, logbooks, and contracts.
+- `ROLE_STUDENT`: Applications and contracts.
 
 ---
 

@@ -2,7 +2,7 @@
 
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+
 
 @theme {
   /* ── Typography ── */
@@ -20,6 +20,7 @@
   --color-forest-light:   #EAF0EC;   /* tinted bg       */
   --color-forest-faint:   #D2E0D5;   /* border/divider  */
 
+  --color-navy:           #0F172A;   /* deep slate navy */
   --color-gold:           #B8831A;   /* accent          */
   --color-gold-light:     #FBF0DC;   /* tinted bg       */
   --color-gold-faint:     #F3E4C2;   /* subtle border   */
@@ -31,36 +32,36 @@
   --color-indigo-light:   #EEF0FB;
 
   /* ── Semantic UI ── */
-  --color-text:           #18181A;
-  --color-muted:          #7A7068;
-  --color-faint:          #B5AFA6;
-  --color-border:         #E0D9CE;
-  --color-border-dark:    #C8BFB2;
+  --color-text:           #0F172A;
+  --color-muted:          #475569;   /* Accessible Slate-600 */
+  --color-faint:          #64748B;   /* Accessible Slate-500 */
+  --color-border:         #E2E8F0;
+  --color-border-dark:    #CBD5E1;
   --color-white:          #FFFFFF;
 
   /* ── Legacy aliases (keeps existing Tailwind utilities working) ── */
   --color-primary-light:  #254838;   /* was blue  → forest-mid */
   --color-primary-dark:   #1A3028;   /* was blue  → forest     */
-  --color-ice-slate:      #F4EFE6;   /* was grey  → parchment  */
-  --color-deep-navy:      #1A3028;   /* was navy  → forest     */
+  --color-ice-slate:      #F1F5F9;
+  --color-deep-navy:      #1A3028;
 
   /* ── Glass tokens (re-mapped to warm palette) ── */
-  --color-glass-light:        rgba(253, 252, 249, 0.72);
-  --color-glass-dark:         rgba(26, 48, 40, 0.06);
-  --color-glass-light-border: rgba(253, 252, 249, 0.95);
-  --color-glass-dark-border:  rgba(26, 48, 40, 0.12);
+  --color-glass-light:        rgba(255, 255, 255, 0.9);
+  --color-glass-dark:         rgba(26, 48, 40, 0.08);
+  --color-glass-light-border: rgba(255, 255, 255, 0.1);
+  --color-glass-dark-border:  rgba(26, 48, 40, 0.15);
 
   /* ── Shadows ── */
-  --shadow-sm:  0 1px 3px rgba(24,24,26,0.06), 0 0 0 1px #E0D9CE;
-  --shadow-md:  0 4px 16px rgba(24,24,26,0.10), 0 0 0 1px #E0D9CE;
-  --shadow-lg:  0 12px 40px rgba(24,24,26,0.14), 0 0 0 1px #E0D9CE;
-  --shadow-xl:  0 24px 64px rgba(24,24,26,0.18), 0 0 0 1px #C8BFB2;
+  --shadow-sm:  0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 
   /* ── Radius ── */
-  --radius-sm:  8px;
-  --radius:     14px;
-  --radius-lg:  20px;
-  --radius-xl:  28px;
+  --radius-sm:  6px;
+  --radius:     12px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
 }
 
 /* ─────────────────────────────────── BASE ─────────────────────────────────── */
@@ -74,29 +75,7 @@
     --accent-alt: var(--color-gold);
   }
 
-  /* Dark mode — deep forest at night */
-  .dark {
-    --background: #0F1E17;
-    --surface:    #162510;
-    --text:       #F0EDE7;
-    --border:     rgba(26, 48, 40, 0.45);
-    --accent:     #4ade80;
-    --accent-alt: #B8831A;
 
-    --color-parchment:      #0F1E17;
-    --color-cream:          #162510;
-    --color-cream-2:        #1C2E1C;
-    --color-forest:         #4ade80;
-    --color-forest-light:   rgba(74, 222, 128, 0.08);
-    --color-forest-faint:   rgba(74, 222, 128, 0.15);
-    --color-gold:           #FBBF24;
-    --color-gold-light:     rgba(251, 191, 36, 0.08);
-    --color-border:         rgba(255,255,255,0.07);
-    --color-border-dark:    rgba(255,255,255,0.12);
-    --color-text:           #F0EDE7;
-    --color-muted:          #9E9B93;
-    --color-faint:          #5A5750;
-  }
 
   body {
     background-color: var(--background);
@@ -124,9 +103,7 @@
     font-weight: 400;
     color: var(--color-forest);
   }
-  .dark h1 em, .dark h2 em {
-    color: var(--color-gold);
-  }
+
 
   code, kbd, pre, samp {
     font-family: var(--font-mono);
@@ -178,11 +155,7 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
   }
-  .dark .card,
-  .dark .card-elevated {
-    background: var(--color-cream);
-    border-color: var(--color-border);
-  }
+
 
   /* ── Buttons ── */
   .btn {
@@ -212,10 +185,7 @@
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(26, 48, 40, 0.30);
   }
-  .dark .btn-primary {
-    background: var(--color-forest);
-    color: var(--color-parchment);
-  }
+
 
   /* Gold accent button */
   .btn-gold {
@@ -244,10 +214,7 @@
     background: var(--color-forest);
     color: #ffffff;
   }
-  .dark .btn-outline {
-    color: var(--color-forest);
-    border-color: var(--color-forest);
-  }
+
 
   /* Ghost */
   .btn-ghost {
@@ -286,11 +253,7 @@
     border-color: var(--color-forest);
     box-shadow: 0 0 0 3px rgba(26, 48, 40, 0.10);
   }
-  .dark .input {
-    background: var(--color-cream);
-    border-color: var(--color-border);
-    color: var(--color-text);
-  }
+
 
   /* ── Badges / Chips ── */
   .badge {
@@ -399,17 +362,14 @@
     border-radius: 0 3px 3px 0;
     background: var(--color-forest);
   }
-  .dark .rail-item.active { background: var(--color-forest-light); color: var(--color-forest); }
+
 
   /* ── Nav top bar ── */
   .topnav {
     background: var(--color-forest);
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
-  .dark .topnav {
-    background: #0F1E17;
-    border-bottom-color: rgba(255,255,255,0.05);
-  }
+
 
   /* ── Editorial card header (dark banner inside a card) ── */
   .editorial-banner {
@@ -462,21 +422,14 @@
     color: var(--color-forest);
     font-weight: 400;
   }
-  .dark .pull-quote {
-    background: rgba(184,131,26,0.08);
-    border-left-color: var(--color-gold);
-  }
-  .dark .pull-quote-text { color: var(--color-gold); }
+
 
   /* ── Notification item ── */
   .notif-unread {
     background: var(--color-forest-light);
     border-left: 3px solid var(--color-forest);
   }
-  .dark .notif-unread {
-    background: rgba(26, 48, 40, 0.4);
-    border-left-color: #4ade80;
-  }
+
 
   /* ── Skill tag pill ── */
   .skill-tag {
@@ -488,11 +441,7 @@
     color: var(--color-forest-mid);
     border: 1px solid var(--color-forest-faint);
   }
-  .dark .skill-tag {
-    background: rgba(26,48,40,0.4);
-    color: #4ade80;
-    border-color: rgba(74,222,128,0.2);
-  }
+
 
   /* ── Contract / document header ── */
   .doc-header {

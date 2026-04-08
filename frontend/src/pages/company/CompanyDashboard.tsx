@@ -5,16 +5,21 @@ import {
   Search, 
   Plus,
   LayoutDashboard,
-  CheckCircle2,
   Bell,
   RefreshCw,
   X,
-  Send
+  Send,
+  TrendingUp,
+  Target,
+  Zap,
+  Star,
+  Shield,
+  Globe,
+  Lock,
+  ChevronRight,
+  MapPin,
+  ArrowUpRight
 } from 'lucide-react';
-import { PremiumCard } from '../../components/ui/PremiumCard';
-import { PremiumHeader } from '../../components/ui/PremiumHeader';
-import { PremiumTimeline } from '../../components/ui/PremiumTimeline';
-import { PremiumActionGrid } from '../../components/ui/PremiumActionGrid';
 import internshipService from '../../api/internshipService';
 import applicationService from '../../api/applicationService';
 import placementService from '../../api/placementService';
@@ -25,7 +30,6 @@ import { useToast } from '../../context/ToastContext';
 
 const CompanyDashboard: React.FC = () => {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('overview');
   const [internships, setInternships] = useState<InternshipDTO[]>([]);
   const [applications, setApplications] = useState<ApplicationDTO[]>([]);
   const [placements, setPlacements] = useState<PlacementDTO[]>([]);
@@ -34,9 +38,7 @@ const CompanyDashboard: React.FC = () => {
   const [newRole, setNewRole] = useState({ title: '', description: '', requiredSkills: '', deadline: '' });
 
   const userId = localStorage.getItem('userId') || '';
-  const userName = localStorage.getItem('userName') || 'Company';
-  const today = new Date();
-  const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const userName = localStorage.getItem('userName') || 'Corporate Partner';
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -48,7 +50,6 @@ const CompanyDashboard: React.FC = () => {
 
       if (listings.status === 'fulfilled') {
         setInternships(listings.value);
-        // Fetch applications for each internship
         const allApps: ApplicationDTO[] = [];
         for (const listing of listings.value) {
           try {
@@ -80,7 +81,6 @@ const CompanyDashboard: React.FC = () => {
       toast('New role posted successfully!', 'success', 'Published');
       setShowPostModal(false);
       setNewRole({ title: '', description: '', requiredSkills: '', deadline: '' });
-      // Refresh all data to update counters and lists
       fetchData();
     } catch (error) {
       toast('Failed to post role.', 'error');
@@ -90,224 +90,227 @@ const CompanyDashboard: React.FC = () => {
   const pendingApps = applications.filter(a => a.status === 'PENDING' || a.status === 'NEW').length;
 
   const stats = [
-    { label: 'Active Interns', value: placements.length.toString(), trend: placements.length > 0 ? `At ${placements[0].companyName}` : 'None yet', icon: '👤', color: 'ki-1', kpiColor: 'kpi-1' },
-    { label: 'New Applicants', value: applications.length.toString(), trend: `${pendingApps} need review`, icon: '📩', color: 'ki-2', kpiColor: 'kpi-2' },
-    { label: 'Verified Tasks', value: '—', trend: 'Logbook reviews', icon: '✅', color: 'ki-3', kpiColor: 'kpi-3' },
-    { label: 'Company Rating', value: '4.9', trend: 'Partner status', icon: '⭐', color: 'ki-4', kpiColor: 'kpi-4' },
-    { label: 'Open Roles', value: internships.length.toString(), trend: internships.length > 0 ? `${internships.filter(i => i.status === 'OPEN').length} active` : 'Post your first', icon: '💼', color: 'ki-5', kpiColor: 'kpi-5' },
-  ];
-
-  const timelineItems = [
-    ...applications.slice(0, 2).map(app => ({
-      title: `${app.studentName} applied for ${app.internshipTitle}`,
-      meta: `${app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'Recently'} · ${app.status}`,
-      body: app.coverLetter || 'Application received — awaiting review.',
-      color: app.status === 'ACCEPTED' ? '#15803d' : 'var(--color-gold)',
-    })),
-    ...placements.slice(0, 2).map(p => ({
-      title: `${p.studentName} placed in ${p.internshipTitle}`,
-      meta: `${p.startDate} to ${p.endDate} · ${p.status}`,
-      body: `Active placement contract.`,
-      color: 'var(--color-navy)',
-    })),
-  ];
-  
-  if (timelineItems.length === 0) {
-    timelineItems.push({
-      title: 'Welcome to InternBridge',
-      meta: 'Corporate Dashboard',
-      body: 'Post internship roles and manage your talent pipeline.',
-      color: 'var(--color-gold)',
-    });
-  }
-
-  const quickActions = [
-    { label: 'Post Role', sub: 'New placement', icon: '➕', color: 'bg-indigo-50 text-indigo-600', onClick: () => setShowPostModal(true) },
-    { label: 'Verify Logs', sub: `Review pending`, icon: '📄', color: 'bg-emerald-50 text-emerald-600' },
-    { label: 'Review Apps', sub: `${pendingApps} new`, icon: '👤', color: 'bg-amber-50 text-amber-600' },
-    { label: 'Feedback', sub: 'Student reviews', icon: '💬', color: 'bg-blue-50 text-blue-600' }
+    { label: 'Talent Pipeline', value: applications.length.toString(), icon: <Target size={16} /> },
+    { label: 'Active Placements', value: placements.length.toString(), icon: <Users size={16} /> },
+    { label: 'Rating', value: '4.9', icon: <Star size={16} /> },
   ];
 
   return (
-    <div className="space-y-8 animate-fade-in pb-20">
-      <PremiumHeader 
-        eyebrow="Corporate Administration"
-        title={userName.split(' ')[0]}
-        italicTitle="Dashboard"
-        subtitle={`${dateStr} · Premium Partner`}
-        eyebrowColor="text-[var(--color-gold)]"
-        primaryAction={
-          <button onClick={() => setShowPostModal(true)} className="btn btn-primary btn-sm bg-[var(--color-navy)] text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
-            Post New Role <Plus size={16} />
-          </button>
-        }
-        secondaryAction={
-          <a href="/company/logbook-review" className="btn btn-gold btn-sm bg-[var(--color-gold)] text-[var(--color-navy)] px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 no-underline">
-            Verification Queue <span className="bg-white/20 px-2 py-0.5 rounded-full text-[9px] font-black">{pendingApps}</span>
-          </a>
-        }
-        additionalActions={
-          <a href="/company/applicants" className="btn btn-ghost btn-sm border border-slate-200 bg-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 no-underline text-slate-600">
-            <Search size={16} /> Review Apps
-          </a>
-        }
-      />
-
-      {isLoading && (
-        <div className="flex items-center justify-center p-8 gap-4">
-          <RefreshCw size={20} className="animate-spin text-[var(--color-gold)]" />
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Synchronizing...</span>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {stats.map((stat, i) => (
-          <PremiumCard key={i} {...stat} />
-        ))}
-      </div>
-
-      <div className="flex items-center gap-1 p-1 bg-[#FDFCF9] border border-slate-200 rounded-xl w-fit shadow-sm">
-        {[
-          { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={14} /> },
-          { id: 'interns', label: 'My Interns', icon: <Users size={14} />, badge: placements.length.toString() },
-          { id: 'applicants', label: 'Applicants', icon: <Briefcase size={14} />, badge: applications.length.toString() },
-          { id: 'logs', label: 'Logbooks', icon: <CheckCircle2 size={14} /> },
-        ].map(tab => (
-          <button 
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)} 
-            className={`px-6 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${activeTab === tab.id ? 'bg-[var(--color-navy)] text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
-          >
-            {tab.icon} {tab.label} {tab.badge && <span className={`px-1.5 py-0.5 rounded text-[10px] ${activeTab === tab.id ? 'bg-white/20' : 'bg-rose-50 text-rose-600'}`}>{tab.badge}</span>}
-          </button>
-        ))}
-      </div>
-
+    <div className="max-w-[1128px] mx-auto animate-fade-in pb-20">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 xl:col-span-4 card bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col">
-          <div className="p-6 border-b border-slate-50 flex items-center justify-between">
-            <div>
-              <div className="text-[13px] font-bold text-[var(--color-navy)]">Internship Listings</div>
-              <div className="text-[10px] text-slate-400 font-medium">{internships.length} active roles</div>
-            </div>
-            <Bell size={14} className="text-slate-200" />
-          </div>
-          <div className="p-6 flex-1">
-            {internships.length > 0 ? (
-              <div className="space-y-4">
-                {internships.slice(0, 5).map((job) => (
-                  <div key={job.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all group">
-                    <div>
-                      <div className="font-bold text-sm text-[var(--color-navy)]">{job.title}</div>
-                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{job.status} · {job.deadline || 'Open'}</div>
+        
+        {/* Left Column: Corporate Snap */}
+        <div className="lg:col-span-3 space-y-4">
+           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+              <div className="h-14 bg-[var(--color-forest)] w-full"></div>
+              <div className="px-4 pb-4 -mt-7 text-center">
+                 <div className="w-16 h-16 rounded-full border-4 border-white bg-amber-500 mx-auto flex items-center justify-center text-white font-serif font-black text-xl shadow-md mb-3">
+                    {userName.split(' ').map(n => n[0]).join('')}
+                 </div>
+                 <h3 className="text-base font-bold text-slate-900 tracking-tight">{userName}</h3>
+                 <p className="text-xs text-slate-500 font-medium mb-4">Institutional Partner · Corporate</p>
+                 <div className="pt-4 border-t border-slate-100 flex flex-col items-start gap-4">
+                    <div className="flex justify-between w-full text-[11px] font-bold">
+                       <span className="text-slate-500">Pipeline Size</span>
+                       <span className="text-[var(--color-forest)]">{applications.length}</span>
                     </div>
-                    <span className={`text-[9px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest border ${
-                      job.status === 'OPEN' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100'
-                    }`}>{job.status}</span>
-                  </div>
-                ))}
+                    <div className="flex justify-between w-full text-[11px] font-bold">
+                       <span className="text-slate-500">Postings</span>
+                       <span className="text-[var(--color-forest)]">{internships.length}</span>
+                    </div>
+                 </div>
               </div>
-            ) : (
-              <div className="text-center py-8">
-                <Briefcase size={32} className="text-slate-200 mx-auto mb-4" />
-                <p className="text-xs text-slate-400 font-bold">No listings yet</p>
-              </div>
-            )}
-          </div>
-        </div>
+           </div>
 
-        <div className="lg:col-span-8 xl:col-span-4 card bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-           <div className="p-6 border-b border-slate-50 flex items-center justify-between">
-            <div><div className="text-[13px] font-bold text-[var(--color-navy)]">Recent Applications</div></div>
-            <span className="text-[10px] font-mono font-bold text-slate-400">{applications.length} total</span>
-          </div>
-          <div className="p-6 space-y-4">
-            {applications.length > 0 ? applications.slice(0, 4).map((app) => (
-              <div key={app.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center font-bold text-[10px] text-[var(--color-navy)]">
-                    {app.studentName?.substring(0, 2).toUpperCase() || '??'}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[var(--color-navy)]">{app.studentName}</div>
-                    <div className="text-[10px] text-slate-400">{app.internshipTitle}</div>
-                  </div>
+           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm sticky top-[95px]">
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Pipeline Health</h4>
+              {stats.map((s, i) => (
+                <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 last:border-0">
+                   <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-forest)] transition-colors">
+                      {s.icon}
+                   </div>
+                   <div>
+                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">{s.label}</div>
+                      <div className="text-xs font-bold text-slate-700 leading-none">{s.value}</div>
+                   </div>
                 </div>
-                <span className={`text-[9px] px-2 py-1 rounded font-black uppercase tracking-widest ${
-                  app.status === 'PENDING' ? 'bg-amber-50 text-amber-600' : app.status === 'ACCEPTED' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'
-                }`}>{app.status}</span>
-              </div>
-            )) : (
-              <div className="text-center py-8">
-                <Users size={32} className="text-slate-200 mx-auto mb-4" />
-                <p className="text-xs text-slate-400 font-bold">No applications received yet</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="lg:col-span-8 xl:col-span-4 space-y-6">
-           <PremiumActionGrid title="Quick Actions" items={quickActions} />
-           <div className="card bg-[var(--color-gold)] text-[var(--color-navy)] border-0 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-              <div className="relative z-10 text-center">
-                 <h3 className="text-2xl font-serif mb-4 leading-tight">Need More <br /><em className="font-normal italic opacity-60">Talent?</em></h3>
-                 <p className="text-[var(--color-navy)]/60 text-[11px] leading-relaxed mb-6">Reach top-tier students from regional universities.</p>
-                 <button onClick={() => setShowPostModal(true)} className="w-full bg-[var(--color-navy)] text-white py-3 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-black/10">Post New Role Now</button>
-              </div>
+              ))}
            </div>
         </div>
 
-        <div className="lg:col-span-12">
-            <PremiumTimeline 
-              title="Recent Activity"
-              subtitle="Applications · Placements · Updates"
-              items={timelineItems}
-            />
+        {/* Middle Column: Recruitment Feed */}
+        <div className="lg:col-span-6 space-y-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+             <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-200">
+                   <Briefcase size={24} />
+                </div>
+                <button 
+                  onClick={() => setShowPostModal(true)}
+                  className="flex-1 bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-500 text-left px-6 py-3 rounded-full text-sm font-medium transition-all shadow-inner"
+                >
+                   Publish a new internship role...
+                </button>
+             </div>
+          </div>
+
+          <div className="flex items-center gap-2 py-2">
+             <div className="h-px flex-1 bg-slate-200"></div>
+             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Active Postings & Talent Flow</span>
+             <div className="h-px flex-1 bg-slate-200"></div>
+          </div>
+
+          {isLoading ? (
+             <div className="space-y-4">
+               {[1,2,3].map(i => <div key={i} className="h-40 bg-white border border-slate-200 rounded-xl animate-pulse"></div>)}
+             </div>
+          ) : (
+            <div className="space-y-4">
+               {internships.length > 0 ? (
+                 internships.map((job, i) => (
+                   <div key={job.id} className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                      <div className="flex justify-between items-start mb-4">
+                         <div className="flex gap-4">
+                            <div className="w-12 h-12 rounded-lg bg-[var(--color-forest)] flex items-center justify-center text-white font-serif font-black text-xl shadow-lg group-hover:scale-105 transition-transform">
+                              {job.title.charAt(0)}
+                            </div>
+                            <div>
+                               <h4 className="text-base font-bold text-slate-900 group-hover:text-[var(--color-forest)] transition-colors leading-tight">{job.title}</h4>
+                               <p className="text-xs text-slate-500 font-medium mt-1">Status: <span className="text-[var(--color-gold)] font-bold">{job.status}</span></p>
+                               <div className="flex items-center gap-3 text-[10px] text-slate-400 mt-2 font-mono uppercase tracking-tighter">
+                                  <span>{job.deadline || 'Perpetual Listing'}</span>
+                                  <span className="h-1 w-1 bg-slate-200 rounded-full"></span>
+                                  <span>{job.requiredSkills || 'General Entry'}</span>
+                               </div>
+                            </div>
+                         </div>
+                         <button className="p-2 text-slate-300 hover:text-[var(--color-gold)] transition-colors">
+                            <ArrowUpRight size={20} />
+                         </button>
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                         <div className="flex -space-x-2">
+                            {[1,2,3].map(j => <div key={j} className="w-6 h-6 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[8px] font-bold text-slate-400">?</div>)}
+                            <div className="w-6 h-6 rounded-full border-2 border-white bg-slate-50 flex items-center justify-center text-[8px] font-bold text-slate-500">+8</div>
+                         </div>
+                         <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{applications.filter(a => a.internshipId === job.id).length} Applicants</span>
+                            <button className="px-5 py-2 bg-white border-2 border-[var(--color-forest)] text-[var(--color-forest)] rounded-full text-xs font-black uppercase tracking-widest hover:bg-[var(--color-forest)] hover:text-white transition-all shadow-sm">
+                               Review Talent
+                            </button>
+                         </div>
+                      </div>
+                   </div>
+                 ))
+               ) : (
+                 <div className="p-20 bg-white rounded-xl border-2 border-dashed border-slate-200 text-center">
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">No Active Listings Found</p>
+                    <button onClick={() => setShowPostModal(true)} className="mt-4 text-[var(--color-gold)] font-black uppercase text-xs hover:underline tracking-widest">Post Role Now</button>
+                 </div>
+               )}
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Recruitment Hub */}
+        <div className="lg:col-span-3 space-y-4">
+           {/* Modal-style Quick Stats */}
+           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-gold)]/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1">Engagement Metrics</h4>
+              <div className="space-y-6">
+                <div>
+                   <div className="flex justify-between items-center mb-2 px-1">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Pipeline Efficiency</span>
+                      <span className="text-[10px] font-mono font-bold text-indigo-600">82%</span>
+                   </div>
+                   <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-indigo-500 w-[82%] rounded-full"></div>
+                   </div>
+                </div>
+                <div>
+                   <div className="flex justify-between items-center mb-2 px-1">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Brand Standing</span>
+                      <span className="text-[10px] font-mono font-bold text-emerald-600">Premium</span>
+                   </div>
+                   <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-emerald-500 w-[95%] rounded-full"></div>
+                   </div>
+                </div>
+              </div>
+           </div>
+
+           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1 flex items-center justify-between">
+                Recruitment Stream <ArrowUpRight size={14} />
+              </h4>
+              <div className="space-y-5">
+                 {applications.slice(0, 4).map((app, i) => (
+                   <div key={app.id} className="cursor-pointer group flex items-start gap-3">
+                      <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-[var(--color-forest)] font-bold text-[10px] shrink-0">{app.studentName.charAt(0)}</div>
+                      <div className="min-w-0">
+                         <h5 className="text-[12px] font-bold text-slate-800 leading-tight group-hover:text-[var(--color-forest)] transition-all truncate">{app.studentName}</h5>
+                         <span className="text-[9px] text-slate-500 font-medium">Applied for {app.internshipTitle}</span>
+                      </div>
+                   </div>
+                 ))}
+                 {applications.length === 0 && (
+                   <p className="text-[10px] text-slate-400 italic">No recent applicants.</p>
+                 )}
+              </div>
+           </div>
+
+           <div className="px-4 py-8 text-center text-slate-500">
+              <div className="text-[9px] font-black uppercase tracking-[0.3em] font-mono leading-relaxed mb-4">
+                 InternBridge © 2026<br/>Global Identity Registry
+              </div>
+              <div className="flex justify-center gap-4 opacity-50">
+                 <Shield size={16} />
+                 <Globe size={16} />
+                 <Lock size={16} />
+              </div>
+           </div>
         </div>
       </div>
 
-      {/* Post New Role Modal */}
+      {/* Modal Overlay: Post Role */}
       {showPostModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[var(--color-navy)]/80 backdrop-blur-md animate-fade-in">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-in relative border border-white/20">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[var(--color-navy)] via-[var(--color-gold)] to-[var(--color-navy)]"></div>
-            <div className="p-10 pt-12">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[var(--color-forest)]/90 backdrop-blur-xl animate-fade-in">
+          <div className="bg-white rounded-[2rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-in border border-white/20">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-forest)] to-[var(--color-gold)]"></div>
+            <div className="p-10">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-6 h-1 bg-[var(--color-gold)] rounded-full"></div>
-                    <span className="text-[10px] font-mono font-black text-[var(--color-gold)] uppercase tracking-[0.3em]">New Listing</span>
-                  </div>
-                  <h3 className="text-2xl font-serif text-[var(--color-navy)]">Post <em className="italic">Internship Role</em></h3>
+                  <h3 className="text-2xl font-serif text-slate-900 italic font-bold">Initiate Talent Search</h3>
+                  <p className="text-[11px] text-slate-500 font-medium uppercase tracking-widest mt-1">System Directive: Post Role</p>
                 </div>
-                <button onClick={() => setShowPostModal(false)} className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all">
+                <button onClick={() => setShowPostModal(false)} className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-all">
                   <X size={20} />
                 </button>
               </div>
-              <form onSubmit={handlePostRole} className="space-y-5">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Role Title</label>
-                  <input required type="text" value={newRole.title} onChange={(e) => setNewRole({...newRole, title: e.target.value})} placeholder="e.g. Software Engineering Intern" className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-sm outline-none focus:ring-1 focus:ring-[var(--color-gold)]" />
+              <form onSubmit={handlePostRole} className="space-y-6">
+                <div>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Position Excellence</label>
+                   <input required type="text" value={newRole.title} onChange={(e) => setNewRole({...newRole, title: e.target.value})} placeholder="e.g. Fintech Operations Analyst" className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-forest)] focus:bg-white transition-all shadow-inner" />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Description</label>
-                  <textarea required value={newRole.description} onChange={(e) => setNewRole({...newRole, description: e.target.value})} placeholder="Describe the role, responsibilities, and expectations..." rows={3} className="w-full bg-slate-50 border border-slate-100 rounded-xl p-5 text-sm outline-none focus:ring-1 focus:ring-[var(--color-gold)] resize-none" />
+                <div>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Institutional Requirements</label>
+                   <textarea required value={newRole.description} onChange={(e) => setNewRole({...newRole, description: e.target.value})} placeholder="Define tasks and expected outcomes..." rows={3} className="w-full bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-forest)] focus:bg-white transition-all resize-none shadow-inner" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Required Skills</label>
-                    <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="Java, React, SQL" className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)]" />
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Skill Density</label>
+                    <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="e.g. SQL, Python" className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-xs font-mono outline-none focus:ring-1 focus:ring-[var(--color-forest)] transition-all shadow-inner" />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Application Deadline</label>
-                    <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)] font-mono" />
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Closing Date</label>
+                    <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-4 text-xs font-mono outline-none focus:ring-1 focus:ring-[var(--color-forest)] transition-all shadow-inner" />
                   </div>
                 </div>
-                <div className="pt-4">
-                  <button type="submit" className="w-full h-14 bg-[var(--color-navy)] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:bg-black transition-all">
-                    <Send size={18} /> Publish Listing
-                  </button>
-                </div>
+                <button type="submit" className="w-full h-14 bg-[var(--color-forest)] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-xl shadow-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4">
+                  <Zap size={18} className="text-[var(--color-gold)]" fill="currentColor" /> Publish Role
+                </button>
               </form>
             </div>
           </div>

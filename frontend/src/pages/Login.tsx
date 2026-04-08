@@ -9,7 +9,11 @@ import {
   FileText, 
   CheckCircle2, 
   Clock, 
-  AlertCircle
+  AlertCircle,
+  Zap,
+  Fingerprint,
+  Globe,
+  Sparkles
 } from 'lucide-react';
 
 import authService from '../api/authService';
@@ -19,6 +23,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -34,12 +39,11 @@ const Login: React.FC = () => {
       localStorage.setItem('role', data.role);
       localStorage.setItem('email', data.email);
 
-      // Fetch profile to get name/institution
       try {
         const profile = await authService.getMe();
         localStorage.setItem('userName', profile.name);
         localStorage.setItem('institution', profile.institution);
-        localStorage.setItem('email', profile.email); // Fixed email storage
+        localStorage.setItem('email', profile.email);
       } catch (e) {
         console.warn('Failed to fetch profile details after login');
       }
@@ -57,210 +61,197 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-[var(--background)] font-sans text-[var(--color-navy)] overflow-hidden">
+    <div className="min-h-screen flex bg-[#FDFCF9] font-sans text-[var(--color-navy)] overflow-hidden relative">
       
-      {/* Left Column: Branding & Stats */}
-      <div className="hidden lg:flex flex-col w-[55%] bg-[var(--color-forest)] p-16 relative overflow-hidden">
-        {/* Subtle Grid Pattern Overlay */}
-        <div className="absolute inset-0 opacity-[0.05]" 
-             style={{ backgroundImage: 'radial-gradient(var(--color-gold) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-[var(--color-gold-light)]/20 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-[var(--color-forest)]/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+      {/* Left Column: The "Grand Portal" Branding */}
+      <div className="hidden lg:flex flex-col w-[50%] bg-[var(--color-navy)] p-20 relative overflow-hidden shadow-[20px_0_100px_rgba(0,0,0,0.2)] z-10">
+        {/* Editorial Pattern Override */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+             style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
         
-        {/* Logo */}
-        <div className="relative z-10 flex items-center gap-3 mb-24">
-          <div className="w-10 h-10 bg-[var(--color-gold)] rounded flex items-center justify-center font-serif font-bold text-black text-xl">
+        {/* Logo Section */}
+        <div className="relative z-20 flex items-center gap-4 mb-32 group animate-fade-in">
+          <div className="w-14 h-14 bg-[var(--color-gold)] rounded-2xl flex items-center justify-center font-serif font-black text-black text-2xl shadow-2xl group-hover:scale-110 transition-transform duration-700">
             IB
           </div>
-          <span className="font-serif italic text-2xl tracking-tight text-white">InternBridge</span>
+          <div className="flex flex-col">
+             <span className="font-serif italic text-3xl tracking-tight text-white font-bold">InternBridge</span>
+             <span className="text-[9px] font-mono text-[var(--color-gold)] uppercase tracking-[0.5em] font-black opacity-60">Global Governance</span>
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 max-w-xl">
-          <div className="label-mono-accent text-[10px] tracking-[0.2em] mb-6 opacity-60 text-white uppercase font-bold flex items-center gap-4">
-            <span className="w-8 h-[1px] bg-white opacity-40"></span>
-            Enterprise Internship Platform
+        {/* Hero Content */}
+        <div className="relative z-20 mt-auto">
+          <div className="flex items-center gap-4 mb-10 animate-fade-up">
+             <div className="h-[1px] w-12 bg-[var(--color-gold)]"></div>
+             <span className="text-[10px] font-mono font-black text-[var(--color-gold)] uppercase tracking-[0.4em]">Institutional Tier Access</span>
           </div>
-          <h1 className="text-6xl font-serif text-white leading-[1.1] mb-8">
-            Where <em className="italic text-[var(--color-gold)]">talent</em> meets opportunity — tracked, verified, & official.
+          
+          <h1 className="text-7xl font-serif text-white leading-[0.95] mb-12 animate-fade-up delay-1">
+            Where <em className="italic text-slate-400">talents</em> find their <br />
+            <span className="text-[var(--color-gold)]">Global Path.</span>
           </h1>
-          <p className="text-lg text-white/60 leading-relaxed mb-16">
-            One platform for students, companies, lecturers and institutions. From application to contract to daily logbook – every step is automated, compliant and permanent.
+
+          <p className="text-xl text-white/40 leading-relaxed max-w-lg mb-16 font-medium animate-fade-up delay-2">
+            The unified protocol for student placements, corporate talent acquisition, and academic oversight.
           </p>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 mb-8">
-            <div className="border-r border-white/10 px-4">
-              <div className="text-3xl font-serif font-bold text-white mb-1">
-                12<span className="text-[var(--color-gold)]">K+</span>
-              </div>
-              <div className="label-mono text-[9px] tracking-widest uppercase opacity-40 text-white font-bold">Active Students</div>
-            </div>
-            <div className="border-r border-white/10 px-8">
-              <div className="text-3xl font-serif font-bold text-white mb-1">
-                840<span className="text-[var(--color-gold)]">+</span>
-              </div>
-              <div className="label-mono text-[9px] tracking-widest uppercase opacity-40 text-white font-bold">Companies</div>
-            </div>
-            <div className="px-8">
-              <div className="text-3xl font-serif font-bold text-white mb-1">
-                98<span className="text-[var(--color-gold)]">%</span>
-              </div>
-              <div className="label-mono text-[9px] tracking-widest uppercase opacity-40 text-white font-bold">Compliance</div>
-            </div>
+          {/* Verification Badge */}
+          <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 flex items-center gap-10 animate-fade-up delay-3 shadow-2xl">
+             <div className="flex -space-x-4">
+                {[1,2,3].map(i => (
+                  <div key={i} className="w-12 h-12 rounded-full border-2 border-[var(--color-navy)] bg-slate-200 overflow-hidden shadow-xl">
+                    <img src={`https://i.pravatar.cc/150?u=${i+10}`} alt="User" />
+                  </div>
+                ))}
+                <div className="w-12 h-12 rounded-full border-2 border-[var(--color-navy)] bg-[var(--color-gold)] flex items-center justify-center text-[10px] font-black text-black shadow-xl">
+                  +2k
+                </div>
+             </div>
+             <div className="h-10 w-[1px] bg-white/10"></div>
+             <div>
+                <div className="flex items-center gap-2 text-white font-bold mb-1">
+                   <ShieldCheck size={16} className="text-emerald-500" />
+                   <span className="text-sm tracking-tight">Enterprise Verified</span>
+                </div>
+                <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest font-black">99.9% Compliance Rating</div>
+             </div>
           </div>
+        </div>
 
-          {/* Practical Live Feed Mockup */}
-          <div className="bg-black/20 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-sm">
-            <div className="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-white/5">
-              <div className="label-mono text-[9px] tracking-[0.2em] text-white opacity-40 font-bold uppercase">Live Logbook • Day 47</div>
-              <div className="flex items-center gap-2 text-[var(--status-success)] text-[9px] font-bold uppercase tracking-wider">
-                <span className="w-1.5 h-1.5 bg-[var(--status-success)] rounded-full animate-pulse"></span> Supervisor Verified
-              </div>
-            </div>
-            <div className="p-6 space-y-4">
-              <div className="flex justify-between items-center text-sm">
-                <div className="flex items-center gap-3 text-white/80">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  JWT Authentication Middleware
-                </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold">✓ Done</span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <div className="flex items-center gap-3 text-white/80">
-                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                  Spring Security Filter Chain
-                </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center gap-1 font-bold">
-                  <Clock size={10} /> Pending
-                </span>
-              </div>
-            </div>
-            <div className="px-6 py-5 bg-[var(--color-gold)]/5 border-t border-white/5 flex items-center gap-4">
-              <div className="p-2 bg-white/10 rounded">
-                <FileText size={18} className="text-white opacity-60" />
-              </div>
-              <div className="flex-1">
-                <div className="label-mono text-[8px] text-[var(--color-gold)] font-bold tracking-[0.2em] uppercase mb-1">Auto-generated Contract</div>
-                <div className="text-xs text-white opacity-90 font-bold tracking-tight">INT-2024-00847 • Techwave Technologies</div>
-              </div>
-              <div className="w-2 h-2 rounded-full bg-[var(--color-gold)]"></div>
-            </div>
-          </div>
+        {/* Decorative corner */}
+        <div className="absolute top-0 right-0 p-20 opacity-5 pointer-events-none">
+           <Globe size={400} className="text-white" />
         </div>
       </div>
 
-      {/* Right Column: Sign In Form */}
-      <div className="flex-1 flex flex-col justify-center items-center p-8 bg-[var(--background)]">
-        <div className="w-full max-w-[420px]">
-          {/* Header */}
-          <div className="mb-10 text-center lg:text-left">
-            <div className="label-mono text-[var(--color-gold)] text-[10px] tracking-[0.3em] font-bold uppercase mb-4 opacity-80 flex items-center gap-3 justify-center lg:justify-start">
-              <span className="w-6 h-[1px] bg-[var(--color-gold)] opacity-40"></span>
-              Welcome back
+      {/* Right Column: High-Fidelity Gate */}
+      <div className="flex-1 flex flex-col justify-center items-center p-12 bg-[#FDFCF9] relative z-20">
+        <div className="w-full max-w-[480px] animate-fade-in delay-2">
+          
+          {/* Form Header */}
+          <div className="mb-16">
+            <div className="flex items-center gap-4 mb-6">
+               <div className="w-2.5 h-2.5 bg-[var(--color-gold)] rounded-full shadow-[0_0_15px_rgba(184,131,26,0.6)]"></div>
+               <span className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300">Identity Authentication</span>
             </div>
-            <h2 className="text-5xl font-serif text-[var(--color-navy)] leading-tight mb-4">
-              Sign in to<br />InternBridge
+            <h2 className="text-6xl font-serif text-[var(--color-navy)] leading-[0.9] mb-6 font-bold">
+               Access the <em className="italic text-slate-400">Hub</em>
             </h2>
-            <p className="text-slate-500 text-sm leading-relaxed max-w-[320px]">
-              Enter your credentials – your role and dashboard are automatically applied after authentication.
+            <p className="text-slate-400 text-base font-medium leading-relaxed">
+               Securely authenticate your institutional credentials to enter the InternBridge workspace.
             </p>
           </div>
 
-          {/* Alert Notice */}
-          <div className="bg-[#EDF5F2] border border-[#D9EAE4] rounded-xl p-4 flex gap-4 mb-8">
-            <ShieldCheck className="text-[var(--color-forest)] shrink-0" size={20} />
-            <p className="text-[11px] text-[var(--color-forest)] leading-relaxed font-medium">
-              Your access level and features are assigned automatically based on your account.
-            </p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-8">
             {errorMessage && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-lg border border-red-100 flex items-center gap-3 text-sm font-medium animate-in fade-in slide-in-from-top-2">
-                <AlertCircle size={18} /> {errorMessage}
+              <div className="bg-rose-50 text-rose-600 p-5 rounded-[1.5rem] border border-rose-100 flex items-center gap-4 text-sm font-bold animate-shake">
+                <AlertCircle size={22} /> {errorMessage}
               </div>
             )}
             
-            <div className="space-y-2">
-              <label className="text-[11px] font-bold text-[var(--color-navy)] uppercase tracking-wider block">Email Address</label>
-              <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[var(--color-forest)] transition-colors" size={18} />
+            <div className="space-y-4">
+              <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 block">Terminal Email</label>
+              <div className="relative group/input">
+                <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-200 group-focus-within/input:text-[var(--color-gold)] transition-colors h-5 w-5" />
                 <input 
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@institution.edu.gh" 
-                  className="w-full h-12 bg-white border border-[var(--color-border)] rounded-xl pl-11 pr-4 text-sm focus:ring-1 focus:ring-[var(--color-forest)] outline-none transition-all placeholder:text-slate-300"
+                  placeholder="identity-root@institution.edu" 
+                  className="w-full h-16 bg-white border border-slate-100 rounded-[1.5rem] pl-16 pr-6 text-base font-medium focus:ring-1 focus:ring-[var(--color-gold)] outline-none transition-all placeholder:text-slate-200 shadow-xl shadow-black/[0.02] focus:bg-white"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="text-[11px] font-bold text-[var(--color-navy)] uppercase tracking-wider block">Password</label>
-                <button type="button" className="text-[11px] font-bold text-slate-500 hover:text-[var(--color-forest)] transition-colors">Forgot password?</button>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center px-2">
+                <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block">Security Hash</label>
+                <button type="button" className="text-[10px] font-black text-[var(--color-gold)] hover:opacity-70 transition-opacity uppercase tracking-widest">Protocol Reset?</button>
               </div>
-              <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[var(--color-forest)] transition-colors" size={18} />
+              <div className="relative group/input">
+                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-200 group-focus-within/input:text-[var(--color-gold)] transition-colors h-5 w-5" />
                 <input 
-                  type="password" 
+                  type={showPassword ? "text" : "password"} 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password" 
-                  className="w-full h-12 bg-white border border-[var(--color-border)] rounded-xl pl-11 pr-12 text-sm focus:ring-1 focus:ring-[var(--color-forest)] outline-none transition-all placeholder:text-slate-300"
+                  placeholder="••••••••••••" 
+                  className="w-full h-16 bg-white border border-slate-100 rounded-[1.5rem] pl-16 pr-16 text-base font-medium focus:ring-1 focus:ring-[var(--color-gold)] outline-none transition-all placeholder:text-slate-200 shadow-xl shadow-black/[0.02] font-mono tracking-widest"
                   required
                 />
-                <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                  <Eye size={18} />
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-200 hover:text-[var(--color-navy)] transition-colors"
+                >
+                  {showPassword ? <Sparkles size={20} className="text-[var(--color-gold)]" /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
 
-            <label className="flex items-center gap-2 cursor-pointer group w-fit">
-              <div className="relative flex items-center">
-                <input type="checkbox" className="peer appearance-none w-4 h-4 bg-white border border-[var(--color-border)] rounded checked:bg-[var(--color-forest)] transition-all cursor-pointer" />
-                <CheckCircle2 size={10} className="absolute inset-0 m-auto text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
-              </div>
-              <span className="text-xs text-slate-600 font-medium group-hover:text-slate-900 transition-colors">Keep me signed in</span>
-            </label>
+            <div className="flex items-center justify-between px-2">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative flex items-center">
+                    <input type="checkbox" className="peer appearance-none w-5 h-5 bg-white border border-slate-100 rounded-lg checked:bg-[var(--color-navy)] transition-all cursor-pointer shadow-sm" />
+                    <CheckCircle2 size={12} className="absolute inset-0 m-auto text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-black uppercase tracking-widest group-hover:text-slate-600 transition-colors">Persistent Session</span>
+                </label>
+                <div className="flex items-center gap-2 text-[10px] font-mono font-bold text-emerald-500 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-tighter shadow-sm border border-emerald-100">
+                   <Fingerprint size={12} /> Secure Link
+                </div>
+            </div>
 
             <button 
               type="submit" 
               disabled={isLoading}
-              className="w-full h-14 bg-[var(--color-forest)] hover:bg-[#1B2B24] text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-[var(--color-forest)]/10 disabled:opacity-50"
+              className="w-full h-16 bg-[var(--color-navy)] hover:bg-black text-white rounded-[1.5rem] text-[12px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-4 transition-all shadow-[0_30px_60px_rgba(26,48,40,0.25)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
             >
-              {isLoading ? 'Signing in...' : (
+              {isLoading ? (
+                <RefreshCw size={24} className="animate-spin text-[var(--color-gold)]" />
+              ) : (
                 <>
-                  Sign In <ArrowRight size={18} />
+                  Enter Workspace <ArrowRight size={20} className="text-[var(--color-gold)]" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Social Divider */}
-          <div className="relative my-10">
+          {/* Institutional Divider */}
+          <div className="relative my-16">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[var(--color-border)] opacity-60"></div>
+              <div className="w-full border-t border-slate-100"></div>
             </div>
-            <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-bold text-slate-400">
-              <span className="px-4 bg-[var(--background)]">or continue with institution</span>
+            <div className="relative flex justify-center text-[10px] uppercase tracking-[0.4em] font-black text-slate-200">
+              <span className="px-6 bg-[#FDFCF9]">External Authority</span>
             </div>
           </div>
 
-          {/* Social Buttons */}
-          <div className="grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center gap-3 h-12 bg-white border border-[var(--color-border)] rounded-xl text-xs font-bold text-[var(--color-navy)] hover:bg-slate-50 transition-all shadow-sm">
-              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4 grayscale opacity-70" /> Google Workspace
+          {/* Institutional SSO */}
+          <div className="grid grid-cols-2 gap-6">
+            <button className="flex items-center justify-center gap-4 h-16 bg-white border border-slate-100 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest text-[var(--color-navy)] hover:bg-slate-50 transition-all shadow-xl shadow-black/[0.02]">
+              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5 grayscale opacity-40 group-hover:grayscale-0 transition-all" /> Google Cloud
             </button>
-            <button className="flex items-center justify-center gap-3 h-12 bg-white border border-[var(--color-border)] rounded-xl text-xs font-bold text-[var(--color-navy)] hover:bg-slate-50 transition-all shadow-sm">
-              <div className="w-4 h-4 rounded-sm border border-[var(--color-navy)]/20 flex items-center justify-center text-[8px] font-black">IB</div> Institution SSO
+            <button className="flex items-center justify-center gap-4 h-16 bg-white border border-slate-100 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest text-[var(--color-navy)] hover:bg-slate-50 transition-all shadow-xl shadow-black/[0.02]">
+              <div className="w-5 h-5 rounded-lg bg-[var(--color-navy)] flex items-center justify-center text-[8px] font-black text-white">IB</div> Institution SSO
             </button>
           </div>
 
-          {/* Footer */}
-          <div className="mt-12 text-center text-xs text-slate-500 font-medium">
-            Don't have an account? <button className="font-bold text-[var(--color-navy)] hover:underline ml-1">Request access</button>
+          {/* Footer Navigation */}
+          <div className="mt-16 text-center">
+            <div className="text-[11px] font-black text-slate-300 uppercase tracking-[0.3em] mb-4">New to the platform?</div>
+            <button 
+              onClick={() => navigate('/register')}
+              className="group inline-flex items-center gap-2 text-sm font-bold text-[var(--color-navy)] hover:text-[var(--color-gold)] transition-all"
+            >
+              Request Access Credentials
+              <div className="h-[1px] w-4 bg-[var(--color-navy)] group-hover:w-8 group-hover:bg-[var(--color-gold)] transition-all"></div>
+            </button>
           </div>
         </div>
       </div>

@@ -28,10 +28,6 @@ A built-in **Applicant Tracking System** designed specifically for academic plac
 * Students submit **Applications** (linking their profiles and CVs) to open vacancies.
 * Status tracking prevents duplicate applications and manages the flow from `PENDING` to `HIRED` or `REJECTED`.
 
-### 3. Logbook & Activity Monitoring
-The core academic requirement feature. Once a student's application status is updated to `HIRED`:
-* Students can submit daily **Logbook** entries, tracking exact dates, hours worked, and technical activities performed.
-* Company Supervisors review these specific logs and update their status to `APPROVED` or `REJECTED`, providing a verifiable audit trail for the school.
 
 ---
 

@@ -10,7 +10,7 @@ import { PremiumHeader } from '../../components/ui/PremiumHeader';
 
 const ComplianceAudits: React.FC = () => {
   const audits = [
-    { id: 'AUD-991', student: 'Aisha Ibrahim', department: 'CS', type: 'Logbook Verification', status: 'VERIFIED', date: '2h ago', risk: 'LOW' },
+    { id: 'AUD-991', student: 'Aisha Ibrahim', department: 'CS', type: 'Performance Verification', status: 'VERIFIED', date: '2h ago', risk: 'LOW' },
     { id: 'AUD-992', student: 'Kwame Osei', department: 'ME', type: 'MoU Compliance', status: 'PENDING', date: '4h ago', risk: 'MEDIUM' },
     { id: 'AUD-993', student: 'Sarah Konadu', department: 'BC', type: 'End of Term Assessment', status: 'FLAGGED', date: 'Yesterday', risk: 'HIGH' },
     { id: 'AUD-994', student: 'Yaw Mensah', department: 'CS', type: 'Mid-term Review', status: 'VERIFIED', date: 'Yesterday', risk: 'LOW' },
@@ -22,7 +22,7 @@ const ComplianceAudits: React.FC = () => {
         eyebrow="Regulatory Oversight"
         title="Compliance"
         italicTitle="Audit Queue"
-        subtitle="Verification matrix for internship logbooks, evaluation forms, and MoUs"
+        subtitle="Verification matrix for internship performance, evaluation forms, and MoUs"
         eyebrowColor="text-rose-600"
         primaryAction={
           <button className="h-11 px-8 bg-[var(--color-navy)] text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:bg-black transition-all shadow-lg shadow-black/10">
@@ -49,7 +49,7 @@ const ComplianceAudits: React.FC = () => {
               </div>
               <div className="space-y-6">
                  {[
-                   { label: 'Logbook Accuracy', val: 98 },
+                   { label: 'Reporting Accuracy', val: 98 },
                    { label: 'Evaluation Timeliness', val: 86 },
                    { label: 'Agreement Coverage', val: 100 }
                  ].map((m, i) => (

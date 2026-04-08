@@ -9,4 +9,5 @@ public interface PlacementService {
     List<PlacementResponseDTO> getPlacementsByInternId(UUID internId);
     List<PlacementResponseDTO> getPlacementsByCompanyId(UUID companyAdminId);
     List<PlacementResponseDTO> getAllPlacements();
+    PlacementResponseDTO assignSupervisor(UUID id, UUID supervisorId);
 }

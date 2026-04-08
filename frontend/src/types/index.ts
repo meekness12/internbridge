@@ -23,11 +23,4 @@ export interface Application {
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
-export interface Logbook {
-  id: string;
-  placementId: string;
-  hoursWorked: number;
-  tasksCompleted: string;
-  companyStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
-  lecturerStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
-}
+

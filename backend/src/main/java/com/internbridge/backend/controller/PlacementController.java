@@ -34,4 +34,11 @@ public class PlacementController {
     public ResponseEntity<List<PlacementResponseDTO>> getAllPlacements() {
         return ResponseEntity.ok(placementService.getAllPlacements());
     }
+
+    @PatchMapping("/{id}/supervisor")
+    public ResponseEntity<PlacementResponseDTO> assignSupervisor(
+            @PathVariable UUID id,
+            @RequestParam UUID supervisorId) {
+        return ResponseEntity.ok(placementService.assignSupervisor(id, supervisorId));
+    }
 }
