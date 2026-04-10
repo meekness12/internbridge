@@ -89,7 +89,7 @@ const DashboardLayout: React.FC = () => {
           <div className="flex items-center gap-8 flex-1 lg:flex-none">
             {/* Logo: InternLink */}
             <Link to="/dashboard" className="flex items-center gap-2 no-underline group">
-              <div className="w-10 h-10 bg-[var(--color-teal)] rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-105 transition-all">
+              <div className="w-10 h-10 bg-[var(--color-gold)] rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-105 transition-all">
                 i
               </div>
               <span className="text-xl font-bold tracking-tight text-slate-900">InternLink</span>
@@ -107,8 +107,8 @@ const DashboardLayout: React.FC = () => {
                     to={item.path} 
                     className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all no-underline text-sm font-bold tracking-tight ${
                       isActive 
-                        ? 'bg-[var(--color-teal)] text-white shadow-md shadow-teal-500/20' 
-                        : 'text-slate-500 hover:text-[var(--color-teal)] hover:bg-slate-50'
+                        ? 'bg-[var(--color-brand)] text-white shadow-md shadow-indigo-500/20' 
+                        : 'text-slate-500 hover:text-[var(--color-brand)] hover:bg-slate-50'
                     }`}
                   >
                     {React.cloneElement(item.icon as any, { size: 18 })}
@@ -125,11 +125,11 @@ const DashboardLayout: React.FC = () => {
               <button 
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className={`flex items-center gap-2 pl-2 pr-1 h-11 rounded-full border transition-all ${
-                  isProfileOpen ? 'border-[var(--color-teal)] bg-slate-50' : 'border-slate-200 hover:bg-slate-50'
+                  isProfileOpen ? 'border-[var(--color-brand)] bg-slate-50' : 'border-slate-200 hover:bg-slate-50'
                 }`}
               >
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-serif font-black text-[10px] shadow-lg transition-all ${
-                  isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-teal)]' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-teal)]'
+                  isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-brand)]' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-brand)]'
                 }`}>
                   {userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isAdmin ? 'SJ' : 'IB')}
                 </div>
@@ -143,7 +143,7 @@ const DashboardLayout: React.FC = () => {
                   name: userProfile?.name || (isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'),
                   role: userProfile?.role?.replace('_', ' ') || role.replace('_', ' '),
                   initials: userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'),
-                  avatarColor: isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-teal)] shadow-glow-teal' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-teal)]'
+                  avatarColor: isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-brand)] shadow-glow-indigo' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-brand)]'
                 }}
               />
             </div>

@@ -33,8 +33,8 @@ const Settings: React.FC = () => {
     <div className="max-w-[1000px] mx-auto animate-fade-in pb-20 px-4 mt-6">
       <div className="flex flex-col mb-12">
          <div className="flex items-center gap-3 mb-2">
-            <div className="h-[1px] w-8 bg-[var(--color-teal)] opacity-30"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-teal)]">Configuration Terminal</span>
+            <div className="h-[1px] w-8 bg-[var(--color-brand)] opacity-30"></div>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">Configuration Terminal</span>
          </div>
          <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Settings <em className="italic text-slate-400 font-normal">& Privacy</em></h1>
       </div>
@@ -54,12 +54,12 @@ const Settings: React.FC = () => {
                  }`}
                >
                   <div className="flex items-center gap-4 text-xs uppercase tracking-widest">
-                     <span className={activeTab === item.id ? 'text-[var(--color-teal)]' : 'text-slate-300 group-hover:text-slate-400'}>
+                     <span className={activeTab === item.id ? 'text-[var(--color-brand)]' : 'text-slate-300 group-hover:text-slate-400'}>
                         {item.icon}
                      </span>
                      {item.label}
                   </div>
-                  {activeTab === item.id && <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-teal)] shadow-[0_0_10px_var(--color-teal)]"></div>}
+                  {activeTab === item.id && <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-brand)] shadow-[0_0_10px_var(--color-teal)]"></div>}
                </button>
             ))}
          </div>
@@ -91,7 +91,7 @@ const Settings: React.FC = () => {
 
                         <div className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-white">
                            <div className="flex gap-4">
-                              <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-[var(--color-teal)] shadow-sm">
+                              <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-[var(--color-brand)] shadow-sm">
                                  <Smartphone size={20} />
                               </div>
                               <div>
@@ -142,7 +142,7 @@ const Settings: React.FC = () => {
                         ].map((n, i) => (
                            <div key={i} className="flex items-center justify-between p-8 hover:bg-slate-50 rounded-[2.5rem] border border-transparent hover:border-slate-50 transition-all group">
                               <div className="flex gap-6">
-                                 <div className="w-14 h-14 rounded-2xl bg-white border border-slate-50 flex items-center justify-center text-slate-300 group-hover:text-[var(--color-teal)] shadow-sm transition-colors">
+                                 <div className="w-14 h-14 rounded-2xl bg-white border border-slate-50 flex items-center justify-center text-slate-300 group-hover:text-[var(--color-brand)] shadow-sm transition-colors">
                                     {React.cloneElement(n.icon as any, { size: 24 })}
                                  </div>
                                  <div>

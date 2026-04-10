@@ -87,7 +87,7 @@ const Notifications: React.FC = () => {
     const lower = msg.toLowerCase();
     if (lower.includes('hired') || lower.includes('approved')) return 'bg-emerald-500';
     if (lower.includes('urgent') || lower.includes('deadline') || lower.includes('rejected')) return 'bg-rose-500';
-    return 'bg-[var(--color-teal)]';
+    return 'bg-[var(--color-brand)]';
   };
 
   const unreadNotifications = notifications.filter(n => !n.isRead);
@@ -108,13 +108,13 @@ const Notifications: React.FC = () => {
       <div className="flex gap-2 mb-8">
         <button 
           onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === 'all' ? 'bg-[var(--color-teal-faint)] text-[var(--color-teal)]' : 'hover:bg-slate-100 text-slate-600'}`}
+          className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === 'all' ? 'bg-[var(--color-teal-faint)] text-[var(--color-brand)]' : 'hover:bg-slate-100 text-slate-600'}`}
         >
           All
         </button>
         <button 
           onClick={() => setFilter('unread')}
-          className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === 'unread' ? 'bg-[var(--color-teal-faint)] text-[var(--color-teal)]' : 'hover:bg-slate-100 text-slate-600'}`}
+          className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === 'unread' ? 'bg-[var(--color-teal-faint)] text-[var(--color-brand)]' : 'hover:bg-slate-100 text-slate-600'}`}
         >
           Unread
         </button>
@@ -145,7 +145,7 @@ const Notifications: React.FC = () => {
                   className="flex gap-4 p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-all group relative items-center"
                 >
                   <div className="relative shrink-0">
-                    <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-[var(--color-teal)] font-bold text-lg overflow-hidden border border-slate-50">
+                    <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-[var(--color-brand)] font-bold text-lg overflow-hidden border border-slate-50">
                        {(note as any).companyName?.[0] || 'I'}
                     </div>
                     <div className={`absolute -bottom-1 -right-1 w-7 h-7 rounded-full ${getBgColor(note.message)} flex items-center justify-center border-2 border-white shadow-sm`}>
@@ -157,13 +157,13 @@ const Notifications: React.FC = () => {
                     <p className="text-[15px] text-slate-800 leading-tight">
                       {parseMessage(note.message)}
                     </p>
-                    <span className="text-xs font-bold text-[var(--color-teal)] mt-1 block">
+                    <span className="text-xs font-bold text-[var(--color-brand)] mt-1 block">
                       {getRelativeTime(note.createdAt)}
                     </span>
                   </div>
 
                   <div className="shrink-0 ml-2">
-                    <Circle size={12} fill="var(--color-teal)" className="text-[var(--color-teal)]" />
+                    <Circle size={12} fill="var(--color-teal)" className="text-[var(--color-brand)]" />
                   </div>
                 </div>
               ))}

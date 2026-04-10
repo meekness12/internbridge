@@ -112,13 +112,13 @@ const UserManagement: React.FC = () => {
         title="User"
         italicTitle="Management"
         subtitle="Full list of registered platform users across companies and educational institutions."
-        eyebrowColor="text-[var(--color-teal)]"
+        eyebrowColor="text-[var(--color-brand)]"
         primaryAction={
           <button 
             onClick={() => setIsModalOpen(true)}
             className="h-14 px-10 bg-slate-900 text-white rounded-2xl flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.25em] shadow-2xl hover:bg-black transition-all"
           >
-            Add New User <UserPlus size={20} className="text-[var(--color-teal)]" />
+            Add New User <UserPlus size={20} className="text-[var(--color-brand)]" />
           </button>
         }
       />
@@ -131,7 +131,7 @@ const UserManagement: React.FC = () => {
            { label: 'Server Health', value: '99.9%', icon: <Fingerprint size={20} /> }
          ].map((k, i) => (
            <div key={i} className="bg-white rounded-[2.5rem] p-8 flex items-center gap-6 border border-slate-100 shadow-xl shadow-slate-200/20 group hover:shadow-2xl transition-all">
-              <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal)]/10 text-[var(--color-teal)] flex items-center justify-center transition-transform group-hover:rotate-6">
+              <div className="w-16 h-16 rounded-2xl bg-[var(--color-brand)]/10 text-[var(--color-brand)] flex items-center justify-center transition-transform group-hover:rotate-6">
                  {k.icon}
               </div>
               <div>
@@ -147,7 +147,7 @@ const UserManagement: React.FC = () => {
       <div className="space-y-4 animate-fade-up delay-2 relative min-h-[400px]">
         {isLoading && (
           <div className="absolute inset-0 bg-white/40 backdrop-blur-md z-20 flex flex-col items-center justify-center gap-6 rounded-[3.5rem]">
-             <RefreshCw size={40} className="animate-spin text-[var(--color-teal)]" />
+             <RefreshCw size={40} className="animate-spin text-[var(--color-brand)]" />
              <span className="text-[10px] font-black tracking-[0.45em] uppercase text-slate-400">Loading User Data...</span>
           </div>
         )}
@@ -155,11 +155,11 @@ const UserManagement: React.FC = () => {
         {filteredUsers.map((user, idx) => (
           <div key={user.id} className="bg-white rounded-[3rem] border border-slate-50 p-6 flex flex-col md:flex-row items-center justify-between gap-8 hover:shadow-2xl hover:shadow-slate-200/40 transition-all group animate-fade-up" style={{ animationDelay: `${idx * 0.05}s` }}>
             <div className="flex items-center gap-8 w-full md:w-auto">
-               <div className="w-20 h-20 rounded-[1.8rem] bg-[var(--color-teal)] flex items-center justify-center text-white font-serif font-black text-2xl shadow-xl shadow-teal-500/20 group-hover:scale-105 transition-transform duration-500">
+               <div className="w-20 h-20 rounded-[1.8rem] bg-[var(--color-brand)] flex items-center justify-center text-white font-serif font-black text-2xl shadow-xl shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-500">
                   {user.name.split(' ').map(n => n[0]).join('')}
                </div>
                <div>
-                  <h3 className="text-xl font-bold text-slate-900 tracking-tight group-hover:text-[var(--color-teal)] transition-colors">{user.name}</h3>
+                  <h3 className="text-xl font-bold text-slate-900 tracking-tight group-hover:text-[var(--color-brand)] transition-colors">{user.name}</h3>
                   <div className="flex items-center gap-4 mt-1.5 min-w-0">
                      <span className="text-[11px] font-black uppercase text-slate-300 tracking-widest truncate">{user.email}</span>
                      <div className="w-1 h-1 rounded-full bg-slate-200 shrink-0"></div>
@@ -231,8 +231,8 @@ const UserManagement: React.FC = () => {
       {/* Provisioning Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-2xl animate-fade-in">
-          <div className="w-full max-w-xl bg-white rounded-[3.5rem] shadow-[0_60px_150px_rgba(13,148,136,0.3)] overflow-hidden animate-scale-in relative border border-slate-100">
-            <div className="h-2 w-full bg-[var(--color-teal)]"></div>
+          <div className="w-full max-w-xl bg-white rounded-[3.5rem] shadow-[0_60px_150px_rgba(99,102,241,0.3)] overflow-hidden animate-scale-in relative border border-slate-100">
+            <div className="h-2 w-full bg-[var(--color-brand)]"></div>
             <div className="p-12">
                <div className="flex items-center justify-between mb-10">
                   <div>
@@ -252,7 +252,7 @@ const UserManagement: React.FC = () => {
                       type="text" required 
                       value={newUser.firstName}
                       onChange={(e) => setNewUser({...newUser, firstName: e.target.value})}
-                      className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-teal)]" 
+                      className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-brand)]" 
                     />
                   </div>
                   <div className="space-y-2">
@@ -261,7 +261,7 @@ const UserManagement: React.FC = () => {
                       type="text" required 
                       value={newUser.lastName}
                       onChange={(e) => setNewUser({...newUser, lastName: e.target.value})}
-                      className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-teal)]" 
+                      className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-brand)]" 
                     />
                   </div>
                 </div>
@@ -273,7 +273,7 @@ const UserManagement: React.FC = () => {
                       placeholder="user@example.com"
                       value={newUser.email}
                       onChange={(e) => setNewUser({...newUser, email: e.target.value})}
-                      className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-teal)]" 
+                      className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-brand)]" 
                     />
                   </div>
   
@@ -283,7 +283,7 @@ const UserManagement: React.FC = () => {
                       <select 
                         value={newUser.role}
                         onChange={(e) => setNewUser({...newUser, role: e.target.value as UserDTO['role']})}
-                        className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-[10px] font-black uppercase tracking-widest outline-none focus:ring-1 focus:ring-[var(--color-teal)] appearance-none cursor-pointer"
+                        className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-[10px] font-black uppercase tracking-widest outline-none focus:ring-1 focus:ring-[var(--color-brand)] appearance-none cursor-pointer"
                       >
                         <option value="INTERN">Intern</option>
                         <option value="COMPANY_ADMIN">Company Admin</option>
@@ -297,7 +297,7 @@ const UserManagement: React.FC = () => {
                         type="password" required 
                         value={newUser.password}
                         onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-                        className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-teal)]" 
+                        className="w-full h-14 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-brand)]" 
                       />
                     </div>
                   </div>
@@ -306,7 +306,7 @@ const UserManagement: React.FC = () => {
                     type="submit"
                     className="w-full h-16 bg-slate-900 text-white rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 mt-4"
                   >
-                    Create User <ShieldCheck size={20} className="text-[var(--color-teal)]" />
+                    Create User <ShieldCheck size={20} className="text-[var(--color-brand)]" />
                   </button>
               </form>
             </div>

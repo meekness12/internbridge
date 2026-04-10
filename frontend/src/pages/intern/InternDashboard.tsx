@@ -98,13 +98,13 @@ const InternDashboard: React.FC = () => {
       <div className="mb-10 mt-4 max-w-2xl mx-auto">
         <div className="flex flex-col gap-6 items-center">
           <div className="relative w-full group">
-             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-teal)] transition-colors" />
+             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-brand)] transition-colors" />
              <input 
                type="text" 
                placeholder="Search by role, company, or skill..." 
                value={searchQuery}
                onChange={(e) => setSearchQuery(e.target.value)}
-               className="w-full h-14 pl-12 pr-6 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-teal)]/10 focus:border-[var(--color-teal)] transition-all shadow-sm"
+               className="w-full h-14 pl-12 pr-6 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-brand)]/10 focus:border-[var(--color-brand)] transition-all shadow-sm"
              />
           </div>
           <div className="flex items-center gap-2 p-1.5 bg-white border border-slate-200 rounded-2xl shadow-sm">
@@ -113,7 +113,7 @@ const InternDashboard: React.FC = () => {
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`px-6 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                  filter === f ? 'bg-[var(--color-teal)] text-white shadow-md shadow-teal-500/20' : 'text-slate-500 hover:bg-slate-50'
+                  filter === f ? 'bg-[var(--color-brand)] text-white shadow-md shadow-teal-500/20' : 'text-slate-500 hover:bg-slate-50'
                 }`}
               >
                 {f}
@@ -146,11 +146,11 @@ const InternDashboard: React.FC = () => {
                  >
                     <div className="flex justify-between items-start">
                        <div className="flex gap-6">
-                          <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-teal)] font-bold text-xl shadow-inner group-hover:scale-110 transition-transform">
+                          <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-brand)] font-bold text-xl shadow-inner group-hover:scale-110 transition-transform">
                             {job.companyName?.[0] || 'I'}{job.companyName?.[1] || ''}
                           </div>
                           <div>
-                             <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-teal)] transition-colors mb-1 leading-tight">{job.title}</h4>
+                             <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors mb-1 leading-tight">{job.title}</h4>
                              <div className="flex items-center gap-2 mb-4">
                                <Briefcase size={14} className="text-slate-300" />
                                <span className="text-sm font-bold text-slate-500">{job.companyName}</span>
@@ -196,7 +196,7 @@ const InternDashboard: React.FC = () => {
            <div className="bg-white rounded-[2.5rem] w-full max-w-2xl overflow-hidden shadow-2xl relative animate-scale-in max-h-[90vh] flex flex-col">
               <div className="p-8 pb-4 flex justify-between items-start">
                  <div className="flex gap-6">
-                    <div className="w-20 h-20 rounded-[1.5rem] bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-teal)] font-bold text-2xl shadow-inner">
+                    <div className="w-20 h-20 rounded-[1.5rem] bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-brand)] font-bold text-2xl shadow-inner">
                        {selectedJob.companyName?.[0] || 'I'}{selectedJob.companyName?.[1] || ''}
                     </div>
                     <div className="pt-1">
@@ -257,7 +257,7 @@ const InternDashboard: React.FC = () => {
                          'Eagerness to learn'
                        ].map((req, i) => (
                          <li key={i} className="flex items-center gap-4 text-sm text-slate-600 font-medium">
-                            <div className="w-2 h-2 rounded-full bg-[var(--color-teal)] opacity-60"></div>
+                            <div className="w-2 h-2 rounded-full bg-[var(--color-brand)] opacity-60"></div>
                             {req}
                          </li>
                        ))}
@@ -269,7 +269,7 @@ const InternDashboard: React.FC = () => {
               <div className="p-8 border-t border-slate-50 bg-slate-50/50 flex gap-4">
                  <button 
                    onClick={() => handleApply(selectedJob.id)}
-                   className="flex-1 h-14 bg-[var(--color-teal)] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-teal-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                   className="flex-1 h-14 bg-[var(--color-brand)] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-teal-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
                  >
                    Apply Now
                  </button>

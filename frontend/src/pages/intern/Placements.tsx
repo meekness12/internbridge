@@ -152,13 +152,13 @@ const Placements: React.FC = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`flex-1 py-3.5 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all relative group ${
-                    activeTab === tab.id ? 'bg-[var(--color-teal)] text-white shadow-xl shadow-teal-500/20' : 'text-slate-400 hover:bg-slate-50'
+                    activeTab === tab.id ? 'bg-[var(--color-brand)] text-white shadow-xl shadow-teal-500/20' : 'text-slate-400 hover:bg-slate-50'
                   }`}
                 >
                    {tab.label}
                    {tab.count > 0 && (
                      <span className={`absolute top-1 right-2 min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center text-[9px] font-black border transition-all ${
-                       activeTab === tab.id ? 'bg-white text-[var(--color-teal)] border-white/20' : 'bg-slate-50 text-slate-500 border-slate-200 group-hover:bg-white'
+                       activeTab === tab.id ? 'bg-white text-[var(--color-brand)] border-white/20' : 'bg-slate-50 text-slate-500 border-slate-200 group-hover:bg-white'
                      }`}>
                         {tab.count}
                      </span>
@@ -169,13 +169,13 @@ const Placements: React.FC = () => {
 
         {/* Integrated Search */}
         <div className="relative group">
-             <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-teal)] transition-colors" size={20} />
+             <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-brand)] transition-colors" size={20} />
              <input 
                type="text" 
                placeholder={`Search in ${tabs.find(t => t.id === activeTab)?.label}...`}
                value={searchQuery}
                onChange={(e) => setSearchQuery(e.target.value)}
-               className="w-full h-16 bg-white border border-slate-200 rounded-[2rem] pl-14 pr-6 text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-teal)]/10 focus:border-[var(--color-teal)] transition-all shadow-sm"
+               className="w-full h-16 bg-white border border-slate-200 rounded-[2rem] pl-14 pr-6 text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-brand)]/10 focus:border-[var(--color-brand)] transition-all shadow-sm"
              />
         </div>
 
@@ -205,11 +205,11 @@ const Placements: React.FC = () => {
                   >
                      <div className="flex justify-between items-start">
                         <div className="flex gap-8">
-                           <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-teal)] font-bold text-2xl shadow-inner group-hover:scale-110 transition-transform">
+                           <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-brand)] font-bold text-2xl shadow-inner group-hover:scale-110 transition-transform">
                              {(item.companyName || item.internshipTitle)?.[0] || 'I'}{(item.companyName || item.internshipTitle)?.[1] || ''}
                            </div>
                            <div>
-                              <h4 className="text-2xl font-bold text-slate-900 group-hover:text-[var(--color-teal)] transition-colors mb-2 leading-tight">
+                              <h4 className="text-2xl font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors mb-2 leading-tight">
                                  {item.title || item.internshipTitle}
                               </h4>
                               <div className="flex items-center gap-2 mb-4">
@@ -229,7 +229,7 @@ const Placements: React.FC = () => {
                            </div>
                         </div>
                         {activeTab === 'discover' && (
-                           <button onClick={() => setApplyingTo(item)} className="p-2 text-slate-200 hover:text-[var(--color-teal)] transition-all">
+                           <button onClick={() => setApplyingTo(item)} className="p-2 text-slate-200 hover:text-[var(--color-brand)] transition-all">
                               <Zap size={24} />
                            </button>
                         )}
@@ -247,7 +247,7 @@ const Placements: React.FC = () => {
                         {activeTab === 'discover' ? (
                            <button 
                              onClick={() => setApplyingTo(item)}
-                             className="px-8 py-3 bg-white border-2 border-[var(--color-teal)] text-[var(--color-teal)] rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[var(--color-teal)] hover:text-white transition-all active:scale-95 shadow-lg shadow-teal-500/5"
+                             className="px-8 py-3 bg-white border-2 border-[var(--color-brand)] text-[var(--color-brand)] rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[var(--color-brand)] hover:text-white transition-all active:scale-95 shadow-lg shadow-teal-500/5"
                            >
                              Quick Apply
                            </button>
@@ -275,7 +275,7 @@ const Placements: React.FC = () => {
           <div className="bg-white rounded-[2.5rem] w-full max-w-2xl overflow-hidden shadow-2xl relative animate-scale-in border border-slate-200/50">
             <div className="p-10 pb-6 flex justify-between items-start">
               <div className="flex gap-6">
-                <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-teal)] font-bold text-2xl shadow-inner">
+                <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-brand)] font-bold text-2xl shadow-inner">
                   {applyingTo.companyName?.[0] || 'I'}{applyingTo.companyName?.[1] || ''}
                 </div>
                 <div>
@@ -297,7 +297,7 @@ const Placements: React.FC = () => {
                   onChange={(e) => setCoverLetter(e.target.value)}
                   placeholder="Elaborate on your motivation for this institutional role..."
                   rows={5}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-teal)]/10 focus:border-[var(--color-teal)] transition-all resize-none shadow-inner" 
+                  className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-brand)]/10 focus:border-[var(--color-brand)] transition-all resize-none shadow-inner" 
                 />
               </div>
 

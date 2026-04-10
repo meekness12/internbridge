@@ -62,7 +62,7 @@ const SystemAlerts: React.FC = () => {
         title="Activity"
         italicTitle="Alerts"
         subtitle="Real-time monitoring of platform infrastructure, security protocols, and system health."
-        eyebrowColor="text-[var(--color-teal)]"
+        eyebrowColor="text-[var(--color-brand)]"
         primaryAction={
           <div className="flex items-center gap-4">
              <button className="text-[10px] font-black text-slate-300 uppercase tracking-widest hover:text-slate-900 transition-colors">Acknowledge All</button>
@@ -77,7 +77,7 @@ const SystemAlerts: React.FC = () => {
         {[
           { label: 'Platform Status', value: stats ? (stats.securityAlerts > 0 ? 'Degraded' : 'Optimal') : 'Optimal', icon: <CheckCircle2 size={20} />, color: (stats?.securityAlerts ?? 0) > 0 ? 'text-amber-500' : 'text-emerald-500', bg: 'bg-white' },
           { label: 'System Load', value: `${stats?.resourceUsage ?? 24}%`, icon: <Activity size={20} />, color: 'text-indigo-500', bg: 'bg-white' },
-          { label: 'Global Uptime', value: '99.99%', icon: <Zap size={20} />, color: 'text-[var(--color-teal)]', bg: 'bg-white' },
+          { label: 'Global Uptime', value: '99.99%', icon: <Zap size={20} />, color: 'text-[var(--color-brand)]', bg: 'bg-white' },
           { label: 'Active Audits', value: displayAlerts.length.toString(), icon: <Bell size={20} />, color: 'text-rose-500', bg: 'bg-white' },
         ].map((kpi, i) => (
           <div key={i} className={`bg-white border border-slate-50 p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/20 flex items-center gap-6 group hover:shadow-2xl transition-all`}>
@@ -98,7 +98,7 @@ const SystemAlerts: React.FC = () => {
             <div className="h-px w-20 bg-slate-100"></div>
          </div>
          {isLoading && (
-            <div className="flex items-center gap-3 text-[9px] font-black text-[var(--color-teal)] uppercase tracking-widest animate-pulse">
+            <div className="flex items-center gap-3 text-[9px] font-black text-[var(--color-brand)] uppercase tracking-widest animate-pulse">
                <RefreshCw size={12} className="animate-spin" /> Updating Alerts...
             </div>
          )}
@@ -110,13 +110,13 @@ const SystemAlerts: React.FC = () => {
             <div className={`absolute left-0 top-0 h-full w-2 ${
               alert.severity === 'CRITICAL' ? 'bg-rose-500 shadow-glow' :
               alert.severity === 'HIGH' ? 'bg-amber-500' :
-              alert.severity === 'MEDIUM' ? 'bg-[var(--color-teal)]' : 'bg-emerald-500'
+              alert.severity === 'MEDIUM' ? 'bg-[var(--color-brand)]' : 'bg-emerald-500'
             }`}></div>
             <div className="p-10 flex flex-col md:flex-row gap-10 items-center">
               <div className="w-20 h-20 bg-slate-50 rounded-[1.8rem] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0 border border-slate-100 shadow-inner">
                 {alert.severity === 'CRITICAL' ? <ShieldAlert size={36} className="text-rose-500" /> :
                  alert.severity === 'HIGH' ? <AlertTriangle size={36} className="text-amber-500" /> :
-                 alert.severity === 'MEDIUM' ? <Zap size={36} className="text-[var(--color-teal)]" /> :
+                 alert.severity === 'MEDIUM' ? <Zap size={36} className="text-[var(--color-brand)]" /> :
                  <CheckCircle2 size={36} className="text-emerald-500" />}
               </div>
               <div className="flex-1 text-center md:text-left">
@@ -124,7 +124,7 @@ const SystemAlerts: React.FC = () => {
                   <div className="flex items-center gap-6">
                     <span className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] border transition-all ${
                        alert.severity === 'CRITICAL' ? 'bg-rose-50 text-rose-500 border-rose-100' :
-                       alert.severity === 'HIGH' ? 'bg-amber-50 text-amber-500 border-amber-100' : 'bg-[var(--color-teal)]/5 text-[var(--color-teal)] border-[var(--color-teal)]/10'
+                       alert.severity === 'HIGH' ? 'bg-amber-50 text-amber-500 border-amber-100' : 'bg-[var(--color-brand)]/5 text-[var(--color-brand)] border-[var(--color-brand)]/10'
                     }`}>{alert.severity} Threshold</span>
                     <h3 className="text-2xl font-serif font-black text-slate-900 tracking-tight italic">{alert.message}</h3>
                   </div>
@@ -142,7 +142,7 @@ const SystemAlerts: React.FC = () => {
                       <button className="h-10 px-6 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2">
                         View Details <ChevronRight size={14} />
                       </button>
-                      <button className="text-[10px] font-black text-slate-300 hover:text-[var(--color-teal)] uppercase tracking-widest transition-colors">Acknowledge Alert</button>
+                      <button className="text-[10px] font-black text-slate-300 hover:text-[var(--color-brand)] uppercase tracking-widest transition-colors">Acknowledge Alert</button>
                    </div>
                    <div className="flex items-center gap-3">
                       <span className="text-[9px] font-black text-slate-100 font-mono uppercase tracking-[0.25em]">Alert-ID: 0x{alert.id.toString().substring(0, 6).toUpperCase()}</span>

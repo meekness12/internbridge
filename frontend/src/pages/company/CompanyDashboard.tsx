@@ -132,14 +132,14 @@ const CompanyDashboard: React.FC = () => {
       <div className="flex justify-between items-end mb-12">
          <div className="flex flex-col">
             <div className="flex items-center gap-3 mb-2">
-               <div className="h-[1px] w-8 bg-[var(--color-teal)] opacity-30"></div>
-               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-teal)]">Corporate Identity Hub</span>
+               <div className="h-[1px] w-8 bg-[var(--color-brand)] opacity-30"></div>
+               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">Corporate Identity Hub</span>
             </div>
             <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Command <em className="italic text-slate-400 font-normal">Center</em></h1>
          </div>
          <button 
            onClick={() => setShowPostModal(true)}
-           className="h-14 px-10 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-black/20 hover:bg-[var(--color-teal)] transition-all flex items-center gap-3 hover:scale-[1.02] active:scale-[0.98]"
+           className="h-14 px-10 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-black/20 hover:bg-[var(--color-brand)] transition-all flex items-center gap-3 hover:scale-[1.02] active:scale-[0.98]"
          >
             <Plus size={18} /> New Posting
          </button>
@@ -178,7 +178,7 @@ const CompanyDashboard: React.FC = () => {
                   <h3 className="text-lg font-bold text-slate-900 tracking-tight">Recent Signals</h3>
                   <div className="h-px w-12 bg-slate-100"></div>
                </div>
-               <Link to="/dashboard/notifications" className="text-[10px] font-black text-[var(--color-teal)] uppercase tracking-widest hover:underline">View All Alerts</Link>
+               <Link to="/dashboard/notifications" className="text-[10px] font-black text-[var(--color-brand)] uppercase tracking-widest hover:underline">View All Alerts</Link>
             </div>
 
             <div className="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-2xl shadow-slate-200/20">
@@ -190,7 +190,7 @@ const CompanyDashboard: React.FC = () => {
                   <div className="space-y-4">
                      {notifications.slice(0, 5).map((noti) => (
                         <div key={noti.id} className="flex gap-6 p-4 rounded-[1.5rem] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
-                           <div className="w-12 h-12 rounded-2xl bg-slate-100 shrink-0 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-teal)] transition-colors">
+                           <div className="w-12 h-12 rounded-2xl bg-slate-100 shrink-0 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-brand)] transition-colors">
                               <Zap size={20} />
                            </div>
                            <div className="flex-1 min-w-0">
@@ -220,7 +220,7 @@ const CompanyDashboard: React.FC = () => {
                   <h3 className="text-lg font-bold text-slate-900 tracking-tight">New Talent</h3>
                   <div className="h-px w-12 bg-slate-100"></div>
                </div>
-               <Link to="/dashboard/applicants" className="text-[10px] font-black text-[var(--color-teal)] uppercase tracking-widest hover:underline">Recruitment Hub</Link>
+               <Link to="/dashboard/applicants" className="text-[10px] font-black text-[var(--color-brand)] uppercase tracking-widest hover:underline">Recruitment Hub</Link>
             </div>
 
             <div className="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-2xl shadow-slate-200/20">
@@ -233,11 +233,11 @@ const CompanyDashboard: React.FC = () => {
                      {applications.slice(0, 5).map((app) => (
                         <div key={app.id} className="flex items-center justify-between group">
                            <div className="flex items-center gap-5 min-w-0">
-                              <div className="w-14 h-14 rounded-2xl bg-teal-50 flex items-center justify-center text-[var(--color-teal)] font-black text-lg shadow-sm group-hover:bg-[var(--color-teal)] group-hover:text-white transition-all overflow-hidden shrink-0">
+                              <div className="w-14 h-14 rounded-2xl bg-teal-50 flex items-center justify-center text-[var(--color-brand)] font-black text-lg shadow-sm group-hover:bg-[var(--color-brand)] group-hover:text-white transition-all overflow-hidden shrink-0">
                                  {app.studentName.charAt(0)}
                               </div>
                               <div className="min-w-0">
-                                 <h4 className="text-sm font-black text-slate-900 tracking-tight truncate leading-tight group-hover:text-[var(--color-teal)] transition-colors">{app.studentName}</h4>
+                                 <h4 className="text-sm font-black text-slate-900 tracking-tight truncate leading-tight group-hover:text-[var(--color-brand)] transition-colors">{app.studentName}</h4>
                                  <div className="flex items-center gap-3 mt-1.5 min-w-0">
                                     <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate">{app.internshipTitle}</span>
                                     <div className="w-1 h-1 bg-slate-200 rounded-full shrink-0"></div>
@@ -245,7 +245,7 @@ const CompanyDashboard: React.FC = () => {
                                  </div>
                               </div>
                            </div>
-                           <button className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-[var(--color-teal)] hover:text-white transition-all group-hover:scale-110 active:scale-95 shadow-sm ml-4">
+                           <button className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-[var(--color-brand)] hover:text-white transition-all group-hover:scale-110 active:scale-95 shadow-sm ml-4">
                               <ArrowRight size={18} />
                            </button>
                         </div>
@@ -261,12 +261,12 @@ const CompanyDashboard: React.FC = () => {
             </div>
 
             <div className="bg-slate-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-teal)]/10 blur-[50px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
+               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-brand)]/10 blur-[50px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
                <Star size={32} className="text-amber-500 mb-6 group-hover:rotate-12 transition-transform" />
                <h4 className="text-xl font-serif font-bold italic mb-2 leading-tight">Elite <span className="font-normal text-slate-400">Branding</span></h4>
                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-8 leading-relaxed">Your corporate standing is synchronized at <span className="text-white">Premium Tier 1</span>.</p>
                <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-[var(--color-teal)] w-[95%] shadow-glow"></div>
+                  <div className="h-full bg-[var(--color-brand)] w-[95%] shadow-glow"></div>
                </div>
             </div>
          </div>
@@ -281,7 +281,7 @@ const CompanyDashboard: React.FC = () => {
               <div className="flex items-start justify-between mb-8">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                     <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--color-teal)]">System Directive</span>
+                     <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">System Directive</span>
                   </div>
                   <h3 className="text-2xl font-serif font-bold text-slate-900 italic leading-tight">Initiate <span className="font-normal text-slate-400">Search</span></h3>
                 </div>
@@ -300,7 +300,7 @@ const CompanyDashboard: React.FC = () => {
                         value={newRole.title} 
                         onChange={(e) => setNewRole({...newRole, title: e.target.value})} 
                         placeholder="e.g. Fintech Operations Analyst" 
-                        className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-sm font-bold outline-none focus:ring-4 focus:ring-[var(--color-teal)]/5 focus:border-[var(--color-teal)] focus:bg-white transition-all shadow-inner" 
+                        className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-sm font-bold outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 focus:border-[var(--color-brand)] focus:bg-white transition-all shadow-inner" 
                       />
                    </div>
                    
@@ -312,18 +312,18 @@ const CompanyDashboard: React.FC = () => {
                         onChange={(e) => setNewRole({...newRole, description: e.target.value})} 
                         placeholder="Define the scope of this deployment..." 
                         rows={3} 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-xl p-5 text-sm font-medium outline-none focus:ring-4 focus:ring-[var(--color-teal)]/5 focus:border-[var(--color-teal)] focus:bg-white transition-all resize-none shadow-inner" 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-xl p-5 text-sm font-medium outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 focus:border-[var(--color-brand)] focus:bg-white transition-all resize-none shadow-inner" 
                       />
                    </div>
                    
                    <div className="grid grid-cols-2 gap-5">
                       <div className="relative">
                          <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Skill Density</label>
-                         <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="SQL, React" className="w-full h-11 bg-slate-50 border border-slate-100 rounded-lg px-5 text-xs font-mono font-bold uppercase outline-none focus:ring-4 focus:ring-[var(--color-teal)]/5 focus:border-[var(--color-teal)] transition-all shadow-inner" />
+                         <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="SQL, React" className="w-full h-11 bg-slate-50 border border-slate-100 rounded-lg px-5 text-xs font-mono font-bold uppercase outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 focus:border-[var(--color-brand)] transition-all shadow-inner" />
                       </div>
                       <div className="relative">
                          <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Sync Deadline</label>
-                         <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-11 bg-slate-50 border border-slate-100 rounded-lg px-5 text-xs font-mono font-bold outline-none focus:ring-4 focus:ring-[var(--color-teal)]/5 focus:border-[var(--color-teal)] transition-all shadow-inner" />
+                         <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-11 bg-slate-50 border border-slate-100 rounded-lg px-5 text-xs font-mono font-bold outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 focus:border-[var(--color-brand)] transition-all shadow-inner" />
                       </div>
                    </div>
                 </div>
@@ -331,9 +331,9 @@ const CompanyDashboard: React.FC = () => {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full h-14 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] hover:bg-[var(--color-teal)] transition-all disabled:opacity-50"
+                  className="w-full h-14 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] hover:bg-[var(--color-brand)] transition-all disabled:opacity-50"
                 >
-                  {isSubmitting ? <Loader2 size={18} className="animate-spin text-[var(--color-teal)]" /> : <Zap size={16} className="text-[var(--color-teal)]" fill="currentColor" />} 
+                  {isSubmitting ? <Loader2 size={18} className="animate-spin text-[var(--color-brand)]" /> : <Zap size={16} className="text-[var(--color-brand)]" fill="currentColor" />} 
                   {isSubmitting ? 'Transmitting Signal...' : 'Broadcast Deployment'}
                 </button>
               </form>

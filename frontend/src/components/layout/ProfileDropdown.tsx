@@ -48,7 +48,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
         {/* Profile Header */}
         <div className="p-8 pb-6">
           <div className="flex gap-4 items-center mb-6">
-             <div className="w-16 h-16 rounded-full bg-[var(--color-teal)] flex items-center justify-center text-white font-serif font-black text-2xl shadow-xl shadow-teal-500/10">
+             <div className="w-16 h-16 rounded-full bg-[var(--color-brand)] flex items-center justify-center text-white font-serif font-black text-2xl shadow-xl shadow-indigo-500/10">
                 {user.initials}
              </div>
              <div className="flex flex-col min-w-0">
@@ -60,7 +60,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
           <Link 
             to="/dashboard/profile"
             onClick={onClose}
-            className="block w-full py-3.5 border-2 border-[var(--color-teal)] text-[var(--color-teal)] rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[var(--color-teal)] hover:text-white transition-all text-center no-underline shadow-sm active:scale-95"
+            className="block w-full py-3.5 border-2 border-[var(--color-brand)] text-[var(--color-brand)] rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[var(--color-brand)] hover:text-white transition-all text-center no-underline shadow-sm active:scale-95"
           >
              View Profile
           </Link>

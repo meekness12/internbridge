@@ -95,15 +95,15 @@ const Applicants: React.FC = () => {
       {/* Editorial Header Section */}
       <div className="flex flex-col mb-16 px-4">
          <div className="flex items-center gap-3 mb-2">
-            <div className="h-[1px] w-8 bg-[var(--color-teal)] opacity-30"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-teal)]">Corporate Acquisition</span>
+            <div className="h-[1px] w-8 bg-[var(--color-brand)] opacity-30"></div>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">Corporate Acquisition</span>
          </div>
          <div className="flex justify-between items-end">
             <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Incoming <em className="italic text-slate-400 font-normal">Applicants</em></h1>
             <div className="text-right">
                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
                   {applications.length} Detected Signals <br/>
-                  <span className="text-[var(--color-teal)]">{applications.filter(a => a.status === 'PENDING').length} Pending review</span>
+                  <span className="text-[var(--color-brand)]">{applications.filter(a => a.status === 'PENDING').length} Pending review</span>
                </p>
             </div>
          </div>
@@ -112,13 +112,13 @@ const Applicants: React.FC = () => {
       {/* Control Terminal */}
       <div className="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-2xl shadow-slate-200/20 mb-10 flex flex-wrap items-center gap-6">
          <div className="flex-1 min-w-[300px] relative group">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-teal)] transition-colors" size={20} />
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-brand)] transition-colors" size={20} />
             <input 
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search candidate identity..."
-              className="w-full h-14 pl-16 pr-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-bold uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-teal)] transition-all shadow-inner"
+              className="w-full h-14 pl-16 pr-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-bold uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-brand)] transition-all shadow-inner"
             />
          </div>
          <div className="flex items-center gap-4">
@@ -128,7 +128,7 @@ const Applicants: React.FC = () => {
             <select 
               value={filterInternship}
               onChange={(e) => setFilterInternship(e.target.value)}
-              className="h-14 px-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-teal)] transition-all cursor-pointer shadow-inner pr-10"
+              className="h-14 px-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-brand)] transition-all cursor-pointer shadow-inner pr-10"
             >
                <option value="all">All Role Deployments</option>
                {internships.map(i => <option key={i.id} value={i.id}>{i.title}</option>)}
@@ -146,18 +146,18 @@ const Applicants: React.FC = () => {
            {filtered.length > 0 ? (
               filtered.map((app) => (
                 <div key={app.id} className="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-xl shadow-slate-200/20 hover:shadow-2xl transition-all group relative overflow-hidden">
-                   <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-teal)]/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                   <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-brand)]/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                    
                    <div className="flex flex-wrap items-center justify-between gap-8 relative z-10">
                       <div className="flex items-center gap-6 min-w-[300px]">
-                         <div className="w-16 h-16 rounded-[1.5rem] bg-[var(--color-teal)]/5 flex items-center justify-center text-[var(--color-teal)] font-serif font-black text-2xl shadow-sm group-hover:bg-[var(--color-teal)] group-hover:text-white transition-all">
+                         <div className="w-16 h-16 rounded-[1.5rem] bg-[var(--color-brand)]/5 flex items-center justify-center text-[var(--color-brand)] font-serif font-black text-2xl shadow-sm group-hover:bg-[var(--color-brand)] group-hover:text-white transition-all">
                             {app.studentName?.charAt(0) || '?'}
                          </div>
                          <div>
-                            <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-teal)] transition-colors tracking-tight">{app.studentName}</h4>
+                            <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors tracking-tight">{app.studentName}</h4>
                             <div className="flex items-center gap-4 mt-2">
                                <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                  <Briefcase size={12} className="text-[var(--color-teal)]" /> {app.internshipTitle}
+                                  <Briefcase size={12} className="text-[var(--color-brand)]" /> {app.internshipTitle}
                                </div>
                                <div className="h-1 w-1 bg-slate-200 rounded-full"></div>
                                <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -197,7 +197,7 @@ const Applicants: React.FC = () => {
                                   <FileText size={20} />
                                </button>
                             )}
-                            <button className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-[var(--color-teal)] hover:text-white transition-all shadow-sm">
+                            <button className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-[var(--color-brand)] hover:text-white transition-all shadow-sm">
                                <ArrowUpRight size={20} />
                             </button>
                          </div>

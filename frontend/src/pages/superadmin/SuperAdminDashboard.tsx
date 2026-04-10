@@ -101,8 +101,8 @@ const SuperAdminDashboard: React.FC = () => {
     { 
       label: 'Platform Users', 
       value: totalUserCount.toLocaleString() || '0', 
-      bgColor: 'bg-hrm-mint', 
-      iconColor: 'text-emerald-500', 
+      bgColor: 'bg-hrm-sky', 
+      iconColor: 'text-sky-500', 
       trend: stats?.userTrend || 'Growth', 
       trendUp: true 
     },
@@ -132,7 +132,7 @@ const SuperAdminDashboard: React.FC = () => {
         {/* 2. Greetings Row */}
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
-            Good Morning, <span className="text-[var(--color-teal)]">Admin!</span> 👋
+            Good Morning, <span className="text-[var(--color-brand)]">Admin!</span> 👋
           </h2>
           <button className="h-12 px-6 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest flex items-center gap-3 shadow-xl hover:bg-black transition-all">
             System Overview <ChevronDown size={16} className="text-slate-400" />
@@ -189,15 +189,15 @@ const SuperAdminDashboard: React.FC = () => {
                 </div>
               ))}
             </div>
-            <div className="mt-8 p-6 bg-[var(--color-teal)]/5 rounded-3xl border border-[var(--color-teal)]/10 flex items-center justify-between">
+            <div className="mt-8 p-6 bg-[var(--color-brand)]/5 rounded-3xl border border-[var(--color-brand)]/10 flex items-center justify-between">
                <div className="flex items-center gap-4">
-                  <TrendingUp className="text-[var(--color-teal)]" size={24} />
+                  <TrendingUp className="text-[var(--color-brand)]" size={24} />
                   <div>
                     <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Placement Velocity</div>
                     <div className="text-sm font-bold text-slate-900">Optimal Growth Pattern Detected</div>
                   </div>
                </div>
-               <div className="text-2xl font-black text-[var(--color-teal)]">{placementRate}%</div>
+               <div className="text-2xl font-black text-[var(--color-brand)]">{placementRate}%</div>
             </div>
           </div>
 
