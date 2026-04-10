@@ -129,42 +129,42 @@ const CompanyDashboard: React.FC = () => {
     <div className="max-w-[1280px] mx-auto animate-fade-in pb-20 mt-6 px-6">
       
       {/* Editorial Header */}
-      <div className="flex justify-between items-end mb-12">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 sm:mb-12 gap-6 sm:gap-0">
          <div className="flex flex-col">
             <div className="flex items-center gap-3 mb-2">
                <div className="h-[1px] w-8 bg-[var(--color-brand)] opacity-30"></div>
                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">Corporate Identity Hub</span>
             </div>
-            <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Command <em className="italic text-slate-400 font-normal">Center</em></h1>
+            <h1 className="text-3xl sm:text-5xl font-serif font-bold text-slate-900 leading-tight">Command <em className="italic text-slate-400 font-normal">Center</em></h1>
          </div>
          <button 
            onClick={() => setShowPostModal(true)}
-           className="h-14 px-10 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-black/20 hover:bg-[var(--color-brand)] transition-all flex items-center gap-3 hover:scale-[1.02] active:scale-[0.98]"
+           className="h-12 sm:h-14 w-full sm:w-auto px-6 sm:px-10 bg-slate-900 text-white rounded-2xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-black/20 hover:bg-[var(--color-brand)] transition-all flex items-center justify-center sm:justify-start gap-3 hover:scale-[1.02] active:scale-[0.98]"
          >
             <Plus size={18} /> New Posting
          </button>
       </div>
 
       {/* KPI Status Grid (4 Cards) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
          {[
-           { label: 'Talent signals', value: applications.length, sub: 'Total Applications', icon: <Target size={20} />, color: 'var(--color-teal)' },
-           { label: 'Managed Interns', value: placements.length, sub: 'Active Workforce', icon: <Users size={20} />, color: '#6366f1' },
-           { label: 'Capacity', value: internships.length, sub: 'Active Openings', icon: <Briefcase size={20} />, color: '#f59e0b' },
-           { label: 'Signal queue', value: notifications.filter(n => !n.isRead).length, sub: 'Unread Alerts', icon: <Bell size={20} />, color: '#ef4444' }
+           { label: 'Talent signals', value: applications.length, sub: 'Total Apps', icon: <Target size={18} />, color: 'var(--color-teal)' },
+           { label: 'Managed', value: placements.length, sub: 'Workforce', icon: <Users size={18} />, color: '#6366f1' },
+           { label: 'Capacity', value: internships.length, sub: 'Openings', icon: <Briefcase size={18} />, color: '#f59e0b' },
+           { label: 'Signals', value: notifications.filter(n => !n.isRead).length, sub: 'Unread Alerts', icon: <Bell size={18} />, color: '#ef4444' }
          ].map((stat, i) => (
-           <div key={i} className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-slate-200 transition-all">
-              <div className="flex justify-between items-start mb-6">
-                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ backgroundColor: stat.color }}>
+           <div key={i} className="bg-white rounded-[1.8rem] sm:rounded-[2.5rem] p-4 sm:p-8 border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-slate-200 transition-all">
+              <div className="flex justify-between items-start mb-4 sm:mb-6">
+                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ backgroundColor: stat.color }}>
                     {stat.icon}
                  </div>
-                 <div className="flex items-center gap-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+                 <div className="hidden sm:flex items-center gap-1 text-[9px] font-black text-emerald-500 uppercase tracking-widest">
                     <TrendingUp size={12} /> Live
                  </div>
               </div>
-              <div className="text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
-              <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.25em]">{stat.label}</div>
-              <div className="mt-4 text-[11px] text-slate-400 font-medium">{stat.sub}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
+              <div className="text-[8px] sm:text-[10px] font-black text-slate-300 uppercase tracking-[0.25em] truncate">{stat.label}</div>
+              <div className="mt-4 text-[9px] sm:text-[11px] text-slate-400 font-medium truncate">{stat.sub}</div>
            </div>
          ))}
       </div>

@@ -127,27 +127,27 @@ const SuperAdminDashboard: React.FC = () => {
   return (
     <div className="max-w-full animate-fade-in pb-20">
       
-      <div className="px-6 space-y-10 mt-6">
+      <div className="px-4 sm:px-6 space-y-8 sm:space-y-10 mt-4 sm:mt-6">
         
         {/* 2. Greetings Row */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-0">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-tight">
             Good Morning, <span className="text-[var(--color-brand)]">Admin!</span> 👋
           </h2>
-          <button className="h-12 px-6 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest flex items-center gap-3 shadow-xl hover:bg-black transition-all">
+          <button className="h-12 w-full sm:w-auto px-6 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center sm:justify-start gap-3 shadow-xl hover:bg-black transition-all">
             System Overview <ChevronDown size={16} className="text-slate-400" />
           </button>
         </div>
 
         {/* 3. KPI Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {kpis.map((kpi, i) => (
-            <div key={i} className={`${kpi.bgColor} p-8 rounded-[2rem] shadow-hrm border border-white/50 flex flex-col justify-between group hover:scale-[1.02] transition-transform duration-500`}>
-              <div className="flex items-start justify-between mb-6">
-                <div className={`w-14 h-14 rounded-2xl bg-white flex items-center justify-center ${kpi.iconColor} shadow-sm group-hover:rotate-6 transition-transform`}>
-                  {i === 0 ? <Building2 size={24} /> : i === 1 ? <Users size={24} /> : i === 2 ? <Briefcase size={24} /> : <ShieldAlert size={24} />}
+            <div key={i} className={`${kpi.bgColor} p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-hrm border border-white/50 flex flex-col justify-between group hover:scale-[1.02] transition-transform duration-500`}>
+              <div className="flex items-start justify-between mb-4 sm:mb-6">
+                <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white flex items-center justify-center ${kpi.iconColor} shadow-sm group-hover:rotate-6 transition-transform`}>
+                  {i === 0 ? <Building2 size={20} className="sm:w-6 sm:h-6" /> : i === 1 ? <Users size={20} className="sm:w-6 sm:h-6" /> : i === 2 ? <Briefcase size={20} className="sm:w-6 sm:h-6" /> : <ShieldAlert size={20} className="sm:w-6 sm:h-6" />}
                 </div>
-                <div className="flex flex-col items-end">
+                <div className="hidden sm:flex flex-col items-end">
                    <Sparkline color={kpi.iconColor.includes('orange') ? '#F97316' : kpi.iconColor.includes('emerald') ? '#10B981' : kpi.iconColor.includes('rose') ? '#F43F5E' : '#6366F1'} />
                    <div className={`flex items-center gap-1 text-[10px] font-black mt-2 ${kpi.trendUp ? 'text-emerald-500' : 'text-rose-500'}`}>
                       {kpi.trendUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />} {kpi.trend}
@@ -155,8 +155,8 @@ const SuperAdminDashboard: React.FC = () => {
                 </div>
               </div>
               <div>
-                <div className="text-xs font-black uppercase tracking-widest text-slate-400/80 mb-1">{kpi.label}</div>
-                <div className="text-3xl font-black text-slate-800 tracking-tight">{kpi.value}</div>
+                <div className="text-[9px] sm:text-xs font-black uppercase tracking-widest text-slate-400/80 mb-1">{kpi.label}</div>
+                <div className="text-xl sm:text-3xl font-black text-slate-800 tracking-tight">{kpi.value}</div>
               </div>
             </div>
           ))}

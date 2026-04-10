@@ -61,19 +61,21 @@ const SupervisorDashboard: React.FC = () => {
               </div>
            </div>
 
-           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
               <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Supervision Metrics</h4>
-              {stats.map((s, i) => (
-                <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 last:border-0">
-                   <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-forest)] transition-colors">
-                      {s.icon}
-                   </div>
-                   <div>
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">{s.label}</div>
-                      <div className="text-xs font-bold text-slate-700 leading-none">{s.value}</div>
-                   </div>
-                </div>
-              ))}
+              <div className="grid grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-0">
+                {stats.map((s, i) => (
+                  <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 lg:last:border-0">
+                     <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-forest)] transition-colors shrink-0">
+                        {s.icon}
+                     </div>
+                     <div className="min-w-0">
+                        <div className="text-[9px] sm:text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1 truncate">{s.label}</div>
+                        <div className="text-xs font-bold text-slate-700 leading-none">{s.value}</div>
+                     </div>
+                  </div>
+                ))}
+              </div>
            </div>
         </div>
 

@@ -26,20 +26,20 @@ export const PremiumHeader: React.FC<PremiumHeaderProps> = ({
   additionalActions
 }) => {
   return (
-    <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-      <div>
-        <div className={`ph-eyebrow flex items-center gap-2 text-[10px] font-mono font-bold ${eyebrowColor} tracking-widest uppercase mb-2`}>
-          <span className={`w-4 h-[1px] bg-current opacity-30`}></span>
+    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-10 sm:mb-14">
+      <div className="max-w-2xl">
+        <div className={`ph-eyebrow flex items-center gap-2 text-[9px] sm:text-[10px] font-mono font-bold ${eyebrowColor} tracking-[0.3em] uppercase mb-3`}>
+          <span className={`w-6 h-[1px] bg-current opacity-30`}></span>
           {eyebrow}
         </div>
-        <h1 className="text-5xl font-serif text-[var(--color-navy)] leading-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[var(--color-navy)] leading-[1.15] tracking-tight">
           {title} {italicTitle && <em className="italic text-slate-400 font-normal">{italicTitle}</em>}
         </h1>
-        <p className="text-xs text-slate-400 mt-2 font-medium">
+        <p className="text-[11px] sm:text-xs text-slate-400 mt-4 font-medium uppercase tracking-widest leading-relaxed">
           {subtitle}
         </p>
       </div>
-      <div className="flex gap-2.5 items-start">
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
         {additionalActions}
         {secondaryAction}
         {primaryAction}

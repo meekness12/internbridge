@@ -107,12 +107,12 @@ const InternDashboard: React.FC = () => {
                className="w-full h-14 pl-12 pr-6 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-[var(--color-brand)]/10 focus:border-[var(--color-brand)] transition-all shadow-sm"
              />
           </div>
-          <div className="flex items-center gap-2 p-1.5 bg-white border border-slate-200 rounded-2xl shadow-sm">
+          <div className="flex items-center gap-2 p-1.5 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-x-auto no-scrollbar max-w-full">
             {['All', 'Remote', 'On-site', 'Hybrid'].map((f) => (
               <button 
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`px-6 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                className={`px-6 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                   filter === f ? 'bg-[var(--color-brand)] text-white shadow-md shadow-teal-500/20' : 'text-slate-500 hover:bg-slate-50'
                 }`}
               >
@@ -137,45 +137,45 @@ const InternDashboard: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-6">
-               {filteredInternships.map((job: any, i) => (
-                 <div 
-                   key={i} 
-                   onClick={() => setSelectedJob(job)}
-                   className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-xl shadow-slate-200/30 hover:shadow-2xl hover:shadow-teal-500/5 transition-all group cursor-pointer animate-fade-up relative overflow-hidden" 
-                   style={{ animationDelay: `${i * 0.1}s` }}
-                 >
-                    <div className="flex justify-between items-start">
-                       <div className="flex gap-6">
-                          <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-brand)] font-bold text-xl shadow-inner group-hover:scale-110 transition-transform">
-                            {job.companyName?.[0] || 'I'}{job.companyName?.[1] || ''}
-                          </div>
-                          <div>
-                             <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors mb-1 leading-tight">{job.title}</h4>
-                             <div className="flex items-center gap-2 mb-4">
-                               <Briefcase size={14} className="text-slate-300" />
-                               <span className="text-sm font-bold text-slate-500">{job.companyName}</span>
-                             </div>
-                             
-                             <div className="flex flex-wrap items-center gap-6 text-xs text-slate-400 font-medium mb-6">
-                                <div className="flex items-center gap-1.5"><MapPin size={14} /> New York, NY</div>
-                                <div className="flex items-center gap-1.5"><Clock size={14} /> 6 months</div>
-                                <div className="flex items-center gap-1.5"><DollarSign size={14} /> $2,000/mo</div>
-                             </div>
-
-                             <div className="flex flex-wrap gap-2">
-                               <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-amber-100">Hybrid</span>
-                               {['Python', 'Machine Learning', 'SQL'].map(skill => (
-                                 <span key={skill} className="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-slate-100">{skill}</span>
-                               ))}
-                             </div>
-                          </div>
-                       </div>
-                       <div className="text-[11px] font-bold text-slate-300 uppercase tracking-widest pt-2">
-                         {i + 1} day{i === 0 ? '' : 's'} ago
-                       </div>
-                    </div>
-                 </div>
-               ))}
+                {filteredInternships.map((job: any, i) => (
+                  <div 
+                    key={i} 
+                    onClick={() => setSelectedJob(job)}
+                    className="bg-white rounded-[2rem] border border-slate-100 p-6 sm:p-8 shadow-xl shadow-slate-200/30 hover:shadow-2xl hover:shadow-teal-500/5 transition-all group cursor-pointer animate-fade-up relative overflow-hidden" 
+                    style={{ animationDelay: `${i * 0.1}s` }}
+                  >
+                     <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <div className="flex gap-4 sm:gap-6">
+                           <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-brand)] font-bold text-lg sm:text-xl shadow-inner group-hover:scale-110 transition-transform shrink-0">
+                             {job.companyName?.[0] || 'I'}{job.companyName?.[1] || ''}
+                           </div>
+                           <div className="min-w-0">
+                              <h4 className="text-lg sm:text-xl font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors mb-1 leading-tight truncate">{job.title}</h4>
+                              <div className="flex items-center gap-2 mb-4">
+                                <Briefcase size={14} className="text-slate-300" />
+                                <span className="text-sm font-bold text-slate-500 truncate">{job.companyName}</span>
+                              </div>
+                              
+                              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[10px] sm:text-xs text-slate-400 font-medium mb-6">
+                                 <div className="flex items-center gap-1.5"><MapPin size={14} /> New York, NY</div>
+                                 <div className="flex items-center gap-1.5"><Clock size={14} /> 6 months</div>
+                                 <div className="flex items-center gap-1.5"><DollarSign size={14} /> $2k/mo</div>
+                              </div>
+ 
+                              <div className="flex flex-wrap gap-2">
+                                <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-amber-100">Hybrid</span>
+                                {['Python', 'SQL'].slice(0, 2).map(skill => (
+                                  <span key={skill} className="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-slate-100">{skill}</span>
+                                ))}
+                              </div>
+                           </div>
+                        </div>
+                        <div className="text-[10px] sm:text-[11px] font-bold text-slate-300 uppercase tracking-widest pt-1 sm:pt-2 whitespace-nowrap">
+                          {i + 1} day{i === 0 ? '' : 's'} ago
+                        </div>
+                     </div>
+                  </div>
+                ))}
 
                {filteredInternships.length === 0 && (
                  <div className="py-20 bg-white rounded-[3rem] border border-dashed border-slate-200 text-center px-10">
