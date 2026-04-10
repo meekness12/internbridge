@@ -49,12 +49,12 @@ const DashboardLayout: React.FC = () => {
   const isSchoolAdmin = role === 'SCHOOL_ADMIN';
 
   const navItems = isAdmin ? [
-    { icon: <LayoutGrid size={24} />, path: '/dashboard', label: 'Home' },
+    { icon: <LayoutGrid size={24} />, path: '/dashboard', label: 'Dashboard' },
     { icon: <Users size={24} />, path: '/dashboard/users', label: 'Users' },
     { icon: <Briefcase size={24} />, path: '/dashboard/companies', label: 'Partners' },
     { icon: <FileText size={24} />, path: '/dashboard/reports', label: 'Reports' },
-    { icon: <CheckSquare size={24} />, path: '/dashboard/logs', label: 'Audit' },
-    { icon: <Bell size={24} />, path: '/dashboard/notifications', label: 'Notifications' },
+    { icon: <CheckSquare size={24} />, path: '/dashboard/logs', label: 'Audit Logs' },
+    { icon: <Bell size={24} />, path: '/dashboard/notifications', label: 'Alerts' },
   ] : isSchoolAdmin ? [
     { icon: <Home size={24} />, path: '/dashboard', label: 'Home' },
     { icon: <Building size={24} />, path: '/dashboard/faculties', label: 'Faculties' },
@@ -128,10 +128,10 @@ const DashboardLayout: React.FC = () => {
                   isProfileOpen ? 'border-[var(--color-teal)] bg-slate-50' : 'border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-serif font-black text-[10px] shadow-sm ${
-                  isCompany ? 'bg-amber-500' : isAdmin ? 'bg-rose-600' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-teal)]'
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-serif font-black text-[10px] shadow-lg transition-all ${
+                  isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-teal)]' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-teal)]'
                 }`}>
-                  {userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : 'IB'}
+                  {userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isAdmin ? 'SJ' : 'IB')}
                 </div>
                 <ChevronDown size={14} className={`transition-transform text-slate-400 ${isProfileOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -143,7 +143,7 @@ const DashboardLayout: React.FC = () => {
                   name: userProfile?.name || (isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'),
                   role: userProfile?.role?.replace('_', ' ') || role.replace('_', ' '),
                   initials: userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'),
-                  avatarColor: isCompany ? 'bg-amber-500' : isAdmin ? 'bg-rose-600' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-teal)]'
+                  avatarColor: isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-teal)] shadow-glow-teal' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-teal)]'
                 }}
               />
             </div>

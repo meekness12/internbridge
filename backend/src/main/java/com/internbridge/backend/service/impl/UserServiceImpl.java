@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
             case COMPANY_ADMIN:
                 user = CompanyAdmin.builder()
                         .companyName(request.getInstitution())
+                        .industry(request.getIndustry())
                         .build();
                 break;
             case SCHOOL_ADMIN:

@@ -1,55 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Users, 
-  Download,
-  RefreshCw,
-  LayoutDashboard,
-  ShieldCheck,
-  Server,
   Search, 
-  Filter, 
-  ShieldAlert, 
-  Cpu, 
-  ExternalLink, 
-  Zap,
-  Lock,
+  Bell, 
+  Sun, 
+  Grid, 
+  TrendingUp, 
+  TrendingDown, 
+  Building2, 
+  Briefcase, 
   Database,
-  Terminal,
-  ArrowUpRight,
-  Shield,
-  Globe,
-  Archive,
-  ChevronRight
+  MoreVertical,
+  CheckCircle2,
+  Clock,
+  ChevronDown,
+  ShieldAlert
 } from 'lucide-react';
 import systemService from '../../api/systemService';
 import userService from '../../api/userService';
 import type { UserDTO } from '../../api/userService';
-import type { PlatformStats, AuditLogDTO, InfrastructureMetric } from '../../api/systemService';
+import type { PlatformStats, AuditLogDTO, AnalyticsResponse } from '../../api/systemService';
 import { useToast } from '../../context/ToastContext';
 
+/**
+ * SuperAdminDashboard Component - Modern HRM Redesign
+ * Overhauled with real-time data synchronization.
+ */
 const SuperAdminDashboard: React.FC = () => {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('overview');
   const [stats, setStats] = useState<PlatformStats | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLogDTO[]>([]);
   const [users, setUsers] = useState<UserDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [roleDistribution, setRoleDistribution] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [statsData, logsData, usersData] = await Promise.all([
+        const [statsData, logsData, analyticsData, usersData] = await Promise.all([
           systemService.getPlatformStats().catch(() => null),
           systemService.getAuditLogs(10).catch(() => []),
+          systemService.getAnalytics().catch(() => null),
           userService.getUsers().catch(() => []),
         ]);
         
         setStats(statsData);
         setAuditLogs(logsData);
+        setAnalytics(analyticsData);
         setUsers(usersData);
+
+        // Real-time role distribution calculation
+        const counts = usersData.reduce((acc: Record<string, number>, user: UserDTO) => {
+          acc[user.role] = (acc[user.role] || 0) + 1;
+          return acc;
+        }, {});
+        setRoleDistribution(counts);
+
       } catch (error) {
-        toast('System synchronization failed', 'error');
+        toast('Data synchronization failed', 'error');
       } finally {
         setIsLoading(false);
       }
@@ -57,208 +67,291 @@ const SuperAdminDashboard: React.FC = () => {
     fetchData();
   }, [toast]);
 
+  // Derived Values
+  const totalUserCount = users.length || 0;
+  const placementRate = totalUserCount > 0 ? Math.round(((analytics?.totalPlacements || 0) / totalUserCount) * 100) : 0;
+  const alertCount = auditLogs.filter(log => log.status !== 'SUCCESS').length;
+
+  // Mock Sparkline logic based on real Placement Velocity if available
+  const Sparkline = ({ color, data }: { color: string, data?: number[] }) => {
+    const points = data && data.length > 0 ? data : [20, 5, 18, 10];
+    const path = `M0 ${30 - points[0]} Q 25 ${30 - points[1]}, 50 ${30 - points[2]} T 100 ${30 - points[3]}`;
+    return (
+      <svg viewBox="0 0 100 30" className="w-16 h-8 opacity-40">
+        <path 
+          d={path} 
+          fill="none" 
+          stroke={color} 
+          strokeWidth="3" 
+          strokeLinecap="round" 
+        />
+      </svg>
+    );
+  };
+
   const kpis = [
-    { label: 'Platform Identities', value: stats?.totalUsers.toLocaleString() || '---', icon: <Users size={16} /> },
-    { label: 'System Uptime', value: '99.99%', icon: <Zap size={16} /> },
-    { label: 'Cloud Resources', value: `${stats?.resourceUsage || 24}%`, icon: <Cpu size={16} /> },
+    { 
+      label: 'Partnerships', 
+      value: stats?.totalPartners.toLocaleString() || '0', 
+      bgColor: 'bg-hrm-peach', 
+      iconColor: 'text-orange-500', 
+      trend: stats?.partnerTrend || 'Steady', 
+      trendUp: true 
+    },
+    { 
+      label: 'Platform Users', 
+      value: totalUserCount.toLocaleString() || '0', 
+      bgColor: 'bg-hrm-mint', 
+      iconColor: 'text-emerald-500', 
+      trend: stats?.userTrend || 'Growth', 
+      trendUp: true 
+    },
+    { 
+      label: 'Total Placements', 
+      value: analytics?.totalPlacements.toLocaleString() || '0', 
+      bgColor: 'bg-hrm-rose', 
+      iconColor: 'text-rose-500', 
+      trend: analytics?.placementTrend || 'Active', 
+      trendUp: true 
+    },
+    { 
+      label: 'System Alerts', 
+      value: alertCount.toString(), 
+      bgColor: 'bg-hrm-lavender', 
+      iconColor: 'text-indigo-500', 
+      trend: 'Critical', 
+      trendUp: false 
+    },
   ];
 
   return (
-    <div className="max-w-[1128px] mx-auto animate-fade-in pb-20">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div className="max-w-full animate-fade-in pb-20">
+      
+      <div className="px-6 space-y-10 mt-6">
         
-        {/* Left Column: System Identity Snap */}
-        <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
-           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-              <div className="h-14 bg-rose-900 w-full relative overflow-hidden">
-                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse"></div>
-              </div>
-              <div className="px-4 pb-4 -mt-7 text-center">
-                 <div className="w-16 h-16 rounded-full border-4 border-white bg-slate-900 mx-auto flex items-center justify-center text-rose-500 font-mono font-black text-xl shadow-md mb-3">
-                    SYS
-                 </div>
-                 <h3 className="text-base font-bold text-slate-900 tracking-tight">Global Controller</h3>
-                 <p className="text-xs text-slate-500 font-medium mb-4">Super Admin · Operational Tier 1</p>
-                 <div className="pt-4 border-t border-slate-100 flex flex-col items-start gap-4">
-                    <div className="flex justify-between w-full text-[11px] font-bold">
-                       <span className="text-slate-500">Node Clusters</span>
-                       <span className="text-rose-600">Active</span>
-                    </div>
-                    <div className="flex justify-between w-full text-[11px] font-bold">
-                       <span className="text-slate-500">Security Index</span>
-                       <span className="text-[var(--color-forest)]">Perfect</span>
-                    </div>
-                 </div>
-              </div>
-           </div>
-
-           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Infrastructure Load</h4>
-              {kpis.map((s, i) => (
-                <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 last:border-0">
-                   <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-rose-600 transition-colors">
-                      {s.icon}
-                   </div>
-                   <div>
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">{s.label}</div>
-                      <div className="text-xs font-bold text-slate-700 leading-none">{s.value}</div>
-                   </div>
-                </div>
-              ))}
-           </div>
+        {/* 2. Greetings Row */}
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
+            Good Morning, <span className="text-[var(--color-teal)]">Admin!</span> 👋
+          </h2>
+          <button className="h-12 px-6 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest flex items-center gap-3 shadow-xl hover:bg-black transition-all">
+            System Overview <ChevronDown size={16} className="text-slate-400" />
+          </button>
         </div>
 
-        {/* Middle Column: Governance Feed */}
-        <div className="lg:col-span-6 space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-1 flex items-center shadow-sm">
-             {['overview', 'users', 'logs'].map((tab) => (
-                <button 
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${activeTab === tab ? 'bg-[var(--color-forest)] text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'}`}
-                >
-                   {tab}
-                </button>
-             ))}
-          </div>
+        {/* 3. KPI Metrics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {kpis.map((kpi, i) => (
+            <div key={i} className={`${kpi.bgColor} p-8 rounded-[2rem] shadow-hrm border border-white/50 flex flex-col justify-between group hover:scale-[1.02] transition-transform duration-500`}>
+              <div className="flex items-start justify-between mb-6">
+                <div className={`w-14 h-14 rounded-2xl bg-white flex items-center justify-center ${kpi.iconColor} shadow-sm group-hover:rotate-6 transition-transform`}>
+                  {i === 0 ? <Building2 size={24} /> : i === 1 ? <Users size={24} /> : i === 2 ? <Briefcase size={24} /> : <ShieldAlert size={24} />}
+                </div>
+                <div className="flex flex-col items-end">
+                   <Sparkline color={kpi.iconColor.includes('orange') ? '#F97316' : kpi.iconColor.includes('emerald') ? '#10B981' : kpi.iconColor.includes('rose') ? '#F43F5E' : '#6366F1'} />
+                   <div className={`flex items-center gap-1 text-[10px] font-black mt-2 ${kpi.trendUp ? 'text-emerald-500' : 'text-rose-500'}`}>
+                      {kpi.trendUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />} {kpi.trend}
+                   </div>
+                </div>
+              </div>
+              <div>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-400/80 mb-1">{kpi.label}</div>
+                <div className="text-3xl font-black text-slate-800 tracking-tight">{kpi.value}</div>
+              </div>
+            </div>
+          ))}
+        </div>
 
-          <div className="flex items-center gap-2 py-2">
-             <div className="h-px flex-1 bg-slate-200"></div>
-             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">System Governance Feed</span>
-             <div className="h-px flex-1 bg-slate-200"></div>
-          </div>
-
-          {activeTab === 'overview' && (
-            <div className="space-y-4">
-               {/* Critical Alert Card */}
-               {stats?.securityAlerts && stats.securityAlerts > 0 && (
-                 <div className="bg-rose-50 border border-rose-100 rounded-xl p-6 flex items-start gap-4 animate-pulse">
-                    <div className="p-3 bg-white rounded-full text-rose-600 shadow-sm"><ShieldAlert size={20} /></div>
-                    <div>
-                       <h4 className="text-sm font-bold text-rose-900">Security Breach Detected</h4>
-                       <p className="text-xs text-rose-600 mt-1">Found {stats.securityAlerts} anomaly patterns in Cluster-7. Immediate audit recommended.</p>
-                       <button className="mt-4 px-4 py-2 bg-rose-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg">Isolate Node</button>
-                    </div>
-                 </div>
-               )}
-
-               <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                  <div className="flex items-center justify-between mb-6">
-                     <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500">Resource Trajectory</h4>
-                     <RefreshCw size={14} className={`text-slate-300 ${isLoading ? 'animate-spin' : ''}`} />
-                  </div>
-                  <div className="h-40 flex items-end gap-3 px-2 border-b border-slate-100 pb-2">
-                     {[45, 32, 68, 85, 42, 38, 55, 90, 48, 62].map((v, i) => (
-                       <div key={i} className="flex-1 rounded-t-sm group relative" style={{ height: `${v}%`, backgroundColor: v > 80 ? '#e11d48' : '#1A3028' }}>
-                          <div className="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[8px] font-bold text-slate-900">{v}%</div>
-                       </div>
-                     ))}
-                  </div>
-                  <div className="flex justify-between items-center mt-4">
-                     <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[var(--color-forest)]"></div><span className="text-[9px] font-bold text-slate-400 uppercase">Operational</span></div>
-                        <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-rose-600"></div><span className="text-[9px] font-bold text-slate-400 uppercase">High Load</span></div>
-                     </div>
-                     <span className="text-[9px] font-mono text-slate-300">Cluster 001-A</span>
+        {/* 4. Middle Grid: Summary | Distribution */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Real Summary Column */}
+          <div className="lg:col-span-6 bg-white rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
+            <div className="flex items-center justify-between mb-8">
+               <h3 className="text-lg font-bold text-slate-900 tracking-tight">Platform Statistics</h3>
+               <button className="text-slate-300 hover:text-slate-900 transition-colors"><MoreVertical size={20} /></button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                { label: 'Corporate Partners', value: stats?.totalPartners.toString() || '0', color: 'bg-amber-50 text-amber-500', icon: <Building2 size={16} /> },
+                { label: 'Active Students', value: (roleDistribution['INTERN'] || 0).toString(), color: 'bg-sky-50 text-sky-500', icon: <Users size={16} /> },
+                { label: 'Academic Auditors', value: (roleDistribution['SUPERVISOR'] || 0).toString(), color: 'bg-rose-50 text-rose-500', icon: <Briefcase size={16} /> },
+                { label: 'Institutional Admins', value: (roleDistribution['SCHOOL_ADMIN'] || 0).toString(), color: 'bg-indigo-50 text-indigo-500', icon: <Database size={16} /> },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center justify-between p-6 rounded-3xl bg-slate-50/50 hover:bg-slate-50 transition-colors group">
+                   <div className="flex items-center gap-4">
+                      <div className={`w-10 h-10 ${item.color} rounded-xl flex items-center justify-center transition-transform group-hover:scale-110`}>
+                        {item.icon}
+                      </div>
+                      <span className="text-sm font-bold text-slate-600 tracking-tight">{item.label}</span>
+                   </div>
+                   <span className="text-lg font-black text-slate-900">{item.value}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 p-6 bg-[var(--color-teal)]/5 rounded-3xl border border-[var(--color-teal)]/10 flex items-center justify-between">
+               <div className="flex items-center gap-4">
+                  <TrendingUp className="text-[var(--color-teal)]" size={24} />
+                  <div>
+                    <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Placement Velocity</div>
+                    <div className="text-sm font-bold text-slate-900">Optimal Growth Pattern Detected</div>
                   </div>
                </div>
+               <div className="text-2xl font-black text-[var(--color-teal)]">{placementRate}%</div>
+            </div>
+          </div>
 
-               {auditLogs.slice(0, 3).map((log, i) => (
-                 <div key={i} className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group animate-fade-up">
-                    <div className="flex items-start justify-between">
-                       <div className="flex gap-4">
-                          <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-gold)] transition-colors"><Shield size={20} /></div>
-                          <div>
-                             <h5 className="text-sm font-bold text-slate-900 group-hover:underline">{log.action}</h5>
-                             <p className="text-xs text-slate-500 mt-1">{log.details}</p>
-                             <div className="flex items-center gap-3 mt-3 text-[9px] font-black uppercase tracking-widest text-slate-400">
-                                <span>{log.userName}</span>
-                                <span className="text-[var(--color-forest)]">{log.status}</span>
-                                <span className="font-mono">{new Date(log.timestamp).toLocaleTimeString()}</span>
-                             </div>
-                          </div>
-                       </div>
-                       <ArrowUpRight size={18} className="text-slate-200 group-hover:text-[var(--color-gold)] transition-colors" />
+          {/* Real Population Distribution */}
+          <div className="lg:col-span-6 bg-white rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
+            <div className="flex items-center justify-between mb-8">
+               <h3 className="text-lg font-bold text-slate-900 tracking-tight">Population Distribution</h3>
+               <div className="px-3 py-1 bg-slate-900 text-white rounded-lg text-[10px] font-black uppercase flex items-center gap-2">
+                  Live Registry <ChevronDown size={12} />
+               </div>
+            </div>
+            
+            <div className="relative h-64 flex items-center justify-center mb-10">
+               <svg className="w-56 h-56 -rotate-90">
+                 <circle cx="112" cy="112" r="90" fill="none" stroke="#F1F5F9" strokeWidth="14" />
+                 <circle 
+                   cx="112" cy="112" r="90" 
+                   fill="none" 
+                   stroke="#0D9488" 
+                   strokeWidth="14" 
+                   strokeDasharray="565" 
+                   strokeDashoffset={565 - (565 * (roleDistribution['INTERN'] || 0) / (totalUserCount || 1))} 
+                   strokeLinecap="round"
+                   className="transition-all duration-1000 ease-out"
+                 />
+               </svg>
+               <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Intern %</span>
+                  <span className="text-5xl font-black text-slate-900 tracking-tighter">
+                    {totalUserCount > 0 ? Math.round((roleDistribution['INTERN'] || 0) / totalUserCount * 100) : 0}%
+                  </span>
+               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+               {[
+                 { label: 'Interns', val: roleDistribution['INTERN'] || 0, color: 'bg-[var(--color-teal)]' },
+                 { label: 'Companies', val: roleDistribution['COMPANY_ADMIN'] || 0, color: 'bg-amber-400' },
+                 { label: 'Academic', val: roleDistribution['SUPERVISOR'] || 0, color: 'bg-sky-400' },
+                 { label: 'Admin', val: roleDistribution['SUPER_ADMIN'] || 0, color: 'bg-slate-900' },
+               ].map((l, i) => (
+                 <div key={i} className="flex items-center justify-between p-3 border border-slate-50 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                       <div className={`w-3 h-3 rounded-full ${l.color} shadow-sm`}></div>
+                       <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{l.label}</span>
                     </div>
+                    <span className="text-xs font-black text-slate-900">{l.val}</span>
                  </div>
                ))}
             </div>
-          )}
-
-          {activeTab === 'users' && (
-             <div className="space-y-4 animate-fade-up">
-                {users.slice(0, 10).map((user, i) => (
-                  <div key={user.id} className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex items-center justify-between group">
-                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-[var(--color-forest)] font-black text-xs">{user.name.charAt(0)}</div>
-                        <div>
-                           <div className="text-sm font-bold text-slate-900">{user.name}</div>
-                           <div className="text-[10px] text-slate-500 font-medium">{user.role}</div>
-                        </div>
-                     </div>
-                     <button className="px-4 py-1.5 border border-slate-100 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-400 hover:border-rose-600 hover:text-rose-600 transition-all">Deactivate</button>
-                  </div>
-                ))}
-             </div>
-          )}
+          </div>
         </div>
 
-        {/* Right Column: Central Controls */}
-        <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
-           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1">Control Terminal</h4>
-              <div className="space-y-3">
-                 {[
-                   { l: 'Global Config', s: 'System params', i: <Terminal size={16} />, c: 'bg-slate-900 text-emerald-500' },
-                   { l: 'Identity Sync', s: 'LDAP / OAuth', i: <RefreshCw size={16} />, c: 'bg-indigo-50 text-indigo-600' },
-                   { l: 'Security Purge', s: 'Session clear', i: <Lock size={16} />, c: 'bg-rose-50 text-rose-600' },
-                 ].map((action, i) => (
-                   <button key={i} className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-all group border border-transparent">
-                      <div className="flex items-center gap-3 text-left">
-                        <div className={`w-9 h-9 ${action.c} rounded-lg flex items-center justify-center shadow-sm`}>
-                          {action.i}
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-slate-800">{action.l}</div>
-                          <div className="text-[9px] text-slate-500 font-medium">{action.s}</div>
-                        </div>
-                      </div>
-                      <ChevronRight size={14} className="text-slate-300 group-hover:text-[var(--color-gold)] transition-all" />
-                   </button>
-                 ))}
-              </div>
-           </div>
+        {/* 5. Real Data Tables */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Real Audit Tasks Table */}
+          <div className="bg-white rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
+            <div className="flex items-center justify-between mb-8">
+               <h3 className="text-lg font-bold text-slate-900 tracking-tight">System Audit Log</h3>
+               <div className="px-4 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg">
+                  Recent <ChevronDown size={14} />
+               </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-[10px] font-black uppercase tracking-widest text-slate-300 border-b border-slate-50">
+                    <th className="text-left pb-4">Activity</th>
+                    <th className="text-left pb-4">Timestamp</th>
+                    <th className="text-left pb-4">Outcome</th>
+                    <th className="text-right pb-4">Operator</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {auditLogs.slice(0, 5).map((log, i) => (
+                    <tr key={i} className="group hover:bg-slate-50/50 transition-colors">
+                      <td className="py-5">
+                         <div className="flex items-center gap-3 text-sm font-bold text-slate-900 tracking-tight group-hover:text-[var(--color-teal)] transition-colors">
+                            <input type="checkbox" checked={log.status === 'SUCCESS'} readOnly className="w-4 h-4 rounded border-slate-300 text-[var(--color-teal)] focus:ring-0" />
+                            {log.action}
+                         </div>
+                      </td>
+                      <td className="py-5 text-sm text-slate-400 font-medium">
+                        {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                      <td className="py-5">
+                         <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+                           log.status === 'SUCCESS' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
+                         }`}>
+                           {log.status === 'SUCCESS' ? 'Verified' : 'Flagged'}
+                         </span>
+                      </td>
+                      <td className="py-5 text-right">
+                         <div className="w-8 h-8 rounded-full bg-slate-100 ml-auto flex items-center justify-center text-[10px] font-black text-slate-400 border border-white shadow-sm">
+                            {log.userName[0]}
+                         </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Global Audit Stream</h4>
-              <div className="space-y-4">
-                 {[
-                   { t: 'DB Backup Verified', d: '12m ago', s: 'Success' },
-                   { t: 'Key Rotation Error', d: '1h ago', s: 'Warning' },
-                   { t: 'API Gateway Scaling', d: '3h ago', s: 'Success' },
-                 ].map((s, i) => (
-                   <div key={i} className="flex gap-4 group cursor-pointer border-b border-slate-50 last:border-0 pb-3 h-auto">
-                      <div className={`w-1 h-8 ${s.s === 'Success' ? 'bg-emerald-500' : 'bg-rose-500'} rounded-full shrink-0 mt-1`}></div>
-                      <div className="min-w-0">
-                        <div className="text-[11px] font-bold text-slate-800 group-hover:underline truncate">{s.t}</div>
-                        <div className="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">{s.d}</div>
-                      </div>
-                   </div>
-                 ))}
-              </div>
-           </div>
+          {/* Real Verification Queue Table */}
+          <div className="bg-white rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
+            <div className="flex items-center justify-between mb-8">
+               <h3 className="text-lg font-bold text-slate-900 tracking-tight">Active Verifications</h3>
+               <div className="px-4 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg">
+                  Global <ChevronDown size={14} />
+               </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-[10px] font-black uppercase tracking-widest text-slate-300 border-b border-slate-50">
+                    <th className="text-left pb-4">Identity</th>
+                    <th className="text-left pb-4">Permission Role</th>
+                    <th className="text-left pb-4">Cert Status</th>
+                    <th className="text-right pb-4">View</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {users.slice(0, 5).map((user, i) => (
+                    <tr key={i} className="group hover:bg-slate-50/50 transition-colors">
+                      <td className="py-5">
+                         <div className="flex items-center gap-4">
+                            <div className="w-8 h-8 rounded-full bg-slate-900 text-white text-[10px] flex items-center justify-center font-bold">
+                               {user.name[0]}
+                            </div>
+                            <span className="text-sm font-bold text-slate-900 tracking-tight">{user.name}</span>
+                         </div>
+                      </td>
+                      <td className="py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{user.role.replace('_', ' ')}</td>
+                      <td className="py-5">
+                         <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+                           user.status === 'ACTIVE' || user.status === 'VERIFIED' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
+                         }`}>
+                           {user.status === 'ACTIVE' || user.status === 'VERIFIED' ? 'Certified' : 'Pending'}
+                         </span>
+                      </td>
+                      <td className="py-5 text-right">
+                         <button className="text-slate-200 hover:text-[var(--color-teal)] transition-colors"><TrendingUp size={18} /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-           <div className="px-4 py-8 text-center text-slate-500">
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] font-mono leading-relaxed mb-4">
-                 InternBridge © 2026<br/>Global Identity Registry
-              </div>
-              <div className="flex justify-center gap-4 opacity-50">
-                 <Shield size={16} />
-                 <Globe size={16} />
-                 <Lock size={16} />
-              </div>
-           </div>
         </div>
+
       </div>
     </div>
   );

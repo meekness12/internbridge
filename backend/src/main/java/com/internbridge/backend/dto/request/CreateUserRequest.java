@@ -17,4 +17,5 @@ public class CreateUserRequest {
     private String lastName;
     private Role role;
     private String institution; // Optional, for context
+    private String industry;    // Capturing sector for corporate partners
 }

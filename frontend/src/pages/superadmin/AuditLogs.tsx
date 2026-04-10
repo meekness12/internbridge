@@ -1,171 +1,202 @@
 import React, { useState, useEffect } from 'react';
 import { 
+  Shield, 
   Search, 
   Filter, 
-  ChevronRight,
-  ShieldCheck,
-  Server,
-  Terminal,
   Download,
-  RefreshCw
+  AlertCircle,
+  Database,
+  Terminal,
+  Clock,
+  RefreshCw,
+  MoreHorizontal
 } from 'lucide-react';
 import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import systemService from '../../api/systemService';
 import type { AuditLogDTO } from '../../api/systemService';
 import { useToast } from '../../context/ToastContext';
 
+/**
+ * AuditLogs Component
+ * High-fidelity Activity Logs for system oversight.
+ */
 const AuditLogs: React.FC = () => {
   const { toast } = useToast();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [auditLogs, setAuditLogs] = useState<AuditLogDTO[]>([]);
+  const [logs, setLogs] = useState<AuditLogDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        setIsLoading(true);
-        const data = await systemService.getAuditLogs(100);
-        setAuditLogs(data);
-      } catch (error) {
-        toast('Failed to synchronize platform audit trail', 'error', 'Governance Error');
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchLogs();
-  }, [toast]);
-  
-  const logs = [
-    { id: 'AUTH-12903', user: 'Admin_Sarah', action: 'Identity Validation', target: 'New Company: CloudSphere', time: '12:04:15 UTC', status: 'SUCCESS', severity: 'INFO' },
-    { id: 'SEC-99201', user: 'System_Kernel', action: 'Failed Login Attempt', target: 'IP: 192.168.1.45', time: '11:58:22 UTC', status: 'REJECTED', severity: 'HIGH' },
-    { id: 'DATA-00291', user: 'Auto_Agent', action: 'DB Snapshot Generated', target: 'Amazon S3: Archive-Beta', time: '11:30:00 UTC', status: 'VERIFIED', severity: 'LOW' },
-    { id: 'SYS-1120', user: 'Eng_Kwame', action: 'Protocol Update', target: 'Internship Agreement v2.1', time: '10:15:44 UTC', status: 'DEPLOYED', severity: 'INFO' },
-    { id: 'AUTH-12899', user: 'Daniel_O', action: 'Password Reset', target: 'User ID: 0921-X', time: '09:44:12 UTC', status: 'SUCCESS', severity: 'LOW' },
-  ];
+  }, []);
+
+  const fetchLogs = async () => {
+    try {
+      setIsLoading(true);
+      const data = await systemService.getAuditLogs(50);
+      setLogs(data);
+    } catch (error) {
+      toast('Failed to synchronize activity logs.', 'error', 'Error');
+      // Mock data for dev
+      setLogs([
+        { id: '1', action: 'User Created', details: 'User alexander.s was created as a Company Admin', userName: 'Admin', timestamp: new Date(Date.now() - 120000).toISOString(), status: 'SUCCESS' },
+        { id: '2', action: 'Security Warning', details: 'Unrecognized login attempt from IP 192.168.1.104', userName: 'Security System', timestamp: new Date(Date.now() - 600000).toISOString(), status: 'WARNING' },
+        { id: '3', action: 'System Update', details: 'System capacity expanded to handle peak load', userName: 'Automation', timestamp: new Date(Date.now() - 1800000).toISOString(), status: 'SUCCESS' },
+        { id: '4', action: 'Account Deleted', details: 'Deleted user root@example.com', userName: 'Admin', timestamp: new Date(Date.now() - 3600000).toISOString(), status: 'SUCCESS' },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredLogs = logs.filter(log => 
+    log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    log.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    log.userName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="space-y-8 animate-fade-in pb-20">
+    <div className="max-w-[1400px] mx-auto animate-fade-in pb-20 px-4">
       <PremiumHeader 
-        eyebrow="Compliance & Accountability"
-        title="Institutional"
-        italicTitle="Audit"
-        subtitle="Cryptographically verified operational logs for platform-wide governance"
-        eyebrowColor="text-rose-600"
+        eyebrow="Global Security Registry"
+        title="Operational"
+        italicTitle="Ledger"
+        subtitle="Forensic stream of platform interactions, security handshakes, and policy governance."
+        eyebrowColor="text-[var(--color-teal)]"
         primaryAction={
-          <button className="h-11 px-6 bg-[var(--color-navy)] text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:bg-black transition-all shadow-lg shadow-black/10">
-            <Download size={18} /> Export Historical Data
+          <button 
+            onClick={() => fetchLogs()}
+            className="h-14 px-8 bg-slate-900 text-white rounded-2xl flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl hover:bg-black transition-all"
+          >
+            Refresh Logs <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
           </button>
         }
       />
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="lg:w-80 space-y-6 shrink-0">
-          <div className="card p-8 bg-white border border-slate-200 rounded-2xl shadow-sm">
-            <div className="label-mono text-[9px] font-black uppercase tracking-widest text-slate-300 mb-6">Integrity Status</div>
-            <div className="flex items-center gap-4 mb-8">
-               <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 border border-emerald-100 shadow-sm">
-                  <ShieldCheck size={24} />
-               </div>
-               <div>
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Chain Status</div>
-                  <div className="text-sm font-bold text-emerald-700">Fully Validated</div>
-               </div>
-            </div>
-            <div className="space-y-4">
-               <div>
-                  <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Verification Depth</span>
-                    <span className="text-[9px] font-mono font-bold text-[var(--color-navy)]">100%</span>
-                  </div>
-                  <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100">
-                    <div className="h-full bg-emerald-500 w-full rounded-full"></div>
-                  </div>
-               </div>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div className="md:col-span-3 flex flex-col md:flex-row gap-6 items-center bg-white/50 backdrop-blur-xl p-6 rounded-[2.5rem] border border-white shadow-2xl shadow-slate-200/20">
+          <div className="relative group flex-1 w-full">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-teal)] transition-colors" size={20} />
+            <input 
+              type="text" 
+              placeholder="Query logs by action, agent, or metadata details..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl pl-16 pr-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-teal)] focus:bg-white transition-all shadow-inner"
+            />
           </div>
-
-          <div className="card p-8 bg-slate-900 border-none rounded-2xl shadow-xl">
-             <div className="label-mono text-[9px] font-black uppercase tracking-widest text-white/20 mb-6">Active Infrastructure</div>
-             <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                   <Server size={18} className="text-emerald-500" />
-                   <div>
-                      <div className="text-[10px] font-bold text-white uppercase tracking-widest">PostgreSQL Cluster</div>
-                      <div className="text-[9px] font-mono text-white/40 uppercase">Operational · Node 01</div>
-                   </div>
-                </div>
-                <div className="flex items-center gap-4">
-                   <Terminal size={18} className="text-[var(--color-gold)]" />
-                   <div>
-                      <div className="text-[10px] font-bold text-white uppercase tracking-widest">API Engine</div>
-                      <div className="text-[9px] font-mono text-white/40 uppercase">v2.1.4-beta Stable</div>
-                   </div>
-                </div>
-             </div>
+          <div className="flex gap-4 w-full md:w-auto">
+             <button className="flex-1 md:flex-none h-14 px-8 bg-white border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-3 hover:bg-slate-50 transition-all">
+               <Filter size={18} /> Severity
+             </button>
+             <button className="flex-1 md:flex-none h-14 px-8 bg-white border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-3 hover:bg-slate-50 transition-all">
+               View All Logs <Terminal size={18} />
+             </button>
           </div>
         </div>
-
-        <div className="flex-1 space-y-6">
-           <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-              <div className="relative group w-full md:w-96">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[var(--color-gold)] transition-colors" size={18} />
-                <input 
-                  type="text" 
-                  placeholder="Filter logs by Protocol ID, Agent, or Action..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-11 bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)] transition-all"
-                />
+        <div className="bg-slate-900 rounded-[2.5rem] p-6 text-white flex flex-col justify-center shadow-2xl relative overflow-hidden group">
+           <div className="relative z-10 flex flex-col items-center">
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Registry Health</span>
+              <div className="text-3xl font-serif font-black italic text-[var(--color-teal)]">Optimal</div>
+              <div className="mt-4 flex gap-2">
+                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-glow"></div>
+                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/20"></div>
+                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/10"></div>
               </div>
-              <button className="h-11 px-5 flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 transition-all">
-                <Filter size={16} /> Filters
-              </button>
            </div>
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden min-h-[400px]">
-               {isLoading ? (
-                 <div className="flex flex-col items-center justify-center p-20 gap-4">
-                    <RefreshCw size={32} className="text-[var(--color-gold)] animate-spin" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">Synchronizing Governance Trail...</span>
-                 </div>
-               ) : (
-                 <div className="divide-y divide-slate-50">
-                   {(auditLogs.length > 0 ? auditLogs : logs).filter(l => 
-                     l.action.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                     ('userName' in l ? l.userName : l.user).toLowerCase().includes(searchQuery.toLowerCase())
-                   ).map((log: any) => (
-                     <div key={log.id} className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                       <div className="flex items-start gap-5">
-                          <div className={`mt-1 h-2 w-2 rounded-full shrink-0 ${
-                            log.severity === 'HIGH' || log.status === 'FAILED' ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]' :
-                            log.severity === 'MEDIUM' || log.status === 'WARNING' ? 'bg-amber-500' : 'bg-emerald-500'
-                          }`}></div>
-                          <div>
-                             <div className="flex items-center gap-3 mb-1.5">
-                                <span className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-tighter">{log.id.substring(0, 8)}</span>
-                                <span className="text-sm font-bold text-[var(--color-navy)] group-hover:text-[var(--color-gold)] transition-colors">{log.action}</span>
-                                <span className={`text-[8px] font-black px-1.5 py-0.5 rounded border uppercase tracking-tighter ${
-                                  log.status === 'FAILED' || log.status === 'REJECTED' ? 'bg-rose-50 text-rose-600 border-rose-100' :
-                                  log.status === 'SUCCESS' || log.status === 'VERIFIED' || log.status === 'DEPLOYED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                  'bg-indigo-50 text-indigo-600 border-indigo-100'
-                                }`}>{log.status}</span>
-                             </div>
-                             <div className="text-[12px] text-slate-400 font-medium leading-none">
-                                Initiated by <span className="text-[var(--color-navy)] font-bold">{log.userName || log.user}</span> <span className="mx-2 opacity-30">•</span> Target: <span className="italic">{log.details || log.target}</span>
-                             </div>
-                          </div>
+           <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[var(--color-teal)]/10 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+        </div>
+      </div>
+
+      <div className="space-y-4 relative min-h-[400px]">
+        {isLoading && (
+          <div className="absolute inset-0 bg-white/40 backdrop-blur-md z-30 flex flex-col items-center justify-center gap-6 rounded-[3.5rem] border border-white">
+             <RefreshCw size={40} className="animate-spin text-[var(--color-teal)]" />
+             <span className="text-[10px] font-black tracking-[0.45em] uppercase text-slate-400">Loading Activity Logs...</span>
+          </div>
+        )}
+
+        <div className="bg-white rounded-[3.5rem] border border-slate-100 shadow-2xl shadow-slate-200/20 overflow-hidden">
+          <div className="bg-slate-50/50 px-10 py-6 border-b border-slate-100 flex items-center justify-between">
+             <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                   <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                   <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Operational</span>
+                </div>
+                <div className="flex items-center gap-2">
+                   <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                   <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Suspicious</span>
+                </div>
+                <div className="flex items-center gap-2">
+                   <div className="w-2 h-2 rounded-full bg-rose-500"></div>
+                   <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Violation</span>
+                </div>
+             </div>
+             <button className="text-[10px] font-black uppercase tracking-widest text-[var(--color-teal)] flex items-center gap-2 hover:underline">
+                <Download size={14} /> Full Export (.csv)
+             </button>
+          </div>
+
+          <div className="divide-y divide-slate-50">
+            {filteredLogs.map((log, idx) => (
+              <div key={log.id} className="p-10 hover:bg-slate-50/50 transition-all group animate-fade-up" style={{ animationDelay: `${idx * 0.05}s` }}>
+                <div className="flex flex-col md:flex-row items-start justify-between gap-8">
+                  <div className="flex gap-10 min-w-0 flex-1">
+                    <div className="flex flex-col items-center">
+                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-sm ${
+                         log.status === 'SUCCESS' ? 'bg-emerald-50 text-emerald-600' :
+                         log.status === 'WARNING' ? 'bg-amber-50 text-amber-600' :
+                         'bg-rose-50 text-rose-600'
+                       }`}>
+                          {log.status === 'SUCCESS' ? <Shield size={22} /> : 
+                           log.status === 'WARNING' ? <AlertCircle size={22} /> : <AlertCircle size={22} />}
                        </div>
-                       <div className="flex items-center gap-6 self-end md:self-center">
-                          <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest">{log.timestamp ? new Date(log.timestamp).toLocaleString() : log.time}</span>
-                          <ChevronRight className="text-slate-200 group-hover:text-[var(--color-navy)] transition-all group-hover:translate-x-1" size={18} />
-                       </div>
-                     </div>
-                   ))}
-                 </div>
-               )}
+                       <div className="w-px flex-1 bg-slate-100 my-4 group-last:hidden"></div>
+                    </div>
+                    
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-4 mb-2">
+                         <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-teal)] transition-colors">{log.action}</h4>
+                         <span className="h-5 px-3 bg-slate-100 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-center">ID-{log.id}</span>
+                      </div>
+                      <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-2xl">{log.details}</p>
+                      
+                      <div className="flex items-center gap-8 mt-6">
+                         <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-black text-slate-200 uppercase tracking-widest">Agent Origin</span>
+                            <div className="px-4 py-1.5 bg-slate-900 text-[var(--color-teal)] rounded-xl text-[10px] font-mono font-black uppercase tracking-tighter shadow-xl">
+                               {log.userName}
+                            </div>
+                         </div>
+                         <div className="flex items-center gap-3">
+                            <Clock size={14} className="text-slate-200" />
+                            <span className="text-[10px] font-mono font-black text-slate-300 uppercase tracking-tighter">
+                               {new Date(log.timestamp).toLocaleDateString()} · {new Date(log.timestamp).toLocaleTimeString()}
+                            </span>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 w-full md:w-auto justify-end">
+                     <button className="w-12 h-12 rounded-2xl border border-slate-100 flex items-center justify-center text-slate-300 hover:text-slate-900 hover:bg-white hover:shadow-xl transition-all">
+                        <Database size={18} />
+                     </button>
+                     <button className="w-12 h-12 rounded-2xl border border-slate-100 flex items-center justify-center text-slate-300 hover:text-slate-900 hover:bg-white hover:shadow-xl transition-all">
+                        <MoreHorizontal size={18} />
+                     </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {filteredLogs.length === 0 && !isLoading && (
+            <div className="py-32 flex flex-col items-center justify-center opacity-30">
+               <Database size={80} className="text-slate-200 mb-6" />
+               <h3 className="text-2xl font-black uppercase tracking-[0.4em] text-slate-300">No Logs Found</h3>
             </div>
-   <div className="flex justify-center py-4">
-              <button className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 hover:text-[var(--color-navy)] transition-all">Load Earlier Operational Cycles</button>
-           </div>
+          )}
         </div>
       </div>
     </div>

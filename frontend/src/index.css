@@ -67,6 +67,7 @@
   --radius:     12px;
   --radius-lg:  16px;
   --radius-xl:  24px;
+  --radius-hrm: 2rem;
 }
 
 /* ─────────────────────────────────── BASE ─────────────────────────────────── */
@@ -78,6 +79,13 @@
     --border:     var(--color-border);
     --accent:     var(--color-forest);
     --accent-alt: var(--color-gold);
+    --sidebar-width: 280px;
+    
+    /* HRM Specific Colors */
+    --color-hrm-peach: #FFF7ED;
+    --color-hrm-mint:  #F0FDF4;
+    --color-hrm-rose:  #FEF2F2;
+    --color-hrm-lavender: #F5F3FF;
   }
 
 
@@ -513,4 +521,30 @@
   .delay-3 { animation-delay: 0.18s; }
   .delay-4 { animation-delay: 0.24s; }
   .delay-5 { animation-delay: 0.30s; }
+
+  /* ── Premium Utilities ── */
+  .shadow-glow {
+    box-shadow: 0 0 20px rgba(13, 148, 136, 0.25);
+  }
+  .shadow-glow-amber {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+  }
+
+  /* HRM Specific Utilities */
+  .bg-hrm-peach { background-color: var(--color-hrm-peach); }
+  .bg-hrm-mint { background-color: var(--color-hrm-mint); }
+  .bg-hrm-rose { background-color: var(--color-hrm-rose); }
+  .bg-hrm-lavender { background-color: var(--color-hrm-lavender); }
+
+  .shadow-hrm {
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+  }
+
+  .animate-spin-slow {
+    animation: ib-spin 8s linear infinite;
+  }
+  @keyframes ib-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 }

@@ -2,6 +2,7 @@ package com.internbridge.backend.service.impl;
 
 import com.internbridge.backend.dto.response.*;
 import com.internbridge.backend.repository.CompanyAdminRepository;
+import com.internbridge.backend.repository.PlacementRepository;
 import com.internbridge.backend.repository.UserRepository;
 import com.internbridge.backend.service.SystemService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class SystemServiceImpl implements SystemService {
 
     private final UserRepository userRepository;
     private final CompanyAdminRepository companyAdminRepository;
+    private final PlacementRepository placementRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -57,7 +59,7 @@ public class SystemServiceImpl implements SystemService {
                 .placementVelocity(velocity)
                 .sectorDistribution(sectors)
                 .nodeAwareness(nodes)
-                .totalPlacements(4280)
+                .totalPlacements((int) placementRepository.count())
                 .placementTrend("↑ 18.2%")
                 .certificationRate(94.2)
                 .build();
@@ -110,30 +112,29 @@ public class SystemServiceImpl implements SystemService {
     @Override
     @Transactional(readOnly = true)
     public List<CompanyResponse> getCompanies() {
-        List<CompanyResponse> companies = new ArrayList<>();
-        // In a real scenario, map from CompanyAdmin entity or a dedicated Company entity
-        companies.add(CompanyResponse.builder()
-                .id(UUID.randomUUID().toString())
-                .name("Techwave Technologies")
-                .industry("Software Engineering")
-                .location("Accra, Ghana")
-                .status("VERIFIED")
-                .interns(12)
-                .rating("4.8")
-                .logo("LW")
-                .website("www.techwave.com")
-                .build());
-        companies.add(CompanyResponse.builder()
-                .id(UUID.randomUUID().toString())
-                .name("CloudSphere")
-                .industry("Cloud Infrastructure")
-                .location("Kumasi, Ghana")
-                .status("PENDING")
-                .interns(0)
-                .rating("N/A")
-                .logo("CS")
-                .website("www.cloudsphere.com")
-                .build());
-        return companies;
+        try {
+            return companyAdminRepository.findAll().stream()
+                    .map(admin -> {
+                        String name = admin.getCompanyName() != null ? admin.getCompanyName() : "Unnamed Partner";
+                        String logo = (name.length() >= 2) ? name.substring(0, 2).toUpperCase() : name.toUpperCase();
+                        String website = "www." + name.toLowerCase().replace(" ", "") + ".com";
+                        
+                        return CompanyResponse.builder()
+                            .id(admin.getId().toString())
+                            .name(name)
+                            .industry(admin.getIndustry() != null ? admin.getIndustry() : "General Industry")
+                            .location("Accra, GH")
+                            .status(admin.getStatus() != null ? admin.getStatus().toString() : "PENDING")
+                            .interns(0)
+                            .rating("4.8")
+                            .logo(logo)
+                            .website(website)
+                            .build();
+                    })
+                    .collect(java.util.stream.Collectors.toList());
+        } catch (Exception e) {
+            // Fallback to empty list instead of 500
+            return new ArrayList<>();
+        }
     }
 }

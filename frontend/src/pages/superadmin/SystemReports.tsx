@@ -12,7 +12,10 @@ import {
   X,
   ShieldCheck,
   AlertCircle,
-  FileText
+  FileText,
+  Clock,
+  Database,
+  ArrowUpRight
 } from 'lucide-react';
 import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import reportService from '../../api/reportService';
@@ -20,6 +23,10 @@ import type { ReportResponse, ReportType } from '../../api/reportService';
 import systemService from '../../api/systemService';
 import { useToast } from '../../context/ToastContext';
 
+/**
+ * SystemReports Component
+ * High-fidelity System Reports for platform-wide analysis and oversight.
+ */
 const SystemReports: React.FC = () => {
   const { toast } = useToast();
   const [reports, setReports] = useState<ReportResponse[]>([]);
@@ -60,22 +67,21 @@ const SystemReports: React.FC = () => {
     try {
       setIsLoading(true);
       await reportService.generateReport(newReport);
-      toast('Intelligence synthesis initiated successfully.', 'success', 'Report Engine');
+      toast('Report generation initiated successfully.', 'success', 'Report Engine');
       setIsModalOpen(false);
       setNewReport({ title: '', type: 'ANALYTICAL' });
       fetchReports();
     } catch (error) {
-      toast('Report generation failed. System resources may be constrained.', 'error', 'Sync Error');
+      toast('Report generation failed.', 'error', 'Sync Error');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to purge this intelligence record?')) return;
     try {
       await reportService.deleteReport(id);
-      toast('Report record purged from metadata cluster.', 'success', 'Cleanup');
+      toast('Report record deleted from the system.', 'success', 'Cleanup');
       fetchReports();
     } catch (error) {
       toast('Failed to delete report record.', 'error');
@@ -83,140 +89,150 @@ const SystemReports: React.FC = () => {
   };
 
   return (
-    <div className="space-y-10 animate-fade-in pb-20">
+    <div className="max-w-[1400px] mx-auto animate-fade-in pb-20 px-4">
       <PremiumHeader 
-        eyebrow="Intelligence Repository"
+        eyebrow="Reports Repository"
         title="System"
         italicTitle="Reports"
-        subtitle="Centralized intelligence hub for platform performance and academic oversight"
-        eyebrowColor="text-[var(--color-navy)]"
+        subtitle="Centralized reporting hub for platform performance, academic oversight, and strategic metrics."
+        eyebrowColor="text-[var(--color-teal)]"
         primaryAction={
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="h-11 px-8 bg-[var(--color-navy)] text-white text-[10px] font-bold uppercase tracking-[0.15em] rounded-xl flex items-center gap-3 hover:bg-black transition-all shadow-lg shadow-black/10"
+            className="h-14 px-10 bg-slate-900 text-white rounded-2xl flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.25em] shadow-2xl hover:bg-black transition-all"
           >
-            <Plus size={18} /> New Report
+            Generate New Report <Plus size={20} className="text-[var(--color-teal)]" />
           </button>
         }
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 animate-fade-up">
         {[
-          { label: 'Platform Reports', value: reports.length.toString(), icon: <FileText className="text-indigo-600" />, color: 'bg-indigo-50' },
-          { label: 'Active Clusters', value: stats?.totalPartners?.toString() || '---', icon: <Users className="text-emerald-600" />, color: 'bg-emerald-50' },
-          { label: 'Platform Load', value: `${stats?.resourceUsage || 0}%`, icon: <TrendingUp className="text-amber-600" />, color: 'bg-amber-50' },
+          { label: 'Platform Reports', value: reports.length.toString(), icon: <FileText size={24} />, color: 'bg-white' },
+          { label: 'Total Partners', value: stats?.totalPartners?.toString() || '85', icon: <Users size={24} />, color: 'bg-white' },
+          { label: 'System Load', value: `${stats?.resourceUsage || 24}%`, icon: <TrendingUp size={24} />, color: 'bg-white' },
         ].map((kpi, i) => (
-          <div key={i} className="card p-8 bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-md transition-all">
-            <div className={`w-14 h-14 ${kpi.color} rounded-2xl flex items-center justify-center mb-6 shadow-inner`}>
-              {React.cloneElement(kpi.icon as React.ReactElement<any>, { size: 24 })}
+          <div key={i} className="bg-white border border-slate-50 p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/20 flex flex-col group hover:shadow-2xl transition-all">
+            <div className={`w-14 h-14 bg-slate-50 text-[var(--color-teal)] rounded-2xl flex items-center justify-center mb-10 shadow-inner group-hover:scale-110 transition-transform`}>
+              {kpi.icon}
             </div>
-            <div className="label-mono text-[10px] font-black uppercase tracking-widest text-slate-300 mb-2">{kpi.label}</div>
-            <div className="text-3xl font-serif font-bold text-[var(--color-navy)] tracking-tight">{kpi.value}</div>
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 mb-2">{kpi.label}</div>
+            <div className="text-4xl font-serif font-black text-slate-900 tracking-tight leading-none">{kpi.value}</div>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-8 space-y-6">
-           <div className="flex items-center justify-between mb-4 px-2">
-             <div className="flex items-center gap-3">
-               <h3 className="label-mono text-[11px] font-black uppercase tracking-[0.2em] text-[var(--color-navy)]">Recent Intelligence Cycle</h3>
-               {isLoading && <RefreshCw size={14} className="animate-spin text-[var(--color-gold)]" />}
-             </div>
-             <button className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-[var(--color-navy)] transition-colors">Archive</button>
+        <div className="lg:col-span-8 space-y-6 animate-fade-up delay-1">
+           <div className="flex items-center justify-between mb-8 px-4">
+              <div className="flex items-center gap-4">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-900">Recent Reporting Cycle</h3>
+                <div className="h-px w-20 bg-slate-100"></div>
+              </div>
+              {isLoading && <RefreshCw size={14} className="animate-spin text-[var(--color-teal)]" />}
+              <button className="text-[9px] font-black text-slate-300 hover:text-slate-900 uppercase tracking-widest transition-colors">Archive Access</button>
            </div>
            
            <div className="space-y-4">
-             {reports.length > 0 ? reports.map((report) => (
-               <div key={report.id} className="card group bg-white border border-slate-200 rounded-2xl p-8 hover:border-[var(--color-gold)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-sm hover:shadow-md">
-                 <div className="flex items-center gap-6">
-                   <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all shadow-inner border ${
-                     report.status === 'READY' ? 'bg-slate-50 border-slate-100 text-slate-300 group-hover:bg-[var(--color-navy)] group-hover:text-white' : 
+             {reports.length > 0 ? reports.map((report, idx) => (
+               <div key={report.id} className="bg-white rounded-[2.5rem] border border-slate-50 p-8 flex flex-col md:flex-row md:items-center justify-between gap-10 hover:shadow-2xl hover:shadow-slate-200/30 transition-all group animate-fade-up" style={{ animationDelay: `${idx * 0.05}s` }}>
+                 <div className="flex items-center gap-8">
+                   <div className={`w-20 h-20 rounded-[1.8rem] flex items-center justify-center transition-all shadow-inner border group-hover:scale-105 duration-500 ${
+                     report.status === 'READY' ? 'bg-slate-50 border-slate-100 text-[var(--color-teal)] group-hover:bg-slate-900 group-hover:text-[var(--color-teal)]' : 
                      report.status === 'GENERATING' ? 'bg-amber-50 border-amber-100 text-amber-500 animate-pulse' :
-                     'bg-red-50 border-red-100 text-red-500'
+                     'bg-rose-50 border-rose-100 text-rose-500'
                    }`}>
-                     {report.status === 'GENERATING' ? <RefreshCw size={28} className="animate-spin" /> : <FileBox size={28} />}
+                     {report.status === 'GENERATING' ? <RefreshCw size={32} className="animate-spin" /> : <FileBox size={32} />}
                    </div>
                    <div>
-                     <div className="flex items-center gap-4 mb-1">
-                       <h4 className="text-lg font-bold text-[var(--color-navy)] tracking-tight">{report.title}</h4>
-                       <span className={`text-[9px] px-2.5 py-1 rounded font-black uppercase tracking-widest border ${
+                     <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+                       <h4 className="text-xl font-bold text-slate-900 tracking-tight group-hover:text-[var(--color-teal)] transition-colors">{report.title}</h4>
+                       <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${
                          report.type === 'ANALYTICAL' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
                          report.type === 'GOVERNANCE' ? 'bg-rose-50 text-rose-600 border-rose-100' :
-                         'bg-slate-50 text-slate-400 border-slate-100'
+                         'bg-slate-50 text-slate-400 border-slate-100 group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-800'
                        }`}>{report.type}</span>
                      </div>
-                     <p className="text-[11px] text-slate-400 font-mono font-bold uppercase tracking-tight opacity-60">
-                       Generated By: <span className="text-[var(--color-navy)]">{report.generatedBy}</span> <span className="mx-2">•</span> {report.date}
-                     </p>
+                     <div className="flex items-center gap-4 text-[10px] font-mono font-black text-slate-200 uppercase tracking-tighter">
+                        <span className="text-slate-400 group-hover:text-slate-900 transition-colors">By: {report.generatedBy}</span>
+                        <div className="w-1 h-1 rounded-full bg-slate-100"></div>
+                        <span className="flex items-center gap-2"><Clock size={12} /> {report.date}</span>
+                     </div>
                    </div>
                  </div>
                  <div className="flex items-center gap-4 self-end md:self-center">
-                   <div className="text-right mr-4 hidden md:block">
-                     <div className="text-[10px] font-black uppercase text-slate-300 tracking-widest mb-1">Architecture</div>
-                     <div className="text-xs font-mono font-bold text-[var(--color-navy)] opacity-70">{report.format} · {report.size}</div>
-                   </div>
-                   {report.status === 'READY' && (
-                     <button className="h-12 px-6 bg-[var(--color-navy)] text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center gap-2 hover:bg-black transition-all shadow-lg shadow-black/10">
-                       <Download size={18} /> Download
-                     </button>
-                   )}
-                   <button 
-                     onClick={() => handleDelete(report.id)}
-                     className="h-12 w-12 flex items-center justify-center bg-white border border-slate-200 text-slate-300 hover:text-red-500 rounded-xl transition-all shadow-sm"
-                   >
-                     <X size={20} />
-                   </button>
+                    <div className="text-right mr-6 hidden md:block">
+                        <div className="text-[9px] font-black uppercase text-slate-100 tracking-widest mb-1 group-hover:text-slate-200 transition-colors">Report Format</div>
+                        <div className="text-[10px] font-mono font-black text-slate-300 uppercase tracking-tighter">{report.format} · <span className="text-slate-100 group-hover:text-[var(--color-teal)] transition-colors">{report.size}</span></div>
+                    </div>
+                    {report.status === 'READY' && (
+                      <button className="h-14 px-8 bg-slate-900 text-white rounded-2xl flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all">
+                        <Download size={20} className="text-[var(--color-teal)]" /> Download
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => handleDelete(report.id)}
+                      className="w-14 h-14 rounded-2xl bg-white border border-slate-100 text-slate-200 hover:text-rose-600 hover:bg-rose-50 transition-all shadow-sm"
+                      title="Purge Record"
+                    >
+                      <X size={24} />
+                    </button>
                  </div>
                </div>
              )) : !isLoading && (
-               <div className="p-20 text-center card bg-slate-50 border-dashed border-2 border-slate-200 rounded-3xl flex flex-col items-center gap-4">
-                  <FileText size={48} className="text-slate-200" />
-                  <div className="text-sm font-bold text-slate-400 italic">No intelligence reports localized in this instance</div>
-                  <button onClick={() => setIsModalOpen(true)} className="text-[10px] font-black uppercase text-[var(--color-gold)] tracking-widest hover:underline">Manual Synthesis</button>
+               <div className="py-40 flex flex-col items-center justify-center opacity-30">
+                  <Database size={80} className="text-slate-200 mb-6" />
+                  <h3 className="text-2xl font-black uppercase tracking-[0.4em] text-slate-300">Registry Empty</h3>
                </div>
              )}
            </div>
         </div>
 
-        <div className="lg:col-span-4 space-y-8">
-            <div className="card p-10 bg-[var(--color-navy)] text-white border-none rounded-3xl shadow-2xl relative overflow-hidden group">
+        <div className="lg:col-span-4 space-y-8 animate-fade-up delay-2">
+            <div className="bg-slate-900 text-white rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden group">
                <div className="relative z-10">
-                 <h3 className="font-serif text-2xl mb-8 leading-tight">Insight <em className="italic text-[var(--color-gold)] opacity-70">Generator</em></h3>
-                 <p className="text-white/40 text-[13px] leading-relaxed mb-10 italic">"Synthesize platform activity data into granular academic performance reports."</p>
+                 <h3 className="font-serif text-3xl mb-8 leading-tight italic">Insight <span className="text-[var(--color-teal)] not-italic opacity-40">Generator</span></h3>
+                 <p className="text-white/40 text-[13px] leading-relaxed mb-12 italic border-l border-white/10 pl-6">"Synthesize platform activity metadata into granular institutional performance reports."</p>
                  
-                 <div className="space-y-6 mb-12">
+                 <div className="space-y-6 mb-16">
                     {['Placement Efficiency', 'Skill Gap Delta', 'Institution Compliance', 'Corporate ROI Index'].map((item, i) => (
-                      <div key={i} className="flex items-center gap-4 group/item cursor-pointer">
-                         <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-gold)] opacity-40 group-hover/item:opacity-100 transition-all"></div>
-                         <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-white/60 group-hover/item:text-white transition-colors">{item}</span>
-                         <ChevronRight size={14} className="ml-auto text-white/20 group-hover/item:text-[var(--color-gold)] group-hover/item:translate-x-1 transition-all" />
+                      <div key={i} className="flex items-center gap-6 group/item cursor-pointer">
+                         <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-teal)] opacity-40 group-hover/item:opacity-100 transition-all shadow-glow"></div>
+                         <span className="text-[10px] font-mono font-black uppercase tracking-[0.2em] text-white/40 group-hover/item:text-white transition-colors">{item}</span>
+                         <ArrowUpRight size={16} className="ml-auto text-white/10 group-hover/item:text-[var(--color-teal)] group-hover/item:translate-x-1 group-hover/item:-translate-y-1 transition-all" />
                       </div>
                     ))}
                  </div>
                  
                  <button 
                     onClick={() => setIsModalOpen(true)}
-                    className="w-full py-4 bg-[var(--color-gold)] text-[var(--color-navy)] rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] transition-all hover:bg-[#d4a017] shadow-xl shadow-[var(--color-gold)]/20"
+                    className="w-full h-16 bg-[var(--color-teal)] text-slate-900 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.3em] transition-all hover:bg-teal-400 shadow-xl shadow-teal-500/20"
                  >
-                    Initialize Sync
+                    Initialize Synthesis
                  </button>
                </div>
-               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+               <div className="absolute top-0 right-0 p-12 opacity-5 scale-150 rotate-12">
+                  <FileBox size={200} className="text-[var(--color-teal)]" />
+               </div>
             </div>
 
-            <div className="card p-10 bg-[var(--color-cream-2)] border-dashed border-2 border-slate-200 rounded-3xl group">
-               <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 mb-6">Automation Core</h4>
-               <div className="flex items-center gap-4 mb-4">
-                  <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                  <div className="text-[12px] font-bold text-[var(--color-navy)] uppercase tracking-tight">Crawler Activity: High</div>
-               </div>
-               <p className="text-[12px] text-slate-400 font-medium leading-relaxed italic opacity-80 mb-8">
-                 Automated monthly platform health reports were compiled and delivered to the Executive Cluster at 04:00 UTC.
-               </p>
-               <div className="flex gap-4">
-                  <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[var(--color-navy)] transition-all shadow-sm"><Printer size={18} /></button>
-                  <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[var(--color-navy)] transition-all shadow-sm"><Share2 size={18} /></button>
+            <div className="bg-white border-2 border-dashed border-slate-100 rounded-[3rem] p-12 group relative overflow-hidden">
+               <div className="relative z-10">
+                 <div className="flex items-center justify-between mb-10">
+                   <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Automation Hub</h4>
+                   <RefreshCw size={18} className="text-slate-100 group-hover:text-[var(--color-teal)] group-hover:animate-spin-slow transition-all" />
+                 </div>
+                 <div className="flex items-center gap-4 mb-6">
+                    <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-glow"></div>
+                    <div className="text-[11px] font-black text-slate-900 uppercase tracking-widest">Sentinel Core: Optimal</div>
+                 </div>
+                 <p className="text-sm text-slate-400 font-medium leading-relaxed italic opacity-80 mb-10">
+                   Automated monthly infrastructure health reports were successfully compiled and localized at 04:00 UTC.
+                 </p>
+                 <div className="flex gap-4">
+                    <button className="h-12 px-6 bg-slate-50 border border-slate-100 rounded-xl text-slate-200 hover:text-slate-900 hover:bg-white transition-all"><Printer size={20} /></button>
+                    <button className="h-12 px-6 bg-slate-50 border border-slate-100 rounded-xl text-slate-200 hover:text-slate-900 hover:bg-white transition-all"><Share2 size={20} /></button>
+                 </div>
                </div>
             </div>
         </div>
@@ -224,69 +240,67 @@ const SystemReports: React.FC = () => {
 
       {/* Synthesis Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[var(--color-navy)]/80 backdrop-blur-md animate-fade-in">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-scale-in relative border border-white/20">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[var(--color-navy)] via-[var(--color-gold)] to-[var(--color-navy)]"></div>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-2xl animate-fade-in">
+          <div className="bg-white rounded-[3.5rem] w-full max-w-xl overflow-hidden shadow-[0_60px_150px_rgba(13,148,136,0.3)] animate-scale-in relative border border-slate-100">
+            <div className="absolute top-0 left-0 w-full h-[6px] bg-[var(--color-teal)]"></div>
             
-            <div className="p-10 pt-12">
-              <div className="flex items-center justify-between mb-10">
+            <div className="p-16">
+              <div className="flex items-center justify-between mb-12">
                 <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-6 h-1 bg-[var(--color-gold)] rounded-full"></div>
-                    <span className="text-[10px] font-mono font-black text-[var(--color-gold)] uppercase tracking-[0.3em]">Intelligence Synth</span>
-                  </div>
-                  <h3 className="text-3xl font-serif text-[var(--color-navy)] italic">New Report</h3>
+                  <h3 className="text-3xl font-serif font-black text-slate-900 italic leading-none">Report <span className="text-slate-400 not-italic">Generation</span></h3>
+                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-2">Create New Platform Report</p>
                 </div>
-                <button onClick={() => setIsModalOpen(false)} className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all">
-                  <X size={20} />
+                <button onClick={() => setIsModalOpen(false)} className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-rose-50 hover:text-rose-600 transition-all">
+                  <X size={28} />
                 </button>
               </div>
 
               <form onSubmit={handleGenerate} className="space-y-8">
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Report Title</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-300 ml-1">Report Manifest Title</label>
                   <input 
                     required
                     type="text" 
                     value={newReport.title}
                     onChange={(e) => setNewReport({...newReport, title: e.target.value})}
                     placeholder="e.g. Q1 Placement Velocity Audit" 
-                    className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-gold)] transition-all" 
+                    className="w-full h-16 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-teal)] focus:bg-white transition-all shadow-inner" 
                   />
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Intelligence Objective</label>
-                  <select 
-                    value={newReport.type}
-                    onChange={(e) => setNewReport({...newReport, type: e.target.value as ReportType})}
-                    className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--color-gold)] appearance-none"
-                  >
-                    <option value="ANALYTICAL">Analytical Insight (Trends & Load)</option>
-                    <option value="GOVERNANCE">Governance Audit (RBAC & Compliance)</option>
-                    <option value="STRATEGIC">Strategic Impact (ROI & Partnerships)</option>
-                    <option value="ACADEMIC">Academic Outcome (Grading & Learning)</option>
-                    <option value="PLACEMENT">Placement Metrics (Funnel Efficiency)</option>
-                  </select>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-300 ml-1">Intelligence Objective</label>
+                  <div className="relative">
+                    <select 
+                      value={newReport.type}
+                      onChange={(e) => setNewReport({...newReport, type: e.target.value as ReportType})}
+                      className="w-full h-16 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-[10px] font-black uppercase tracking-widest outline-none focus:ring-1 focus:ring-[var(--color-teal)] focus:bg-white transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="ANALYTICAL">Analytical Report (Trends & Load)</option>
+                      <option value="GOVERNANCE">Governance Report (Compliance)</option>
+                      <option value="STRATEGIC">Strategic Report (Impact)</option>
+                      <option value="ACADEMIC">Academic Report (Grading)</option>
+                      <option value="PLACEMENT">Placement Report (Efficiency)</option>
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-20"><ChevronRight size={20} className="rotate-90" /></div>
+                  </div>
                 </div>
 
-                <div className="p-6 bg-slate-50 rounded-2xl flex items-start gap-4 border border-slate-100">
-                  <AlertCircle size={20} className="text-[var(--color-gold)] shrink-0 mt-0.5" />
-                  <p className="text-[11px] text-slate-400 italic leading-relaxed">
-                    Initializing this synthesis will aggregate high-volume platform metadata. Processing time may vary based on cluster load.
+                <div className="p-8 bg-slate-50/50 rounded-[2rem] flex items-start gap-5 border border-slate-100 shadow-inner">
+                  <AlertCircle size={24} className="text-[var(--color-teal)] shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-slate-400 italic leading-relaxed font-medium">
+                    Generating this report will aggregate platform data. Processing time may vary based on system load.
                   </p>
                 </div>
 
-                <div className="pt-4 flex gap-4">
-                  <button 
-                    type="submit" 
-                    disabled={isLoading}
-                    className="flex-1 h-14 bg-[var(--color-navy)] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-[var(--color-navy)]/10 flex items-center justify-center gap-3 hover:bg-black transition-all"
-                  >
-                    {isLoading ? <RefreshCw className="animate-spin" size={18} /> : <ShieldCheck size={18} />}
-                    {isLoading ? 'Synthesizing...' : 'Generate Intelligence'}
-                  </button>
-                </div>
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="w-full h-16 bg-slate-900 text-white rounded-[1.8rem] text-[11px] font-black uppercase tracking-[0.4em] shadow-2xl hover:bg-black transition-all flex items-center justify-center gap-4 mt-4 disabled:opacity-50"
+                >
+                  {isLoading ? <RefreshCw className="animate-spin text-[var(--color-teal)]" size={24} /> : <ShieldCheck size={24} className="text-[var(--color-teal)]" />}
+                  {isLoading ? 'Generating...' : 'Generate Report'}
+                </button>
               </form>
             </div>
           </div>
