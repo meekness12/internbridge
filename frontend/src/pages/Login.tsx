@@ -47,6 +47,9 @@ const Login: React.FC = () => {
         localStorage.setItem('userName', profile.name);
         localStorage.setItem('institution', profile.institution);
         localStorage.setItem('email', profile.email);
+        if (profile.companyId) {
+          localStorage.setItem('companyId', profile.companyId);
+        }
       } catch (e) {
         console.warn('Failed to fetch profile details after login');
       }

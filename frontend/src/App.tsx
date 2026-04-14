@@ -131,7 +131,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
           } />
           <Route path="analytics" element={
-            <ProtectedRoute allowedRoles={['COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN', 'SCHOOL_ADMIN']}>
+            <ProtectedRoute allowedRoles={['INTERN', 'COMPANY_ADMIN', 'SUPERVISOR', 'SUPER_ADMIN', 'SCHOOL_ADMIN']}>
               {localStorage.getItem('role') === 'SUPER_ADMIN' ? <GlobalAnalytics /> : 
                localStorage.getItem('role') === 'SCHOOL_ADMIN' ? <InstitutionalReports /> : <InternAnalytics />}
             </ProtectedRoute>
@@ -143,13 +143,11 @@ const App: React.FC = () => {
           <Route path="interns" element={<ProtectedRoute allowedRoles={['COMPANY_ADMIN']}><CompanyInterns /></ProtectedRoute>} />
 
           <Route path="lecturer" element={<ProtectedRoute allowedRoles={['SUPERVISOR']}><SupervisorDashboard /></ProtectedRoute>} />
-          <Route path="students" element={<ProtectedRoute allowedRoles={['SUPERVISOR']}><SupervisorStudents /></ProtectedRoute>} />
           <Route path="placements" element={<ProtectedRoute allowedRoles={['SUPERVISOR']}><PlacementsRouter /></ProtectedRoute>} />
 
           <Route path="admin" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><SuperAdminDashboard /></ProtectedRoute>} />
           <Route path="users" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><UserManagement /></ProtectedRoute>} />
           <Route path="companies" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><CompanyPartners /></ProtectedRoute>} />
-          <Route path="reports" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><SystemReports /></ProtectedRoute>} />
           <Route path="logs" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><AuditLogs /></ProtectedRoute>} />
           <Route path="school" element={<ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}><SchoolAdminDashboard /></ProtectedRoute>} />
           <Route path="faculties" element={<ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}><FacultyManagement /></ProtectedRoute>} />

@@ -35,10 +35,7 @@ const userService = {
    * Provision a new user manually with a secure handshake.
    */
   provisionUser: async (data: CreateUserRequest): Promise<UserDTO> => {
-    const response = await api.post<UserDTO>('/users/provision', {
-      ...data,
-      password: data.password || 'TempPass123!' // Default fallback if not provided in UI yet
-    });
+    const response = await api.post<UserDTO>('/users/provision', data);
     return response.data;
   },
 

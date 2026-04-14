@@ -32,6 +32,9 @@ const authService = {
     localStorage.removeItem('userId');
     localStorage.removeItem('role');
     localStorage.removeItem('email');
+    localStorage.removeItem('companyId');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('institution');
     window.location.href = '/login';
   },
 

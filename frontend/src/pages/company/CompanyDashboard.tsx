@@ -51,14 +51,15 @@ const CompanyDashboard: React.FC = () => {
   const [newRole, setNewRole] = useState({ title: '', description: '', requiredSkills: '', deadline: '' });
 
   const userId = localStorage.getItem('userId') || '';
+  const companyId = localStorage.getItem('companyId') || '';
   const userName = localStorage.getItem('userName') || 'Corporate Partner';
 
   const fetchData = async () => {
     setIsLoading(true);
     try {
       const [listings, places, alerts] = await Promise.allSettled([
-        internshipService.getInternshipsByCompany(userId),
-        placementService.getPlacementsByCompany(userId),
+        internshipService.getInternshipsByCompany(companyId || userId),
+        placementService.getPlacementsByCompany(companyId || userId),
         notificationService.getMyNotifications(userId)
       ]);
 
@@ -99,7 +100,7 @@ const CompanyDashboard: React.FC = () => {
     try {
       await internshipService.createInternship({
         ...newRole,
-        companyId: userId,
+        companyId: companyId || userId,
       });
       toast('New role posted successfully!', 'success', 'Published');
       setShowPostModal(false);
