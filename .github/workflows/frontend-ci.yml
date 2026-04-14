@@ -1,0 +1,46 @@
+name: React Frontend CI
+
+on:
+  push:
+    branches: [ "main", "feat/**", "fix/**" ]
+    paths:
+      - 'frontend/**' 
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    branches: [ "main", "feat/**", "fix/**" ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      # 1. Grab the code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Set up the Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Standard for modern Vite/React projects
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      # 3. Install dependencies cleanly
+      - name: Install Dependencies
+        run: npm ci
+
+      # 4. Check for syntax and formatting errors
+      - name: Run Linter
+        run: npm run lint
+
+      # 5. Run a test build (Catches TypeScript and Vite build errors)
+      - name: Test Production Build
+        run: npm run build
