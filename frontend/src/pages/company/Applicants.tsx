@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Search, 
   ArrowUpRight, 
@@ -31,7 +31,7 @@ const Applicants: React.FC = () => {
 
   const userId = localStorage.getItem('userId') || '';
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       const listings = await internshipService.getInternshipsByCompany(userId);
@@ -51,18 +51,18 @@ const Applicants: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
     fetchData();
-  }, [userId]);
+  }, [fetchData]);
 
   const handleUpdateStatus = async (appId: string, status: string) => {
     try {
       await applicationService.updateStatus(appId, status);
       toast(`Candidate ${status.toLowerCase()}.`, 'success', 'Status Synchronized');
       setApplications(prev => prev.map(a => a.id === appId ? { ...a, status } : a));
-    } catch (error) {
+    } catch {
       toast('Signal transmission failed.', 'error');
     }
   };

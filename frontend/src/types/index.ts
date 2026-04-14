@@ -23,4 +23,13 @@ export interface Application {
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+export interface Toast {
+  id: string;
+  message: string;
+  type: ToastType;
+  title?: string;
+}
+
 

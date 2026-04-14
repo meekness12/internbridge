@@ -57,7 +57,7 @@ const InternDashboard: React.FC = () => {
       // Refresh apps
       const apps = await applicationService.getMyApplications(userId);
       setApplications(apps);
-    } catch (err) {
+    } catch {
       toast('Transmission failed. Institutional protocol error.', 'error');
     }
   };

@@ -37,20 +37,21 @@ const Login: React.FC = () => {
       try {
         const profile = await authService.getMe();
         localStorage.setItem('userName', profile.name);
-        localStorage.setItem('institution', profile.institution);
+        localStorage.setItem('institution', profile.institution || '');
         localStorage.setItem('email', profile.email);
         if (profile.companyId) {
           localStorage.setItem('companyId', profile.companyId);
         }
-      } catch (e) {
+      } catch {
         console.warn('Failed to fetch profile details after login');
       }
       
       navigate('/dashboard');
-    } catch (error: any) {
-      console.error('Login failure:', error);
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      console.error('Login failure:', err);
       setErrorMessage(
-        error.response?.data?.message || 
+        err.response?.data?.message || 
         'Invalid identity credentials or network protocol failure.'
       );
     } finally {

@@ -99,7 +99,7 @@ const Help: React.FC = () => {
                     <button key={i} className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-white hover:bg-white hover:shadow-xl transition-all group">
                        <div className="flex items-center gap-4">
                           <div className="text-slate-300 group-hover:text-[var(--color-brand)] transition-colors">
-                             {React.cloneElement(doc.icon as any, { size: 20 })}
+                             {React.cloneElement(doc.icon as React.ReactElement<{ size: number }>, { size: 20 })}
                           </div>
                           <span className="text-xs font-black uppercase tracking-widest text-slate-600">{doc.label}</span>
                        </div>

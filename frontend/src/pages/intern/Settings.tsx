@@ -44,7 +44,7 @@ const Settings: React.FC = () => {
             {menuItems.map((item) => (
                <button
                  key={item.id}
-                 onClick={() => setActiveTab(item.id as any)}
+                 onClick={() => setActiveTab(item.id as 'privacy' | 'notifications' | 'data')}
                  className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl transition-all group ${
                    activeTab === item.id 
                      ? 'bg-white border border-slate-100 shadow-xl shadow-slate-200/40 text-slate-900 font-bold' 

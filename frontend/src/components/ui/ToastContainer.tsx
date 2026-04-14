@@ -6,7 +6,7 @@ import {
   X, 
   Bell 
 } from 'lucide-react';
-import type { ToastType } from '../../context/ToastContext';
+import { type ToastType, type Toast } from '../../types';
 
 interface ToastItemProps {
   id: string;
@@ -55,7 +55,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ id, message, type, title, onClose
   );
 };
 
-export const ToastContainer: React.FC<{ toasts: any[], removeToast: (id: string) => void }> = ({ toasts, removeToast }) => {
+export const ToastContainer: React.FC<{ toasts: Toast[], removeToast: (id: string) => void }> = ({ toasts, removeToast }) => {
   return (
     <div className="fixed bottom-8 right-8 z-[9999] flex flex-col gap-4">
       {toasts.map(t => (

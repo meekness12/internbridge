@@ -202,7 +202,7 @@ const Placements: React.FC = () => {
                      <div className="flex justify-between items-start">
                         <div className="flex gap-8">
                            <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-brand)] font-bold text-2xl shadow-inner group-hover:scale-110 transition-transform">
-                             {('companyName' in item ? item.companyName : (item as any).companyName) || 'I'}
+                             {('companyName' in item ? item.companyName : (item as { companyName?: string }).companyName) || 'I'}
                            </div>
                            <div>
                               <h4 className="text-2xl font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors mb-2 leading-tight">
@@ -211,7 +211,7 @@ const Placements: React.FC = () => {
                               <div className="flex items-center gap-2 mb-4">
                                 <Briefcase size={16} className="text-slate-300" />
                                 <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">
-                                  {'companyName' in item ? item.companyName : (item as any).companyName || 'University Partner'}
+                                  {'companyName' in item ? item.companyName : (item as { companyName?: string }).companyName || 'University Partner'}
                                 </span>
                               </div>
                               <div className="flex items-center gap-6 mt-4">

@@ -12,6 +12,15 @@ export interface LoginResponse {
   email: string;
 }
 
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  institution?: string;
+  companyId?: string;
+}
+
 /**
  * Authentication Service
  */
@@ -48,16 +57,16 @@ const authService = {
   /**
    * Get current user profile.
    */
-  getMe: async (): Promise<any> => {
-    const response = await api.get('/auth/me');
+  getMe: async (): Promise<UserProfile> => {
+    const response = await api.get<UserProfile>('/auth/me');
     return response.data;
   },
 
   /**
    * Update current user profile.
    */
-  updateMe: async (data: { firstName: string; lastName: string; email: string }): Promise<any> => {
-    const response = await api.patch('/auth/me', data);
+  updateMe: async (data: { firstName: string; lastName: string; email: string }): Promise<UserProfile> => {
+    const response = await api.patch<UserProfile>('/auth/me', data);
     return response.data;
   }
 };

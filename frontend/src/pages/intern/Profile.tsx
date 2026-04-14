@@ -78,7 +78,8 @@ const Profile: React.FC = () => {
         localStorage.setItem('email', formData.email);
       }
     } catch (error) {
-      const msg = (error as any).response?.data?.message || 'Failed to update profile.';
+      const err = error as { response?: { data?: { message?: string } } };
+      const msg = err.response?.data?.message || 'Failed to update profile.';
       toast(msg, 'error');
     } finally {
       setIsSaving(false);
@@ -114,7 +115,7 @@ const Profile: React.FC = () => {
            <div className="relative group">
               <div className="w-40 h-40 rounded-[2.5rem] bg-white p-2 shadow-2xl">
                  <div className="w-full h-full rounded-[2rem] bg-[var(--color-brand)] flex items-center justify-center text-white font-serif font-black text-6xl shadow-inner relative overflow-hidden">
-                    {profile?.name?.split(' ').map((n: any) => n[0]).join('') || 'IB'}
+                    {profile?.name?.split(' ').map((n: string) => n[0]).join('') || 'IB'}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer">
                        <Camera className="text-white" size={32} />
                     </div>

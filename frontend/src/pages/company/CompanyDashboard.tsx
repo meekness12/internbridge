@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Users, 
   Briefcase, 
@@ -41,7 +41,7 @@ const CompanyDashboard: React.FC = () => {
   const userId = localStorage.getItem('userId') || '';
   const companyId = localStorage.getItem('companyId') || '';
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [listings, places, alerts] = await Promise.allSettled([
@@ -75,11 +75,11 @@ const CompanyDashboard: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId, companyId]);
 
   useEffect(() => {
     fetchData();
-  }, [userId]);
+  }, [fetchData]);
 
   const handlePostRole = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +93,7 @@ const CompanyDashboard: React.FC = () => {
       setShowPostModal(false);
       setNewRole({ title: '', description: '', requiredSkills: '', deadline: '' });
       fetchData();
-    } catch (error) {
+    } catch {
       toast('Failed to post role.', 'error');
     } finally {
       setIsSubmitting(false);

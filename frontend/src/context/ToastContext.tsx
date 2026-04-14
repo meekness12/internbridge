@@ -1,14 +1,8 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { ToastContainer } from '../components/ui/ToastContainer.tsx';
 
-export type ToastType = 'success' | 'error' | 'info' | 'warning';
-
-interface Toast {
-  id: string;
-  message: string;
-  type: ToastType;
-  title?: string;
-}
+import { type ToastType, type Toast } from '../types';
 
 interface ToastContextType {
   toast: (message: string, type?: ToastType, title?: string) => void;

@@ -14,11 +14,11 @@ import {
 } from 'lucide-react';
 
 import { ProfileDropdown } from './ProfileDropdown';
-import authService from '../../api/authService';
+import authService, { type UserProfile } from '../../api/authService';
 
 const DashboardLayout: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
-  const [userProfile, setUserProfile] = React.useState<any>(null);
+  const [userProfile, setUserProfile] = React.useState<UserProfile | null>(null);
   const location = useLocation();
   const role = localStorage.getItem('role') || 'INTERN'; 
   
@@ -104,7 +104,7 @@ const DashboardLayout: React.FC = () => {
                         : 'text-slate-500 hover:text-[var(--color-brand)] hover:bg-slate-50'
                     }`}
                   >
-                    {React.cloneElement(item.icon as any, { size: 18 })}
+                    {React.cloneElement(item.icon as React.ReactElement<{ size: number }>, { size: 18 })}
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -124,7 +124,7 @@ const DashboardLayout: React.FC = () => {
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-white font-serif font-black text-[9px] shadow-lg transition-all ${
                   isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-brand)]' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-brand)]'
                 }`}>
-                  {userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isAdmin ? 'SJ' : 'IB')}
+                  {userProfile?.name ? userProfile.name.split(' ').map((n: string) => n[0]).join('') : (isAdmin ? 'SJ' : 'IB')}
                 </div>
                 <ChevronDown size={14} className={`transition-transform text-slate-400 ${isProfileOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -135,7 +135,7 @@ const DashboardLayout: React.FC = () => {
                 user={{
                   name: userProfile?.name || (isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'),
                   role: userProfile?.role?.replace('_', ' ') || role.replace('_', ' '),
-                  initials: userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'),
+                  initials: userProfile?.name ? userProfile.name.split(' ').map((n: string) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'),
                   avatarColor: isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-brand)] shadow-glow-indigo' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-brand)]'
                 }}
               />
@@ -152,7 +152,7 @@ const DashboardLayout: React.FC = () => {
                    <div className={`w-full h-full flex items-center justify-center text-white font-serif font-black text-[11px] ${
                       isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-brand)]' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-brand)]'
                    }`}>
-                      {userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isAdmin ? 'SJ' : 'IB')}
+                      {userProfile?.name ? userProfile.name.split(' ').map((n: string) => n[0]).join('') : (isAdmin ? 'SJ' : 'IB')}
                    </div>
                 </button>
                 <ProfileDropdown 
@@ -161,7 +161,7 @@ const DashboardLayout: React.FC = () => {
                   user={{
                     name: userProfile?.name || (isCompany ? 'Daniel Owusu' : isAdmin ? 'Sarah Jenkins' : isSchoolAdmin ? 'Ama Kyeremeh' : isLecturer ? 'Prof. Samuel Mensah' : 'Aisha Ibrahim'),
                     role: userProfile?.role?.replace('_', ' ') || role.replace('_', ' '),
-                    initials: userProfile?.name ? userProfile.name.split(' ').map((n: any) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'),
+                    initials: userProfile?.name ? userProfile.name.split(' ').map((n: string) => n[0]).join('') : (isCompany ? 'DO' : isAdmin ? 'SJ' : isSchoolAdmin ? 'AK' : isLecturer ? 'SM' : 'AI'),
                     avatarColor: isCompany ? 'bg-amber-500' : isAdmin ? 'bg-[var(--color-brand)] shadow-glow-indigo' : isSchoolAdmin ? 'bg-indigo-600' : isLecturer ? 'bg-slate-700' : 'bg-[var(--color-brand)]'
                   }}
                 />
@@ -192,7 +192,7 @@ const DashboardLayout: React.FC = () => {
               }`}
             >
               <div className={`transition-all ${isActive ? 'scale-110' : ''}`}>
-                {React.cloneElement(item.icon as any, { size: 20 })}
+                {React.cloneElement(item.icon as React.ReactElement<{ size: number }>, { size: 20 })}
               </div>
               <span className={isActive ? 'opacity-100' : 'opacity-60'}>{item.label.split(' ')[0]}</span>
               {isActive && (

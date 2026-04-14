@@ -34,7 +34,7 @@ const Notifications: React.FC = () => {
 
   useEffect(() => {
     fetchNotifications();
-  }, [userId, filter]);
+  }, [fetchNotifications]);
 
   const handleMarkAsRead = async (id: string) => {
     try {
