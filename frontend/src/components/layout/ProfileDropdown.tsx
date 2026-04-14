@@ -1,16 +1,5 @@
 import React from 'react';
-import { 
-  User, 
-  Globe, 
-  LogOut, 
-  Settings,
-  HelpCircle,
-  FileText,
-  Briefcase,
-  ChevronRight
-} from 'lucide-react';
 import authService from '../../api/authService';
-
 import { Link } from 'react-router-dom';
 
 interface ProfileDropdownProps {

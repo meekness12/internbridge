@@ -2,19 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   ArrowUpRight, 
-  CheckCircle2, 
-  XCircle,
   FileText,
   Clock,
   Briefcase,
-  RefreshCw,
   Target,
-  ChevronRight,
   Filter,
   UserCheck,
   UserX
 } from 'lucide-react';
-import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import internshipService from '../../api/internshipService';
 import applicationService from '../../api/applicationService';
 import type { InternshipDTO } from '../../api/internshipService';

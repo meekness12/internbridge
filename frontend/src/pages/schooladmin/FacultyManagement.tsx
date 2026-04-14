@@ -19,17 +19,12 @@ const FacultyManagement: React.FC = () => {
   const [faculties, setFaculties] = useState<FacultyDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetchFaculties();
-  }, []);
-
-  const fetchFaculties = async () => {
+  const fetchFaculties = React.useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await facultyService.getFaculties();
       setFaculties(data);
-    } catch (error) {
-      console.error('Failed to load faculties:', error);
+    } catch {
       toast('Failed to synchronize academic architecture with the central vault.', 'error', 'Protocol Error');
       // Fallback to mock data for demonstration
       setFaculties([
@@ -55,7 +50,11 @@ const FacultyManagement: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchFaculties();
+  }, [fetchFaculties]);
   
   const handleProvision = () => {
     toast('Academic cluster provisioned. Syncing faculty hierarchy with core records...', 'success', 'Institutional Sync');

@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { 
   Globe, 
   Activity,
-  ArrowUpRight,
   ShieldCheck,
   Calendar,
   Users,
-  RefreshCw,
   TrendingUp,
   BarChart3
 } from 'lucide-react';
@@ -26,20 +24,21 @@ const GlobalAnalytics: React.FC = () => {
   const [data, setData] = useState<AnalyticsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchAnalytics = async () => {
-      try {
-        setIsLoading(true);
-        const analytics = await systemService.getAnalytics();
-        setData(analytics);
-      } catch (error) {
-        toast('Failed to synchronize analytical indices.', 'error', 'Protocol Protocol');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchAnalytics();
+  const fetchAnalytics = React.useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const analytics = await systemService.getAnalytics();
+      setData(analytics);
+    } catch {
+      toast('Failed to synchronize analytical indices.', 'error', 'Protocol Protocol');
+    } finally {
+      setIsLoading(false);
+    }
   }, [toast]);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
   const stats = [
     { label: 'Total Placements', value: data?.totalPlacements.toLocaleString() || '4,280', trend: '↑ 18.2%', icon: '📍', color: 'ki-1', kpiColor: 'kpi-1' },
@@ -86,18 +85,27 @@ const GlobalAnalytics: React.FC = () => {
           </div>
           
           <div className="h-80 flex items-end justify-between gap-4 px-4 pb-10 border-b-2 border-slate-50 relative z-10">
-             {(data?.placementVelocity || [45, 32, 58, 41, 62, 78, 55, 68, 82, 71, 94, 88].map((v, i) => ({ month: `M${i+1}`, rate: v }))).map((v, i) => (
-               <div key={i} className="flex-1 group/bar relative h-full flex flex-col justify-end">
-                  <div 
-                    className="w-full bg-[var(--color-brand)] opacity-5 group-hover/bar:opacity-100 transition-all duration-700 rounded-t-xl shadow-glow"
-                    style={{ height: `${v.rate}%` }}
-                  ></div>
-                  <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-slate-900 text-white font-mono font-black text-[10px] px-4 py-2 rounded-xl opacity-0 group-hover/bar:opacity-100 transition-all shadow-2xl scale-90 group-hover/bar:scale-100 border border-[var(--color-brand)]/20">
-                    {v.rate}%
+             {isLoading ? (
+               <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-20 rounded-[3.5rem]">
+                  <div className="flex flex-col items-center gap-4">
+                     <div className="w-10 h-10 border-4 border-[var(--color-brand)] border-t-transparent rounded-full animate-spin"></div>
+                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Indices...</span>
                   </div>
-                  <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 font-mono text-[10px] font-black text-slate-200 uppercase tracking-tighter group-hover/bar:text-[var(--color-brand)] transition-colors">{v.month}</div>
                </div>
-             ))}
+             ) : (
+               (data?.placementVelocity || [45, 32, 58, 41, 62, 78, 55, 68, 82, 71, 94, 88].map((v, i) => ({ month: `M${i+1}`, rate: v }))).map((v: { month: string; rate: number }, i) => (
+                 <div key={i} className="flex-1 group/bar relative h-full flex flex-col justify-end">
+                    <div 
+                      className="w-full bg-[var(--color-brand)] opacity-5 group-hover/bar:opacity-100 transition-all duration-700 rounded-t-xl shadow-glow"
+                      style={{ height: `${v.rate}%` }}
+                    ></div>
+                    <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-slate-900 text-white font-mono font-black text-[10px] px-4 py-2 rounded-xl opacity-0 group-hover/bar:opacity-100 transition-all shadow-2xl scale-90 group-hover/bar:scale-100 border border-[var(--color-brand)]/20">
+                      {v.rate}%
+                    </div>
+                    <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 font-mono text-[10px] font-black text-slate-200 uppercase tracking-tighter group-hover/bar:text-[var(--color-brand)] transition-colors">{v.month}</div>
+                 </div>
+               ))
+             )}
           </div>
           
           <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">

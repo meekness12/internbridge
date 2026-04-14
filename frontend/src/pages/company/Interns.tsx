@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Search, 
-  ArrowUpRight, 
   Briefcase,
   Star,
   TrendingUp,
   MoreHorizontal,
-  RefreshCw,
   Users,
   ShieldCheck,
   Calendar,
-  ChevronRight,
   ExternalLink,
   Globe
 } from 'lucide-react';
-import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import placementService from '../../api/placementService';
 import type { PlacementDTO } from '../../api/placementService';
 
@@ -29,7 +25,6 @@ const Interns: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const userId = localStorage.getItem('userId') || '';
-  const userName = localStorage.getItem('userName') || 'Institutional Partner';
 
   useEffect(() => {
     const fetchInterns = async () => {

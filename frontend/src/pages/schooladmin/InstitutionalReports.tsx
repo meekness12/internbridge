@@ -43,7 +43,7 @@ const InstitutionalReports: React.FC = () => {
          ].map((m, i) => (
            <div key={i} className="card p-8 bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-md transition-all">
               <div className={`w-14 h-14 ${m.bg} rounded-2xl flex items-center justify-center mb-6 shadow-inner`}>
-                {React.cloneElement(m.icon as React.ReactElement<any>, { size: 24 })}
+                {React.cloneElement(m.icon as React.ReactElement<{ size?: number }>, { size: 24 })}
               </div>
               <div className="label-mono text-[10px] font-black uppercase tracking-widest text-slate-300 mb-2">{m.label}</div>
               <div className="text-3xl font-serif font-bold text-[var(--color-navy)]">{m.val}</div>

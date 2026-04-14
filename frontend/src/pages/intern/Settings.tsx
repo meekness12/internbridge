@@ -4,14 +4,12 @@ import {
   Shield, 
   Eye, 
   Smartphone, 
-  Mail, 
   Lock, 
-  LogOut,
   Zap,
   Globe,
   Database,
-  CheckCircle2,
-  Trash2
+  Trash2,
+  Briefcase
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
@@ -143,7 +141,7 @@ const Settings: React.FC = () => {
                            <div key={i} className="flex items-center justify-between p-8 hover:bg-slate-50 rounded-[2.5rem] border border-transparent hover:border-slate-50 transition-all group">
                               <div className="flex gap-6">
                                  <div className="w-14 h-14 rounded-2xl bg-white border border-slate-50 flex items-center justify-center text-slate-300 group-hover:text-[var(--color-brand)] shadow-sm transition-colors">
-                                    {React.cloneElement(n.icon as any, { size: 24 })}
+                                    {React.cloneElement(n.icon as React.ReactElement<{ size?: number }>, { size: 24 })}
                                  </div>
                                  <div>
                                     <h4 className="text-sm font-bold text-slate-900 mb-1">{n.label}</h4>

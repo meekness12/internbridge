@@ -2,26 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   Briefcase, 
-  Search, 
   Plus,
-  LayoutDashboard,
   Bell,
-  RefreshCw,
   X,
-  Send,
   TrendingUp,
   Target,
   Zap,
   Star,
-  Shield,
-  Globe,
-  Lock,
-  ChevronRight,
-  MapPin,
-  ArrowUpRight,
-  FileText,
   Loader2,
-  Clock,
   ArrowRight
 } from 'lucide-react';
 import internshipService from '../../api/internshipService';
@@ -52,7 +40,6 @@ const CompanyDashboard: React.FC = () => {
 
   const userId = localStorage.getItem('userId') || '';
   const companyId = localStorage.getItem('companyId') || '';
-  const userName = localStorage.getItem('userName') || 'Corporate Partner';
 
   const fetchData = async () => {
     setIsLoading(true);

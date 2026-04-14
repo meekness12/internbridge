@@ -1,15 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Users, 
-  Download,
-  Calendar,
-  LayoutDashboard,
-  Building,
   ArrowUpRight,
-  ShieldCheck,
   Search,
-  BookOpen,
-  PieChart,
   Shield,
   Globe,
   Lock,
@@ -17,10 +10,9 @@ import {
   Target,
   Clock
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 
 const SupervisorDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('overview');
   const userName = localStorage.getItem('userName') || 'Prof. Kwesi Mensah';
 
   const stats = [

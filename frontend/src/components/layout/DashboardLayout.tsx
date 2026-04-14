@@ -1,7 +1,6 @@
 import React from 'react';
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
-  Search, 
   Home, 
   Briefcase, 
   FileText, 
@@ -11,12 +10,7 @@ import {
   ChevronDown,
   Users,
   Building,
-  Globe,
-  Zap,
-  ShieldCheck,
-  Settings,
   LayoutGrid,
-  Menu
 } from 'lucide-react';
 
 import { ProfileDropdown } from './ProfileDropdown';
@@ -26,7 +20,6 @@ const DashboardLayout: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [userProfile, setUserProfile] = React.useState<any>(null);
   const location = useLocation();
-  const navigate = useNavigate();
   const role = localStorage.getItem('role') || 'INTERN'; 
   
   React.useEffect(() => {

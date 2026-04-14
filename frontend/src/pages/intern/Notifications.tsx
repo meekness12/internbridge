@@ -3,10 +3,6 @@ import {
   Bell, 
   CheckCircle2, 
   AlertCircle, 
-  Briefcase, 
-  FileText,
-  Zap,
-  RefreshCw,
   MoreHorizontal,
   Circle
 } from 'lucide-react';
@@ -22,19 +18,19 @@ const Notifications: React.FC = () => {
 
   const userId = localStorage.getItem('userId') || '';
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const data = filter === 'unread' 
         ? await notificationService.getUnreadNotifications(userId)
         : await notificationService.getMyNotifications(userId);
       setNotifications(data);
-    } catch (error) {
-      console.error('Failed to load notifications:', error);
+    } catch {
+      console.error('Failed to load notifications');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId, filter]);
 
   useEffect(() => {
     fetchNotifications();
@@ -44,7 +40,7 @@ const Notifications: React.FC = () => {
     try {
       await notificationService.markAsRead(id);
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
-    } catch (error) {
+    } catch {
       toast('Failed to acknowledge notification.', 'error');
     }
   };
@@ -146,7 +142,7 @@ const Notifications: React.FC = () => {
                 >
                   <div className="relative shrink-0">
                     <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-[var(--color-brand)] font-bold text-lg overflow-hidden border border-slate-50">
-                       {(note as any).companyName?.[0] || 'I'}
+                       {note.message[0] || 'N'}
                     </div>
                     <div className={`absolute -bottom-1 -right-1 w-7 h-7 rounded-full ${getBgColor(note.message)} flex items-center justify-center border-2 border-white shadow-sm`}>
                       {getIcon(note.message)}
@@ -180,7 +176,7 @@ const Notifications: React.FC = () => {
                 >
                   <div className="relative shrink-0 opacity-80">
                     <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-bold text-lg overflow-hidden border border-slate-50">
-                       {(note as any).companyName?.[0] || 'I'}
+                       {note.message[0] || 'N'}
                     </div>
                     <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-slate-400 flex items-center justify-center border-2 border-white shadow-sm">
                       {getIcon(note.message)}

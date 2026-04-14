@@ -21,7 +21,15 @@ import { useToast } from '../../context/ToastContext';
 
 const Profile: React.FC = () => {
   const { toast } = useToast();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    major?: string;
+    companyName?: string;
+    location?: string;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -69,8 +77,9 @@ const Profile: React.FC = () => {
       if (formData.email !== localStorage.getItem('email')) {
         localStorage.setItem('email', formData.email);
       }
-    } catch (error: any) {
-      toast(error.response?.data?.message || 'Failed to update profile.', 'error');
+    } catch (error) {
+      const msg = (error as any).response?.data?.message || 'Failed to update profile.';
+      toast(msg, 'error');
     } finally {
       setIsSaving(false);
     }

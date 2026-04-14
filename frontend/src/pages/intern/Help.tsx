@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { 
   Search, 
   BookOpen, 
-  MessageSquare, 
   HelpCircle, 
   Zap, 
   ShieldCheck, 
   ExternalLink,
-  ChevronRight,
   Send,
   LifeBuoy,
   FileText,

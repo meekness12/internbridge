@@ -21,6 +21,7 @@ import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import reportService from '../../api/reportService';
 import type { ReportResponse, ReportType } from '../../api/reportService';
 import systemService from '../../api/systemService';
+import type { PlatformStats } from '../../api/systemService';
 import { useToast } from '../../context/ToastContext';
 
 /**
@@ -30,28 +31,28 @@ import { useToast } from '../../context/ToastContext';
 const SystemReports: React.FC = () => {
   const { toast } = useToast();
   const [reports, setReports] = useState<ReportResponse[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<PlatformStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newReport, setNewReport] = useState({ title: '', type: 'ANALYTICAL' as ReportType });
 
-  const fetchReports = async () => {
+  const fetchReports = React.useCallback(async () => {
     try {
       const data = await reportService.getAllReports();
       setReports(data);
-    } catch (error) {
-      console.error('Failed to fetch reports:', error);
+    } catch {
+      console.error('Failed to fetch reports');
     }
-  };
+  }, []);
 
-  const fetchStats = async () => {
+  const fetchStats = React.useCallback(async () => {
     try {
       const data = await systemService.getPlatformStats();
       setStats(data);
-    } catch (error) {
-      console.error('Failed to fetch stats:', error);
+    } catch {
+      console.error('Failed to fetch stats');
     }
-  };
+  }, []);
 
   useEffect(() => {
     const initialize = async () => {
@@ -60,7 +61,7 @@ const SystemReports: React.FC = () => {
       setIsLoading(false);
     };
     initialize();
-  }, []);
+  }, [fetchReports, fetchStats]);
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +72,7 @@ const SystemReports: React.FC = () => {
       setIsModalOpen(false);
       setNewReport({ title: '', type: 'ANALYTICAL' });
       fetchReports();
-    } catch (error) {
+    } catch {
       toast('Report generation failed.', 'error', 'Sync Error');
     } finally {
       setIsLoading(false);
@@ -83,7 +84,7 @@ const SystemReports: React.FC = () => {
       await reportService.deleteReport(id);
       toast('Report record deleted from the system.', 'success', 'Cleanup');
       fetchReports();
-    } catch (error) {
+    } catch {
       toast('Failed to delete report record.', 'error');
     }
   };

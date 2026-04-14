@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Users, 
-  Search, 
-  Bell, 
-  Sun, 
-  Grid, 
   TrendingUp, 
   TrendingDown, 
   Building2, 
   Briefcase, 
   Database,
   MoreVertical,
-  CheckCircle2,
-  Clock,
   ChevronDown,
   ShieldAlert
 } from 'lucide-react';
@@ -32,13 +26,11 @@ const SuperAdminDashboard: React.FC = () => {
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLogDTO[]>([]);
   const [users, setUsers] = useState<UserDTO[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [roleDistribution, setRoleDistribution] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);
         const [statsData, logsData, analyticsData, usersData] = await Promise.all([
           systemService.getPlatformStats().catch(() => null),
           systemService.getAuditLogs(10).catch(() => []),
@@ -58,10 +50,8 @@ const SuperAdminDashboard: React.FC = () => {
         }, {});
         setRoleDistribution(counts);
 
-      } catch (error) {
+      } catch {
         toast('Data synchronization failed', 'error');
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchData();

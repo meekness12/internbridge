@@ -1,28 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Building2, 
   Settings,
-  LayoutDashboard,
   ShieldCheck,
-  Building,
-  FileText,
-  Search,
   ArrowUpRight,
-  TrendingUp,
-  PieChart,
   Target,
-  Download,
-  ShieldAlert,
   Shield,
   Globe,
   Lock,
-  ChevronRight,
-  ChevronDown
+  ChevronRight
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 
 const SchoolAdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('overview');
   const institutionName = localStorage.getItem('institution') || 'Central University College';
 
   const stats = [

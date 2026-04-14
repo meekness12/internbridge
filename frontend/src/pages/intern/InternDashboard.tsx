@@ -1,37 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Users,
   Clock,
-  Check,
-  Plus,
-  RefreshCw,
   Search,
-  ArrowUpRight,
   Sparkles,
-  Zap,
-  Shield,
-  Globe,
-  Lock,
   MapPin,
-  Target,
   DollarSign,
   Calendar,
   X,
-  Briefcase,
-  ChevronRight
+  Briefcase
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
-import placementService from '../../api/placementService';
 import applicationService from '../../api/applicationService';
 import internshipService from '../../api/internshipService';
 import type { InternshipDTO } from '../../api/internshipService';
 import type { ApplicationDTO } from '../../api/applicationService';
-import type { PlacementDTO } from '../../api/placementService';
 
 const InternDashboard: React.FC = () => {
   const { toast } = useToast();
   const [applications, setApplications] = useState<ApplicationDTO[]>([]);
-  const [placements, setPlacements] = useState<PlacementDTO[]>([]);
   const [allInternships, setAllInternships] = useState<InternshipDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('All');
@@ -39,20 +25,17 @@ const InternDashboard: React.FC = () => {
   const [selectedJob, setSelectedJob] = useState<InternshipDTO | null>(null);
 
   const userId = localStorage.getItem('userId') || '';
-  const userName = localStorage.getItem('userName') || 'Student';
 
   useEffect(() => {
     const fetchAll = async () => {
       setIsLoading(true);
       try {
-        const [apps, places, internships] = await Promise.allSettled([
+        const [apps, internships] = await Promise.allSettled([
           applicationService.getMyApplications(userId),
-          placementService.getMyPlacements(userId),
           internshipService.getAllInternships(),
         ]);
 
         if (apps.status === 'fulfilled') setApplications(apps.value);
-        if (places.status === 'fulfilled') setPlacements(places.value);
         if (internships.status === 'fulfilled') setAllInternships(internships.value);
       } catch (error) {
         console.error('Dashboard data load failed:', error);
@@ -81,7 +64,7 @@ const InternDashboard: React.FC = () => {
 
   const filteredInternships = allInternships
     .filter(job => !applications.some(app => app.internshipId === job.id))
-    .filter(job => {
+    .filter(() => {
       if (filter === 'All') return true;
       // Note: Filtering logic for Remote/Hybrid/On-site would go here
       // For now we keep all since the mock data is limited
@@ -137,7 +120,7 @@ const InternDashboard: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-6">
-                {filteredInternships.map((job: any, i) => (
+                {filteredInternships.map((job: InternshipDTO, i) => (
                   <div 
                     key={i} 
                     onClick={() => setSelectedJob(job)}

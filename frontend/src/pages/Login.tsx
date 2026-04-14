@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Mail, 
-  Lock, 
   Eye, 
   ArrowRight, 
-  ShieldCheck, 
-  FileText, 
   CheckCircle2, 
-  Clock, 
   AlertCircle,
-  Zap,
-  Fingerprint,
-  Globe,
   Sparkles,
   RefreshCw
 } from 'lucide-react';

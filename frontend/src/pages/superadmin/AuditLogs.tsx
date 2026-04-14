@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Shield, 
   Search, 
@@ -26,28 +26,28 @@ const AuditLogs: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    fetchLogs();
-  }, []);
-
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await systemService.getAuditLogs(50);
       setLogs(data);
-    } catch (error) {
+    } catch {
       toast('Failed to synchronize activity logs.', 'error', 'Error');
       // Mock data for dev
       setLogs([
-        { id: '1', action: 'User Created', details: 'User alexander.s was created as a Company Admin', userName: 'Admin', timestamp: new Date(Date.now() - 120000).toISOString(), status: 'SUCCESS' },
-        { id: '2', action: 'Security Warning', details: 'Unrecognized login attempt from IP 192.168.1.104', userName: 'Security System', timestamp: new Date(Date.now() - 600000).toISOString(), status: 'WARNING' },
-        { id: '3', action: 'System Update', details: 'System capacity expanded to handle peak load', userName: 'Automation', timestamp: new Date(Date.now() - 1800000).toISOString(), status: 'SUCCESS' },
-        { id: '4', action: 'Account Deleted', details: 'Deleted user root@example.com', userName: 'Admin', timestamp: new Date(Date.now() - 3600000).toISOString(), status: 'SUCCESS' },
+        { id: '1', userId: 'admin-1', action: 'User Created', details: 'User alexander.s was created as a Company Admin', userName: 'Admin', timestamp: new Date(Date.now() - 120000).toISOString(), status: 'SUCCESS' },
+        { id: '2', userId: 'system', action: 'Security Warning', details: 'Unrecognized login attempt from IP 192.168.1.104', userName: 'Security System', timestamp: new Date(Date.now() - 600000).toISOString(), status: 'WARNING' },
+        { id: '3', userId: 'system', action: 'System Update', details: 'System capacity expanded to handle peak load', userName: 'Automation', timestamp: new Date(Date.now() - 1800000).toISOString(), status: 'SUCCESS' },
+        { id: '4', userId: 'admin-1', action: 'Account Deleted', details: 'Deleted user root@example.com', userName: 'Admin', timestamp: new Date(Date.now() - 3600000).toISOString(), status: 'SUCCESS' },
       ]);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchLogs();
+  }, [fetchLogs]);
 
   const filteredLogs = logs.filter(log => 
     log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||

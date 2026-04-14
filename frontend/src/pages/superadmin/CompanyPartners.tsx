@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Search, 
   Plus, 
   ArrowUpRight,
   MapPin,
@@ -8,10 +7,6 @@ import {
   FileCheck,
   RefreshCw,
   Building2,
-  Filter,
-  CheckCircle2,
-  TrendingUp,
-  Briefcase,
   X,
   ShieldCheck
 } from 'lucide-react';
@@ -42,21 +37,21 @@ const CompanyPartners: React.FC = () => {
     password: ''
   });
 
-  const fetchCompanies = async () => {
+  const fetchCompanies = React.useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await systemService.getCompanies();
       setCompanies(data);
-    } catch (error) {
+    } catch {
       toast('Failed to synchronize partner directory.', 'error', 'Error');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
 
   useEffect(() => {
     fetchCompanies();
-  }, [toast]);
+  }, [fetchCompanies]);
 
   const handleProvision = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +66,7 @@ const CompanyPartners: React.FC = () => {
         password: newPartner.password,
         role: 'COMPANY_ADMIN',
         institution: newPartner.companyName,
-        // @ts-ignore - added industry to DTO in backend, but frontend type might need update
+        // @ts-expect-error - added industry to DTO in backend, but frontend type might need update
         industry: newPartner.industry 
       });
 
@@ -79,7 +74,7 @@ const CompanyPartners: React.FC = () => {
       setIsModalOpen(false);
       setNewPartner({ companyName: '', industry: '', adminFirstName: '', adminLastName: '', email: '', password: '' });
       fetchCompanies();
-    } catch (error) {
+    } catch {
       toast('Failed to provision new partner identity.', 'error', 'Provisioning Failed');
     } finally {
       setIsLoading(false);
@@ -106,25 +101,24 @@ const CompanyPartners: React.FC = () => {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 animate-fade-up">
-         {[
-           { label: 'Active Partners', value: companies.length.toString(), icon: <Building2 size={24} /> },
-           { label: 'Growth Rate', value: '+12.4%', icon: <TrendingUp size={24} /> },
-           { label: 'Placement Rate', value: '94.2%', icon: <Briefcase size={24} /> },
-           { label: 'Partner Score', value: 'Optimal', icon: <CheckCircle2 size={24} /> }
-         ].map((k, i) => (
-           <div key={i} className="bg-white border border-slate-50 p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/20 flex flex-col group hover:shadow-2xl transition-all">
-              <div className="w-14 h-14 bg-slate-50 text-[var(--color-brand)] rounded-2xl flex items-center justify-center mb-10 shadow-inner group-hover:rotate-6 transition-transform">
-                 {k.icon}
-              </div>
-              <div>
-                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-2">{k.label}</div>
-                 <div className="text-4xl font-serif font-black text-slate-900 tracking-tight leading-none">{k.value}</div>
-              </div>
-           </div>
-         ))}
+         <div className="md:col-span-3 flex items-center bg-white border border-slate-50 p-4 rounded-[2.5rem] shadow-xl shadow-slate-200/20 group">
+            <div className="relative flex-1 group/search">
+               <input 
+                 type="text" 
+                 placeholder="Search alliance network by name or industry..." 
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+                 className="w-full h-14 bg-slate-50/50 border border-slate-50 rounded-2xl px-8 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner"
+               />
+            </div>
+         </div>
+         <div className="bg-slate-900 rounded-[2.5rem] p-4 text-white flex items-center justify-center shadow-2xl relative overflow-hidden group">
+            <div className="relative z-10 flex flex-col items-center">
+               <span className="text-[10px] font-black uppercase tracking-widest text-white/30 truncate">Target Performance</span>
+               <div className="text-xl font-serif font-black italic text-[var(--color-brand)]">Optimal</div>
+            </div>
+         </div>
       </div>
-
-      <div className="mb-12"></div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 min-h-[400px] animate-fade-up delay-2">
         {isLoading ? (
@@ -134,9 +128,9 @@ const CompanyPartners: React.FC = () => {
           </div>
         ) : (
           (companies.length > 0 ? companies : [
-            { id: '1', name: 'Techwave Technologies', industry: 'Software Engineering', location: 'Accra, GH', status: 'VERIFIED', rating: '4.9', interns: 12 },
-            { id: '2', name: 'Global Finance Corp', industry: 'Financial Services', location: 'London, UK', status: 'VERIFIED', rating: '4.7', interns: 8 },
-            { id: '3', name: 'EcoPower Systems', industry: 'Sustainable Energy', location: 'Berlin, DE', status: 'PENDING', rating: '4.5', interns: 4 },
+            { id: '1', name: 'Techwave Technologies', industry: 'Software Engineering', location: 'Accra, GH', status: 'VERIFIED', rating: '4.9', interns: 12, logo: '', website: '' },
+            { id: '2', name: 'Global Finance Corp', industry: 'Financial Services', location: 'London, UK', status: 'VERIFIED', rating: '4.7', interns: 8, logo: '', website: '' },
+            { id: '3', name: 'EcoPower Systems', industry: 'Sustainable Energy', location: 'Berlin, DE', status: 'PENDING', rating: '4.5', interns: 4, logo: '', website: '' },
           ]).filter(c => 
             c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
             c.industry.toLowerCase().includes(searchQuery.toLowerCase())

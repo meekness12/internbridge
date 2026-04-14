@@ -4,8 +4,6 @@ import {
   Briefcase, 
   MapPin,
   Clock,
-  DollarSign,
-  Calendar,
   X,
   Send,
   Sparkles,
@@ -13,7 +11,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Zap,
-  ChevronRight,
   Target
 } from 'lucide-react';
 import internshipService from '../../api/internshipService';
@@ -33,9 +30,8 @@ const Placements: React.FC = () => {
   const [coverLetter, setCoverLetter] = useState('');
 
   const userId = localStorage.getItem('userId') || '';
-  const userName = localStorage.getItem('userName') || 'Student';
 
-  const fetchData = async () => {
+  const fetchData = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const [listings, apps] = await Promise.allSettled([
@@ -44,16 +40,16 @@ const Placements: React.FC = () => {
       ]);
       if (listings.status === 'fulfilled') setInternships(listings.value);
       if (apps.status === 'fulfilled') setMyApplications(apps.value);
-    } catch (error) {
-      console.error('Failed to fetch placements:', error);
+    } catch {
+      console.error('Failed to fetch placements');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
     fetchData();
-  }, [userId]);
+  }, [fetchData]);
 
   const handleApply = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +64,7 @@ const Placements: React.FC = () => {
       setApplyingTo(null);
       setCoverLetter('');
       fetchData();
-    } catch (error) {
+    } catch {
       toast('Failed to submit application.', 'error', 'Error');
     }
   };
@@ -97,7 +93,7 @@ const Placements: React.FC = () => {
       if (activeTab === 'hired') return app.status === 'ACCEPTED' || app.status === 'HIRED';
       return app.status === statusMap[activeTab];
     }).filter(app => 
-      (app.internshipTitle?.toLowerCase().includes(query) || (app as any).companyName?.toLowerCase().includes(query))
+      (app.internshipTitle?.toLowerCase().includes(query) || app.internshipTitle?.toLowerCase().includes(query))
     );
   };
 
@@ -150,7 +146,7 @@ const Placements: React.FC = () => {
              {tabs.map((tab) => (
                 <button 
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as 'discover' | 'applied' | 'hired' | 'rejected')}
                   className={`flex-1 py-3.5 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all relative group ${
                     activeTab === tab.id ? 'bg-[var(--color-brand)] text-white shadow-xl shadow-teal-500/20' : 'text-slate-400 hover:bg-slate-50'
                   }`}
@@ -197,7 +193,7 @@ const Placements: React.FC = () => {
             </div>
           ) : filteredData.length > 0 ? (
              <div className="space-y-6">
-                {filteredData.map((item: any, i) => (
+                {filteredData.map((item: InternshipDTO | ApplicationDTO, i: number) => (
                   <div 
                     key={item.id} 
                     className="bg-white rounded-[2.5rem] border border-slate-100 p-10 shadow-xl shadow-slate-200/30 hover:shadow-2xl hover:shadow-teal-500/5 transition-all group animate-fade-up relative overflow-hidden" 
@@ -206,16 +202,16 @@ const Placements: React.FC = () => {
                      <div className="flex justify-between items-start">
                         <div className="flex gap-8">
                            <div className="w-16 h-16 rounded-2xl bg-[var(--color-teal-faint)] flex items-center justify-center text-[var(--color-brand)] font-bold text-2xl shadow-inner group-hover:scale-110 transition-transform">
-                             {(item.companyName || item.internshipTitle)?.[0] || 'I'}{(item.companyName || item.internshipTitle)?.[1] || ''}
+                             {('companyName' in item ? item.companyName : (item as any).companyName) || 'I'}
                            </div>
                            <div>
                               <h4 className="text-2xl font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors mb-2 leading-tight">
-                                 {item.title || item.internshipTitle}
+                                 {'title' in item ? item.title : item.internshipTitle}
                               </h4>
                               <div className="flex items-center gap-2 mb-4">
                                 <Briefcase size={16} className="text-slate-300" />
                                 <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">
-                                  {item.companyName || 'University Partner'}
+                                  {'companyName' in item ? item.companyName : (item as any).companyName || 'University Partner'}
                                 </span>
                               </div>
                               <div className="flex items-center gap-6 mt-4">
@@ -229,7 +225,7 @@ const Placements: React.FC = () => {
                            </div>
                         </div>
                         {activeTab === 'discover' && (
-                           <button onClick={() => setApplyingTo(item)} className="p-2 text-slate-200 hover:text-[var(--color-brand)] transition-all">
+                           <button onClick={() => setApplyingTo(item as InternshipDTO)} className="p-2 text-slate-200 hover:text-[var(--color-brand)] transition-all">
                               <Zap size={24} />
                            </button>
                         )}
@@ -237,7 +233,7 @@ const Placements: React.FC = () => {
 
                      <div className="mt-8 pt-8 border-t border-slate-50 flex items-center justify-between">
                         <div className="flex gap-2">
-                           {(item.requiredSkills || 'Institutional Alignment').split(',').slice(0, 2).map((s: string, idx: number) => (
+                           {('requiredSkills' in item ? item.requiredSkills : 'Institutional Alignment').split(',').slice(0, 2).map((s: string, idx: number) => (
                              <span key={idx} className="px-4 py-1.5 bg-slate-50 text-[10px] font-bold uppercase tracking-widest text-slate-400 rounded-xl border border-slate-100">
                                 {s.trim()}
                              </span>
@@ -246,7 +242,7 @@ const Placements: React.FC = () => {
                         
                         {activeTab === 'discover' ? (
                            <button 
-                             onClick={() => setApplyingTo(item)}
+                             onClick={() => setApplyingTo(item as InternshipDTO)}
                              className="px-8 py-3 bg-white border-2 border-[var(--color-brand)] text-[var(--color-brand)] rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[var(--color-brand)] hover:text-white transition-all active:scale-95 shadow-lg shadow-teal-500/5"
                            >
                              Quick Apply

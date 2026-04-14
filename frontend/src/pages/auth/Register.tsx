@@ -2,19 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authHero from '../../assets/auth-hero.png';
 import { 
-  Mail, 
   Lock, 
-  User, 
   ArrowRight, 
   ShieldCheck, 
   CheckCircle2, 
   Globe, 
-  Sparkles,
-  Zap,
-  Fingerprint,
   RefreshCw,
-  Building2,
-  Trophy
 } from 'lucide-react';
 
 /**

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Search, 
-  Filter, 
   UserPlus,
   ShieldCheck,
   Trash2,
@@ -9,7 +7,6 @@ import {
   UserX,
   X,
   Zap,
-  Database,
   Lock,
   Fingerprint,
   RefreshCw
@@ -39,17 +36,12 @@ const UserManagement: React.FC = () => {
     role: 'INTERN' as UserDTO['role']
   });
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
+  const fetchUsers = React.useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await userService.getUsers();
       setUsers(data);
-    } catch (error) {
-      console.error('Failed to load users:', error);
+    } catch {
       toast('Failed to synchronize user records with the server.', 'error', 'Sync Error');
       // Fallback to mock data for demonstration
       setUsers([
@@ -61,7 +53,11 @@ const UserManagement: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
   
   const handleProvision = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +67,7 @@ const UserManagement: React.FC = () => {
       setIsModalOpen(false);
       setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'INTERN' });
       fetchUsers();
-    } catch (error) {
+    } catch {
       toast('Failed to create user.', 'error', 'Error');
     } finally {
       setIsLoading(false);
@@ -83,7 +79,7 @@ const UserManagement: React.FC = () => {
       await userService.updateStatus(userId, newStatus);
       toast(`Status updated to ${newStatus}.`, 'success', 'System');
       fetchUsers();
-    } catch (error) {
+    } catch {
       toast('User status update failed.', 'error');
     }
   };
@@ -94,7 +90,7 @@ const UserManagement: React.FC = () => {
       toast('User deleted from the system.', 'success', 'Account Deletion');
       setIsDeleting(null);
       fetchUsers();
-    } catch (error) {
+    } catch {
       toast('Failed to delete user record.', 'error');
     }
   };
@@ -122,6 +118,20 @@ const UserManagement: React.FC = () => {
           </button>
         }
       />
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 animate-fade-up">
+         <div className="md:col-span-4 bg-white rounded-[2.5rem] p-4 flex items-center border border-slate-100 shadow-xl shadow-slate-200/20 group">
+            <div className="relative flex-1">
+               <input 
+                 type="text" 
+                 placeholder="Search platform directory by name, email, or institution..." 
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+                 className="w-full h-14 bg-slate-50/50 border border-slate-50 rounded-2xl px-8 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner"
+               />
+            </div>
+         </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 animate-fade-up">
          {[

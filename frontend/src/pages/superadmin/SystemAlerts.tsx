@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Settings,
   CheckCircle2,
-  Server,
   RefreshCw,
   Clock,
   Terminal
@@ -28,26 +27,27 @@ const SystemAlerts: React.FC = () => {
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchAlerts = async () => {
-      try {
-        setIsLoading(true);
-        const [alertsData, statsData] = await Promise.all([
-          systemService.getSystemAlerts(),
-          systemService.getPlatformStats()
-        ]);
-        setAlerts(alertsData);
-        setStats(statsData);
-      } catch (error) {
-        toast('Failed to synchronize system alerts stream.', 'error', 'Error');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchAlerts();
+  const fetchAlerts = React.useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const [alertsData, statsData] = await Promise.all([
+        systemService.getSystemAlerts(),
+        systemService.getPlatformStats()
+      ]);
+      setAlerts(alertsData);
+      setStats(statsData);
+    } catch {
+      toast('Failed to synchronize system alerts stream.', 'error', 'Error');
+    } finally {
+      setIsLoading(false);
+    }
   }, [toast]);
 
-  const fallbackAlerts = [
+  useEffect(() => {
+    fetchAlerts();
+  }, [fetchAlerts]);
+
+  const fallbackAlerts: SystemAlert[] = [
     { id: '1', message: 'Auth Cluster Breach Attempt', severity: 'CRITICAL', timestamp: new Date(Date.now() - 300000).toISOString(), acknowledged: false },
     { id: '2', message: 'Cluster-7 Resource Threshold', severity: 'HIGH', timestamp: new Date(Date.now() - 3600000).toISOString(), acknowledged: true },
     { id: '3', message: 'API Latency Variance', severity: 'MEDIUM', timestamp: new Date(Date.now() - 7200000).toISOString(), acknowledged: true },
@@ -105,7 +105,7 @@ const SystemAlerts: React.FC = () => {
       </div>
 
       <div className="space-y-6 animate-fade-up">
-        {displayAlerts.map((alert: any, i: number) => (
+        {displayAlerts.map((alert: SystemAlert) => (
           <div key={alert.id} className="bg-white rounded-[3rem] border border-slate-50 overflow-hidden shadow-xl shadow-slate-200/20 hover:shadow-2xl transition-all relative group">
             <div className={`absolute left-0 top-0 h-full w-2 ${
               alert.severity === 'CRITICAL' ? 'bg-rose-500 shadow-glow' :
