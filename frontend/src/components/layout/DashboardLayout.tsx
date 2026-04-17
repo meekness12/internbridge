@@ -99,7 +99,8 @@ const DashboardLayout: React.FC = () => {
                                  : 'text-slate-500 hover:bg-slate-50'
                            }`}
                         >
-                           {React.cloneElement(item.icon as any, { className: isActive ? 'text-[var(--color-brand)]' : 'text-slate-400' })}
+                           {/* @ts-expect-error: Lucide icon props are not explicitly typed for cloning */}
+                           {React.cloneElement(item.icon as React.ReactElement, { className: isActive ? 'text-[var(--color-brand)]' : 'text-slate-400' })}
                            <span>{item.label}</span>
                         </Link>
                      );
@@ -196,7 +197,8 @@ const DashboardLayout: React.FC = () => {
                      isActive ? 'text-[var(--color-brand)]' : 'text-slate-400'
                   }`}
                >
-                  {React.cloneElement(item.icon as any, { size: 20 })}
+                  {/* @ts-expect-error: Lucide icon props are not explicitly typed for cloning */}
+                  {React.cloneElement(item.icon as React.ReactElement, { size: 20 })}
                   <span className="text-[10px] font-bold">{item.label.split(' ')[0]}</span>
                </Link>
             );

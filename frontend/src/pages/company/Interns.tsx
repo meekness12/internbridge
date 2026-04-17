@@ -9,8 +9,7 @@ import {
   ShieldCheck,
   Calendar,
   ExternalLink,
-  Globe,
-  Loader2
+  Globe
 } from 'lucide-react';
 import placementService from '../../api/placementService';
 import type { PlacementDTO } from '../../api/placementService';
@@ -60,21 +59,23 @@ const Interns: React.FC = () => {
   return (
     <div className="max-w-[1240px] mx-auto animate-fade-in pb-20 mt-6 px-4">
       
-      {/* Premium Editorial Header */}
-      <div className="flex flex-col mb-16">
-         <div className="flex items-center gap-3 mb-2">
-            <div className="h-[1px] w-8 bg-[var(--color-brand)] opacity-30"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">Intern Management</span>
+      {/* High-Density Header Section */}
+      <div className="flex flex-col mb-10 px-2">
+         <div className="flex items-center gap-3 mb-3">
+            <div className="h-[2px] w-6 bg-[var(--color-brand)] rounded-full"></div>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-brand)]">Intern Management</span>
          </div>
          <div className="flex justify-between items-end">
-            <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Active <em className="italic text-slate-400 font-normal">Cohort</em></h1>
-            <div className="flex items-center gap-4 bg-white border border-slate-100 rounded-2xl px-6 py-3 shadow-xl shadow-slate-200/20">
-               <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center text-[var(--color-brand)]">
-                  <Users size={20} />
-               </div>
-               <div>
-                  <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Global Status</div>
-                  <div className="text-sm font-black text-slate-900">{placements.length} Active Internships</div>
+            <div>
+               <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-1">Active Cohort</h1>
+               <p className="text-[11px] font-bold text-slate-400">Track real-time progression and engagement across your active placements.</p>
+            </div>
+            <div className="text-right pb-1">
+               <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-[var(--color-brand)]">
+                     <Users size={16} />
+                  </div>
+                  <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{placements.length} Active Placements</span>
                </div>
             </div>
          </div>
@@ -82,151 +83,148 @@ const Interns: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         
-        {/* Main Interns Grid */}
-        <div className="lg:col-span-8 space-y-8">
-           <div className="flex items-center justify-between px-4">
-              <div className="flex items-center gap-4">
-                 <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Current Assignments</h2>
-                 <div className="h-px w-16 bg-slate-50"></div>
-              </div>
-              <div className="relative group">
-                 <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-brand)] transition-colors" />
-                 <input 
-                   type="text" 
-                   value={searchQuery} 
-                   onChange={(e) => setSearchQuery(e.target.value)}
-                   placeholder="Filter by name or role..."
-                   className="h-11 pl-12 pr-6 bg-slate-50 border border-slate-50 rounded-xl text-[10px] font-bold uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-brand)] transition-all w-64 shadow-inner"
-                 />
-              </div>
-           </div>
+         <div className="lg:col-span-8 space-y-6">
+            <div className="flex items-center justify-between px-2">
+               <div className="flex items-center gap-3">
+                  <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Current Assignments</h2>
+                  <div className="h-px w-12 bg-slate-100"></div>
+               </div>
+               <div className="relative group">
+                  <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-brand)] transition-colors" />
+                  <input 
+                    type="text" 
+                    value={searchQuery} 
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Filter interns..."
+                    className="h-9 pl-10 pr-4 bg-slate-50 border-none rounded-lg text-[9px] font-bold uppercase tracking-widest outline-none focus:bg-white focus:ring-2 focus:ring-[var(--color-brand)]/10 transition-all w-48 shadow-sm"
+                  />
+               </div>
+            </div>
 
-           {isLoading ? (
-             <div className="space-y-6 flex flex-col items-center justify-center py-20">
-                <Loader2 size={40} className="animate-spin text-[var(--color-brand)] mb-4" />
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Interns...</p>
-             </div>
-           ) : filtered.length > 0 ? (
-             <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/20 overflow-hidden">
-               <table className="w-full text-left">
-                 <thead>
-                   <tr className="bg-slate-50/50 border-b border-slate-50">
-                     <th className="px-10 py-6 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-black">Intern Name</th>
-                     <th className="px-10 py-6 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-black">Assigned Role</th>
-                     <th className="px-10 py-6 text-[10px) uppercase tracking-[0.2em] text-slate-400 font-black">Program Depth</th>
-                     <th className="px-10 py-6 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-black text-right">Settings</th>
-                   </tr>
-                 </thead>
-                 <tbody className="divide-y divide-slate-50">
-                   {filtered.map((intern) => {
-                     const progress = getProgressPercent(intern.startDate, intern.endDate);
-                     return (
-                     <tr key={intern.id} className="group hover:bg-slate-50/30 transition-all">
-                       <td className="px-10 py-8">
-                         <div className="flex items-center gap-5">
-                           <div className="w-12 h-12 rounded-2xl bg-white border-2 border-slate-50 flex items-center justify-center font-serif font-black text-[var(--color-brand)] text-lg shadow-sm group-hover:scale-105 transition-transform">
-                             {intern.studentName?.substring(0, 1) || '?'}
-                           </div>
-                           <div>
-                             <div className="font-bold text-base text-slate-900 leading-tight mb-1">{intern.studentName}</div>
-                             <div className="flex items-center gap-2 text-[10px] font-black text-slate-300 uppercase tracking-widest">
-                               <ShieldCheck size={12} className="text-emerald-500" /> Active Placement
-                             </div>
-                           </div>
-                         </div>
-                       </td>
-                       <td className="px-10 py-8">
-                          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-lg">
-                             <Briefcase size={12} className="text-[var(--color-brand)]" />
-                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">{intern.internshipTitle}</span>
-                          </div>
-                       </td>
-                       <td className="px-10 py-8">
-                         <div className="w-40">
-                           <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                             <span>Placement</span>
-                             <span className="text-[var(--color-brand)]">{progress}%</span>
-                           </div>
-                           <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                             <div 
-                               className="h-full bg-[var(--color-brand)] rounded-full shadow-glow transition-all duration-1000" 
-                               style={{ width: `${progress}%` }}
-                             ></div>
-                           </div>
-                         </div>
-                       </td>
-                       <td className="px-10 py-8 text-right">
-                          <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                            <button className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-[var(--color-brand)] hover:border-[var(--color-brand)] flex items-center justify-center transition-all shadow-sm">
-                               <ExternalLink size={18} />
-                            </button>
-                            <button className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all shadow-sm">
-                               <MoreHorizontal size={18} />
-                            </button>
-                          </div>
-                       </td>
-                     </tr>
-                     );
-                   })}
-                 </tbody>
-               </table>
-             </div>
-           ) : (
-             <div className="py-40 flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-[3.5rem] bg-slate-50/30">
-               <Users size={64} className="text-slate-100 mb-8" />
-               <p className="text-sm font-black text-slate-300 uppercase tracking-[0.4em] mb-2">Registry Inactive</p>
-               <p className="text-xs text-slate-400 font-medium tracking-tight">Post roles and hire candidates to populate your cohort.</p>
-             </div>
-           )}
-        </div>
-
-        {/* Sidebar Insights */}
-        <div className="lg:col-span-4 space-y-10">
-           <section className="space-y-6">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 px-4">Performance Insights</h3>
-              <div className="bg-slate-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden group">
-                 <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-brand)]/10 blur-[50px] rounded-full translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                 <Star size={32} className="text-amber-500 mb-8 group-hover:rotate-12 transition-transform" />
-                 <h4 className="text-2xl font-serif font-black leading-tight mb-4">Retention <br /><em className="italic text-slate-400 font-normal">Monitoring</em></h4>
-                 
-                 <div className="mt-12 flex items-baseline gap-4">
-                    <span className="text-7xl font-serif font-black tracking-tighter text-white">{placements.length}</span>
-                    <div className="pb-3 text-[10px] font-black text-emerald-400 uppercase tracking-widest flex items-center gap-2">
-                       <TrendingUp size={14} /> Global Active
-                    </div>
-                 </div>
-                 
-                 <p className="text-xs text-slate-400 font-medium mt-10 leading-relaxed max-w-xs">
-                    Monitoring {placements.length} active placements across the organization. System status at optimal levels.
-                 </p>
-                 
-                 <a href="/dashboard/applicants" className="block w-full mt-10 py-4 bg-[var(--color-brand)] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] shadow-xl shadow-teal-500/20 hover:scale-105 active:scale-95 transition-all text-center no-underline">
-                    Expand Pipeline
-                 </a>
+            {isLoading ? (
+              <div className="space-y-4">
+                 {[1,2,3].map(i => <div key={i} className="h-16 bg-white border border-slate-50 rounded-2xl animate-pulse"></div>)}
               </div>
-           </section>
-
-           <div className="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-xl shadow-slate-200/20">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-8 px-2">Program Insights</h3>
-              <div className="space-y-6">
-                 {[
-                   { label: 'Network Reach', value: 'GLOBAL GH', icon: <Globe size={14} /> },
-                   { label: 'Account Tier', value: 'TIER 1 ACCESS', icon: <ShieldCheck size={14} /> },
-                   { label: 'Active Period', value: 'Q2 2026', icon: <Calendar size={14} /> }
-                 ].map((sig, i) => (
-                    <div key={i} className="flex justify-between items-center group cursor-default">
-                       <div className="flex items-center gap-4">
-                          <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-[var(--color-brand)] transition-colors">
-                             {sig.icon}
+            ) : filtered.length > 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-fox overflow-hidden">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-slate-50/50 border-b border-slate-50">
+                      <th className="px-6 py-4 text-[9px] uppercase tracking-[0.15em] text-slate-400 font-black">Intern Name</th>
+                      <th className="px-6 py-4 text-[9px] uppercase tracking-[0.15em] text-slate-400 font-black">Assigned Role</th>
+                      <th className="px-6 py-4 text-[9px] uppercase tracking-[0.15em] text-slate-400 font-black">Program Depth</th>
+                      <th className="px-6 py-4 text-[9px] uppercase tracking-[0.15em] text-slate-400 font-black text-right">Settings</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {filtered.map((intern) => {
+                      const progress = getProgressPercent(intern.startDate, intern.endDate);
+                      return (
+                      <tr key={intern.id} className="group hover:bg-slate-50/30 transition-all">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center font-black text-white text-xs shadow-lg transition-all group-hover:scale-105">
+                              {intern.studentName?.substring(0, 1) || '?'}
+                            </div>
+                            <div>
+                              <div className="font-bold text-[14px] text-slate-900 leading-tight mb-0.5">{intern.studentName}</div>
+                              <div className="flex items-center gap-1.5 text-[8px] font-black text-slate-300 uppercase tracking-widest">
+                                <ShieldCheck size={10} className="text-emerald-500" /> Active Placement
+                              </div>
+                            </div>
                           </div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{sig.label}</span>
-                       </div>
-                       <span className="text-[10px] font-bold text-slate-900">{sig.value}</span>
-                    </div>
-                 ))}
+                        </td>
+                        <td className="px-6 py-4">
+                           <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg">
+                              <Briefcase size={10} className="text-[var(--color-brand)]" />
+                              <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">{intern.internshipTitle?.substring(0, 15)}</span>
+                           </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="w-32">
+                            <div className="flex justify-between text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
+                              <span>Progression</span>
+                              <span className="text-[var(--color-brand)]">{progress}%</span>
+                            </div>
+                            <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
+                              <div 
+                                className="h-full bg-[var(--color-brand)] rounded-full shadow-glow transition-all duration-1000" 
+                                style={{ width: `${progress}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                           <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                             <button className="w-8 h-8 rounded-lg bg-white border border-slate-100 text-slate-300 hover:text-[var(--color-brand)] hover:border-[var(--color-brand)] flex items-center justify-center transition-all shadow-sm">
+                                <ExternalLink size={14} />
+                             </button>
+                             <button className="w-8 h-8 rounded-lg bg-white border border-slate-100 text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all shadow-sm">
+                                <MoreHorizontal size={14} />
+                             </button>
+                           </div>
+                        </td>
+                      </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-           </div>
-        </div>
+            ) : (
+              <div className="py-24 flex flex-col items-center justify-center border border-dashed border-slate-200 rounded-2xl bg-slate-50/30">
+                <Users size={48} className="text-slate-100 mb-6" />
+                <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] mb-1">Registry Inactive</p>
+                <p className="text-[10px] text-slate-400 font-medium tracking-tight">Post roles and hire candidates to populate your cohort.</p>
+              </div>
+            )}
+         </div>
+
+         <div className="lg:col-span-4 space-y-8">
+            <section className="space-y-4">
+               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 px-2">Performance Index</h3>
+               <div className="bg-[#1F1F2D] rounded-2xl p-6 text-white shadow-fox relative overflow-hidden group">
+                  <div className="flex justify-between items-start mb-8">
+                     <Star size={24} className="text-amber-400" />
+                     <div className="px-2 py-1 bg-white/10 rounded text-[8px] font-black uppercase tracking-widest text-white/60">Active Monitoring</div>
+                  </div>
+                  
+                  <h4 className="text-lg font-black leading-tight mb-2">Retention Status</h4>
+                  <p className="text-[9px] text-white/40 font-medium mb-6">Real-time organizational placement health.</p>
+                  
+                  <div className="flex items-baseline gap-3">
+                     <span className="text-4xl font-black tracking-tight text-white">{placements.length}</span>
+                     <div className="text-[9px] font-black text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+                        <TrendingUp size={12} /> Optimal
+                     </div>
+                  </div>
+                  
+                  <button className="w-full mt-8 py-3 bg-[var(--color-brand)] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shadow-purple-500/20 hover:scale-[1.02] transition-all">
+                     View Analytics
+                  </button>
+               </div>
+            </section>
+
+            <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+               <h3 className="text-[9px] font-black uppercase tracking-widest text-slate-300 mb-6 px-1">Program Insights</h3>
+               <div className="space-y-4">
+                  {[
+                    { label: 'Network Reach', value: 'GLOBAL GH', icon: <Globe size={12} /> },
+                    { label: 'Account Tier', value: 'TIER 1', icon: <ShieldCheck size={12} /> },
+                    { label: 'Active Period', value: 'Q2 2026', icon: <Calendar size={12} /> }
+                  ].map((sig, i) => (
+                     <div key={i} className="flex justify-between items-center group cursor-default">
+                        <div className="flex items-center gap-3">
+                           <div className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-[var(--color-brand)] transition-colors">
+                              {sig.icon}
+                           </div>
+                           <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">{sig.label}</span>
+                        </div>
+                        <span className="text-[9px] font-black text-slate-900">{sig.value}</span>
+                     </div>
+                  ))}
+               </div>
+            </div>
+         </div>
 
       </div>
     </div>

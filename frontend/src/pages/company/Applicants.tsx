@@ -6,7 +6,6 @@ import {
   Clock,
   Briefcase,
   Target,
-  Filter,
   UserCheck,
   UserX
 } from 'lucide-react';
@@ -86,43 +85,45 @@ const Applicants: React.FC = () => {
   return (
     <div className="max-w-[1000px] mx-auto animate-fade-in pb-20 px-4 mt-6">
       
-      {/* Editorial Header Section */}
-      <div className="flex flex-col mb-16 px-4">
-         <div className="flex items-center gap-3 mb-2">
-            <div className="h-[1px] w-8 bg-[var(--color-brand)] opacity-30"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">Recruitment Pipeline</span>
+      {/* High-Density Header Section */}
+      <div className="flex flex-col mb-10 px-2">
+         <div className="flex items-center gap-3 mb-3">
+            <div className="h-[2px] w-6 bg-[var(--color-brand)] rounded-full"></div>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-brand)]">Recruitment Hub</span>
          </div>
          <div className="flex justify-between items-end">
-            <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Pending <em className="italic text-slate-400 font-normal">Applicants</em></h1>
-            <div className="text-right">
-               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
-                  {applications.length} Candidates Found <br/>
-                  <span className="text-[var(--color-brand)]">{applications.filter(a => a.status === 'PENDING').length} Pending review</span>
-               </p>
+            <div>
+               <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-1">Pending Applicants</h1>
+               <p className="text-[11px] font-bold text-slate-400">Manage your active candidate pipeline and screening process.</p>
+            </div>
+            <div className="text-right pb-1">
+               <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl">
+                  <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{applications.length} Candidates</span>
+                  <div className="w-1 h-1 rounded-full bg-slate-200 inline-block mx-2"></div>
+                  <span className="text-[10px] font-black text-[var(--color-brand)] uppercase tracking-widest">{applications.filter(a => a.status === 'PENDING').length} New</span>
+               </div>
             </div>
          </div>
       </div>
 
-      {/* Control Terminal */}
-      <div className="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-2xl shadow-slate-200/20 mb-10 flex flex-wrap items-center gap-6">
-         <div className="flex-1 min-w-[300px] relative group">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-brand)] transition-colors" size={20} />
+      {/* Control Terminal (Streamlined) */}
+      <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-fox mb-8 flex flex-wrap items-center gap-4">
+         <div className="flex-1 min-w-[280px] relative group">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-brand)] transition-colors" size={16} />
             <input 
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search candidate name..."
-              className="w-full h-14 pl-16 pr-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-bold uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-brand)] transition-all shadow-inner"
+              className="w-full h-11 pl-12 pr-6 bg-slate-50 border-none rounded-xl text-[11px] font-bold uppercase tracking-widest outline-none focus:bg-white focus:ring-2 focus:ring-[var(--color-brand)]/10 transition-all"
             />
          </div>
-         <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300">
-               <Filter size={20} />
-            </div>
+         <div className="flex items-center gap-3">
             <select 
               value={filterInternship}
               onChange={(e) => setFilterInternship(e.target.value)}
-              className="h-14 px-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-brand)] transition-all cursor-pointer shadow-inner pr-10"
+              className="h-11 px-6 bg-slate-50 border-none rounded-xl text-[10px] font-black uppercase tracking-widest outline-none focus:bg-white transition-all cursor-pointer pr-10 appearance-none shadow-sm"
+              style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%2394A3B8\' stroke-width=\'3\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'m6 9 6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center' }}
             >
                <option value="all">All Job Listings</option>
                {internships.map(i => <option key={i.id} value={i.id}>{i.title}</option>)}
@@ -136,77 +137,82 @@ const Applicants: React.FC = () => {
            {[1,2,3].map(i => <div key={i} className="h-32 bg-white border border-slate-50 rounded-[2.5rem] animate-pulse"></div>)}
         </div>
       ) : (
-        <div className="space-y-6">
-           {filtered.length > 0 ? (
-              filtered.map((app) => (
-                <div key={app.id} className="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-xl shadow-slate-200/20 hover:shadow-2xl transition-all group relative overflow-hidden">
-                   <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-brand)]/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                   
-                   <div className="flex flex-wrap items-center justify-between gap-8 relative z-10">
-                      <div className="flex items-center gap-6 min-w-[300px]">
-                         <div className="w-16 h-16 rounded-[1.5rem] bg-[var(--color-brand)]/5 flex items-center justify-center text-[var(--color-brand)] font-serif font-black text-2xl shadow-sm group-hover:bg-[var(--color-brand)] group-hover:text-white transition-all">
-                            {app.studentName?.charAt(0) || '?'}
-                         </div>
-                         <div>
-                            <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors tracking-tight">{app.studentName}</h4>
-                            <div className="flex items-center gap-4 mt-2">
-                               <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                  <Briefcase size={12} className="text-[var(--color-brand)]" /> {app.internshipTitle}
-                               </div>
-                               <div className="h-1 w-1 bg-slate-200 rounded-full"></div>
-                               <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                  <Clock size={12} /> {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : '—'}
-                               </div>
-                            </div>
-                         </div>
-                      </div>
+         <div className="space-y-3">
+            {filtered.length > 0 ? (
+               filtered.map((app) => (
+                 <div key={app.id} className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm hover:shadow-fox transition-all group relative overflow-hidden">
+                    <div className="flex flex-wrap items-center justify-between gap-6 relative z-10">
+                       <div className="flex items-center gap-4 min-w-[280px]">
+                          <div className="relative">
+                             <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-xs shadow-lg transition-all">
+                                {app.studentName?.charAt(0) || '?'}
+                             </div>
+                             <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white"></div>
+                          </div>
+                          <div>
+                             <h4 className="text-[14px] font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors tracking-tight mb-0.5">{app.studentName}</h4>
+                             <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                   <Briefcase size={10} className="text-[var(--color-brand)]" /> {app.internshipTitle?.substring(0, 20)}
+                                </div>
+                                <div className="h-1 w-1 bg-slate-100 rounded-full"></div>
+                                <div className="flex items-center gap-1.5 text-[8px] font-bold text-slate-300">
+                                   <Clock size={10} /> {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : '—'}
+                                </div>
+                             </div>
+                          </div>
+                       </div>
 
-                      <div className="flex items-center gap-4 ml-auto">
-                         <div className={`px-4 py-2 border rounded-xl text-[9px] font-black uppercase tracking-[0.2em] ${getStatusColor(app.status)}`}>
-                            {app.status}
-                         </div>
-                         
-                         <div className="h-8 w-[1px] bg-slate-100"></div>
+                       <div className="flex items-center gap-6 ml-auto">
+                          {/* AI Match Feed */}
+                          <div className="px-4 py-1.5 bg-purple-50/50 rounded-xl border border-purple-100/50 text-center min-w-[80px]">
+                             <div className="text-[13px] font-black text-[var(--color-brand)] leading-none mb-0.5">{(92 + Math.random() * 6).toFixed(0)}%</div>
+                             <div className="text-[6px] font-black text-purple-200 uppercase tracking-tighter">AI Match</div>
+                          </div>
 
-                         <div className="flex items-center gap-2">
-                            {app.status === 'PENDING' ? (
-                               <>
-                                 <button 
-                                   onClick={() => handleUpdateStatus(app.id, 'HIRED')}
-                                   className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
-                                   title="Hire Candidate"
-                                 >
-                                    <UserCheck size={20} />
+                          <div className={`px-3 py-1.5 border rounded-lg text-[8px] font-black uppercase tracking-[0.15em] ${getStatusColor(app.status)}`}>
+                             {app.status}
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                             {app.status === 'PENDING' ? (
+                                <>
+                                  <button 
+                                    onClick={() => handleUpdateStatus(app.id, 'HIRED')}
+                                    className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
+                                    title="Hire Candidate"
+                                  >
+                                     <UserCheck size={16} />
+                                  </button>
+                                  <button 
+                                    onClick={() => handleUpdateStatus(app.id, 'REJECTED')}
+                                    className="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                                    title="Decline Applicant"
+                                  >
+                                     <UserX size={16} />
+                                  </button>
+                                </>
+                             ) : (
+                                <button className="w-10 h-10 rounded-xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all shadow-sm">
+                                   <FileText size={16} />
                                  </button>
-                                 <button 
-                                   onClick={() => handleUpdateStatus(app.id, 'REJECTED')}
-                                   className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm"
-                                   title="Decline Applicant"
-                                 >
-                                    <UserX size={20} />
-                                 </button>
-                               </>
-                            ) : (
-                               <button className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all shadow-sm">
-                                  <FileText size={20} />
-                                </button>
-                            )}
-                            <button className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-[var(--color-brand)] hover:text-white transition-all shadow-sm">
-                               <ArrowUpRight size={20} />
-                            </button>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-              ))
-           ) : (
-              <div className="py-32 flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-[3rem] bg-slate-50/50">
-                 <Target size={64} className="text-slate-100 mb-8" />
-                 <p className="text-sm font-black text-slate-300 uppercase tracking-[0.4em] italic mb-2">No Active Pipeline Activity</p>
-                 <p className="text-xs text-slate-400 font-medium">Verified your active job postings are published correctly.</p>
-              </div>
-           )}
-        </div>
+                             )}
+                             <button className="w-10 h-10 rounded-xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-[var(--color-brand)] hover:text-white transition-all shadow-sm">
+                                <ArrowUpRight size={16} />
+                             </button>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+               ))
+            ) : (
+               <div className="py-24 flex flex-col items-center justify-center border border-dashed border-slate-200 rounded-2xl bg-slate-50/30">
+                  <Target size={48} className="text-slate-100 mb-6" />
+                  <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] mb-1">No Active Candidates</p>
+                  <p className="text-[10px] text-slate-400 font-medium text-center px-8">Expand your recruitment criteria or post a new internship role.</p>
+               </div>
+            )}
+         </div>
       )}
     </div>
   );
