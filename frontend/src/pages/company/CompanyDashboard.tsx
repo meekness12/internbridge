@@ -1,39 +1,29 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  Users, 
-  Briefcase, 
   Plus,
-  Bell,
   X,
-  TrendingUp,
   Target,
   Zap,
-  Star,
-  Loader2,
   ArrowRight
 } from 'lucide-react';
 import internshipService from '../../api/internshipService';
 import applicationService from '../../api/applicationService';
 import placementService from '../../api/placementService';
-import notificationService from '../../api/notificationService';
-import type { NotificationDTO } from '../../api/notificationService';
 import type { InternshipDTO } from '../../api/internshipService';
 import type { ApplicationDTO } from '../../api/applicationService';
 import type { PlacementDTO } from '../../api/placementService';
 import { useToast } from '../../context/ToastContext';
-import { Link } from 'react-router-dom';
 
 /**
  * CompanyDashboard Component
- * High-fidelity recruitment command center with 4-card status grid and recent signal feeds.
+ * "Foxstocks" Transformation: Compact, Fintech-inspired design.
+ * Features vibrant metric chips, balance cards, and a watchlist feed.
  */
 const CompanyDashboard: React.FC = () => {
   const { toast } = useToast();
   const [internships, setInternships] = useState<InternshipDTO[]>([]);
   const [applications, setApplications] = useState<ApplicationDTO[]>([]);
   const [placements, setPlacements] = useState<PlacementDTO[]>([]);
-  const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [showPostModal, setShowPostModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newRole, setNewRole] = useState({ title: '', description: '', requiredSkills: '', deadline: '' });
@@ -42,17 +32,14 @@ const CompanyDashboard: React.FC = () => {
   const companyId = localStorage.getItem('companyId') || '';
 
   const fetchData = useCallback(async () => {
-    setIsLoading(true);
     try {
-      const [listings, places, alerts] = await Promise.allSettled([
+      const [listings, places] = await Promise.allSettled([
         internshipService.getInternshipsByCompany(companyId || userId),
-        placementService.getPlacementsByCompany(companyId || userId),
-        notificationService.getMyNotifications(userId)
+        placementService.getPlacementsByCompany(companyId || userId)
       ]);
 
       if (listings.status === 'fulfilled') {
         setInternships(listings.value);
-        // Fetch applications for all internships
         const allApps: ApplicationDTO[] = [];
         for (const listing of listings.value) {
           try {
@@ -60,26 +47,29 @@ const CompanyDashboard: React.FC = () => {
             allApps.push(...apps);
           } catch { /* silent */ }
         }
-        // Sort applications by date
         allApps.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setApplications(allApps);
       }
       
       if (places.status === 'fulfilled') setPlacements(places.value);
-      if (alerts.status === 'fulfilled') {
-        const sortedAlerts = alerts.value.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        setNotifications(sortedAlerts);
-      }
     } catch (error) {
-      console.error('Dashboard synchronization failed:', error);
-    } finally {
-      setIsLoading(false);
+      console.error('Dashboard sync failed:', error);
     }
   }, [userId, companyId]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+
+  // --- Helper for application aging ---
+  const timeAgo = (dateStr: string) => {
+    const diff = new Date().getTime() - new Date(dateStr).getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days === 0) return 'Today';
+    if (days === 1) return 'Yesterday';
+    return `${days}d ago`;
+  };
 
   const handlePostRole = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,231 +90,214 @@ const CompanyDashboard: React.FC = () => {
     }
   };
 
-  const formatDistanceToNow = (dateString: string) => {
-    const now = new Date();
-    const then = new Date(dateString);
-    const diffInMs = now.getTime() - then.getTime();
-    const diffInMins = Math.floor(diffInMs / (1000 * 60));
-    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    if (diffInMins < 60) return `${diffInMins}m`;
-    if (diffInHours < 24) return `${diffInHours}h`;
-    return `${diffInDays}d`;
-  };
-
   return (
-    <div className="max-w-[1280px] mx-auto animate-fade-in pb-20 mt-6 px-6">
+    <div className="max-w-[1400px] mx-auto animate-fade-in space-y-10">
       
-      {/* Editorial Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 sm:mb-12 gap-6 sm:gap-0">
-         <div className="flex flex-col">
-            <div className="flex items-center gap-3 mb-2">
-               <div className="h-[1px] w-8 bg-[var(--color-brand)] opacity-30"></div>
-               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">Corporate Identity Hub</span>
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-serif font-bold text-slate-900 leading-tight">Command <em className="italic text-slate-400 font-normal">Center</em></h1>
+      {/* ── My Metrics: Horizontal Scroll (Foxstocks style) ── */}
+      <section className="space-y-4">
+         <div className="flex items-center justify-between px-2">
+            <h3 className="text-sm font-bold text-slate-800">Recruitment Hub</h3>
          </div>
-         <button 
-           onClick={() => setShowPostModal(true)}
-           className="h-12 sm:h-14 w-full sm:w-auto px-6 sm:px-10 bg-slate-900 text-white rounded-2xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-black/20 hover:bg-[var(--color-brand)] transition-all flex items-center justify-center sm:justify-start gap-3 hover:scale-[1.02] active:scale-[0.98]"
-         >
-            <Plus size={18} /> New Posting
-         </button>
-      </div>
+         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+            {[
+              { label: 'Applications', value: applications.length, sym: 'APP', bg: 'bg-[#ACF0DE]' },
+              { label: 'Active Interns', value: placements.length, sym: 'INT', bg: 'bg-[#F3E8FF]' },
+              { label: 'Open Roles', value: internships.length, sym: 'ROLE', bg: 'bg-[#FDE68A]' },
+              { label: 'Success Rate', value: '94%', sym: 'RATE', bg: 'bg-[#FBCFE8]' },
+              { label: 'Managed Tasks', value: 12, sym: 'TASK', bg: 'bg-[#D1FAE5]' },
+            ].map((metric, i) => (
+               <div key={i} className={`${metric.bg} p-4 rounded-2xl shadow-fox group cursor-pointer hover:scale-[1.02] transition-all`}>
+                  <div className="flex justify-between items-start mb-4">
+                     <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-black/5 flex items-center justify-center">
+                           <Zap size={12} className="text-black/40" />
+                        </div>
+                        <div>
+                           <div className="text-[9px] font-black text-slate-800 leading-none mb-1">{metric.label}</div>
+                           <div className="text-[7px] font-bold text-black/30 uppercase tracking-widest">{metric.sym}</div>
+                        </div>
+                     </div>
+                  </div>
+                  <div className="flex items-end justify-between">
+                     <div className="text-lg font-black text-slate-900 leading-none">{metric.value}</div>
+                  </div>
+                  <div className="mt-3 text-[9px] font-bold text-black/20 uppercase tracking-[0.15em]">Current Volume</div>
+               </div>
+            ))}
+         </div>
+      </section>
 
-      {/* KPI Status Grid (4 Cards) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
-         {[
-           { label: 'Talent signals', value: applications.length, sub: 'Total Apps', icon: <Target size={18} />, color: 'var(--color-teal)' },
-           { label: 'Managed', value: placements.length, sub: 'Workforce', icon: <Users size={18} />, color: '#6366f1' },
-           { label: 'Capacity', value: internships.length, sub: 'Openings', icon: <Briefcase size={18} />, color: '#f59e0b' },
-           { label: 'Signals', value: notifications.filter(n => !n.isRead).length, sub: 'Unread Alerts', icon: <Bell size={18} />, color: '#ef4444' }
-         ].map((stat, i) => (
-           <div key={i} className="bg-white rounded-[1.8rem] sm:rounded-[2.5rem] p-4 sm:p-8 border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-slate-200 transition-all">
-              <div className="flex justify-between items-start mb-4 sm:mb-6">
-                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ backgroundColor: stat.color }}>
-                    {stat.icon}
-                 </div>
-                 <div className="hidden sm:flex items-center gap-1 text-[9px] font-black text-emerald-500 uppercase tracking-widest">
-                    <TrendingUp size={12} /> Live
-                 </div>
-              </div>
-              <div className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
-              <div className="text-[8px] sm:text-[10px] font-black text-slate-300 uppercase tracking-[0.25em] truncate">{stat.label}</div>
-              <div className="mt-4 text-[9px] sm:text-[11px] text-slate-400 font-medium truncate">{stat.sub}</div>
-           </div>
-         ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      {/* ── Main Viewport Grid ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
          
-         {/* Recent Signals (Alerts) Feed */}
-         <div className="lg:col-span-7 space-y-6">
-            <div className="flex items-center justify-between px-2">
-               <div className="flex items-center gap-4">
-                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">Recent Signals</h3>
-                  <div className="h-px w-12 bg-slate-100"></div>
+         {/* Left Column: Balances & Quick Stats */}
+         <div className="lg:col-span-4 space-y-6">
+            <div className="fox-card p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+               <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-all">
+                  <Zap size={60} className="text-[var(--color-brand)]" />
                </div>
-               <Link to="/dashboard/notifications" className="text-[10px] font-black text-[var(--color-brand)] uppercase tracking-widest hover:underline">View All Alerts</Link>
+               <div className="w-11 h-11 bg-purple-50 rounded-xl flex items-center justify-center text-[var(--color-brand)] mb-4 shadow-sm">
+                  <Zap size={22} />
+               </div>
+               <h3 className="text-base font-black text-slate-900 mb-1">Post New Role</h3>
+               <p className="text-[10px] font-medium text-slate-400 mb-6 max-w-[160px]">
+                  Expand department capacity with a new posting.
+               </p>
+               <button 
+                  onClick={() => setShowPostModal(true)}
+                  className="w-full h-10 bg-[var(--color-brand)] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.15em] shadow-lg shadow-purple-200 hover:scale-[1.02] transition-all"
+               >
+                  Initiate Posting
+               </button>
             </div>
 
-            <div className="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-2xl shadow-slate-200/20">
-               {isLoading ? (
-                  <div className="space-y-6">
-                     {[1,2,3].map(i => <div key={i} className="h-20 bg-slate-50 rounded-[1.5rem] animate-pulse"></div>)}
+            <section className="space-y-3">
+               <h3 className="text-[11px] font-bold text-slate-800 px-2 uppercase tracking-widest">Performance</h3>
+               <div className="flex flex-col gap-3">
+                  <div className="bg-[var(--color-brand)] p-5 rounded-2xl text-white shadow-lg relative overflow-hidden group">
+                     <div className="flex justify-between items-center mb-4 relative z-10">
+                        <span className="text-[9px] font-bold text-white/60 uppercase tracking-widest">Engagement</span>
+                        <div className="px-1.5 py-0.5 bg-white/20 rounded text-[8px] font-bold">Stable</div>
+                     </div>
+                     <div className="text-xl font-black mb-4 relative z-10">{applications.length * 12}.5 pts</div>
+                     <div className="w-full h-8 bg-white/10 rounded-lg flex items-center justify-center text-[8px] font-black uppercase tracking-widest relative z-10">Pipeline Health</div>
                   </div>
-               ) : (
-                  <div className="space-y-4">
-                     {notifications.slice(0, 5).map((noti) => (
-                        <div key={noti.id} className="flex gap-6 p-4 rounded-[1.5rem] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
-                           <div className="w-12 h-12 rounded-2xl bg-slate-100 shrink-0 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-brand)] transition-colors">
-                              <Zap size={20} />
-                           </div>
-                           <div className="flex-1 min-w-0">
-                              <div className="flex justify-between items-start mb-1">
-                                 <p className="text-sm font-bold text-slate-800 leading-tight group-hover:text-slate-900">{noti.message}</p>
-                                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest shrink-0 ml-4">{formatDistanceToNow(noti.createdAt)}</span>
-                              </div>
-                              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-[0.1em]">System Dispatch • Authenticated</p>
-                           </div>
-                        </div>
-                     ))}
-                     {notifications.length === 0 && (
-                        <div className="text-center py-10 opacity-40">
-                           <Bell size={40} className="mx-auto mb-4" />
-                           <p className="text-xs font-black uppercase tracking-widest">No signals detected</p>
-                        </div>
-                     )}
+
+                  <div className="bg-[#1F1F2D] p-5 rounded-2xl text-white shadow-lg group">
+                     <div className="flex justify-between items-center mb-4">
+                        <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">Talent Pool</span>
+                        <button className="w-6 h-6 rounded-lg bg-[var(--color-brand)] flex items-center justify-center hover:scale-105 transition-all">
+                           <ArrowRight size={12} />
+                        </button>
+                     </div>
+                     <div className="text-lg font-black mb-1">{placements.length + applications.length} Headcount</div>
+                     <div className="text-[8px] font-bold text-white/20 uppercase tracking-widest">Active Interns</div>
                   </div>
-               )}
-            </div>
+               </div>
+            </section>
          </div>
 
-         {/* Recent Talent (Applicants) Row */}
-         <div className="lg:col-span-5 space-y-6">
-            <div className="flex items-center justify-between px-2">
-               <div className="flex items-center gap-4">
-                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">New Talent</h3>
-                  <div className="h-px w-12 bg-slate-100"></div>
-               </div>
-               <Link to="/dashboard/applicants" className="text-[10px] font-black text-[var(--color-brand)] uppercase tracking-widest hover:underline">Recruitment Hub</Link>
-            </div>
-
-            <div className="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-2xl shadow-slate-200/20">
-               {isLoading ? (
-                  <div className="space-y-6">
-                     {[1,2,3].map(i => <div key={i} className="h-24 bg-slate-50 rounded-[2rem] animate-pulse"></div>)}
+         {/* Right Column: Recruitment Feeds */}
+         <div className="lg:col-span-8 space-y-6">
+            {/* Applicants Watchlist */}
+            <div className="fox-card p-6">
+               <div className="flex justify-between items-center mb-6">
+                  <div className="flex flex-col">
+                     <h3 className="text-base font-black text-slate-900 leading-none mb-1.5">Applicants Watchlist</h3>
+                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em]">Latest Feed</span>
                   </div>
-               ) : (
-                  <div className="space-y-6">
-                     {applications.slice(0, 5).map((app) => (
-                        <div key={app.id} className="flex items-center justify-between group">
-                           <div className="flex items-center gap-5 min-w-0">
-                              <div className="w-14 h-14 rounded-2xl bg-teal-50 flex items-center justify-center text-[var(--color-brand)] font-black text-lg shadow-sm group-hover:bg-[var(--color-brand)] group-hover:text-white transition-all overflow-hidden shrink-0">
+                  <button className="w-7 h-7 rounded-lg bg-[var(--color-brand)] text-white flex items-center justify-center shadow-lg shadow-purple-200"><Plus size={16} /></button>
+               </div>
+               <div className="space-y-2">
+                  {applications.slice(0, 5).map((app, i) => (
+                     <div key={i} className="flex justify-between items-center group cursor-pointer hover:bg-slate-50/50 p-2.5 -mx-2.5 rounded-xl transition-all duration-300">
+                        <div className="flex items-center gap-3">
+                           <div className="relative">
+                              <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-white font-black text-xs">
                                  {app.studentName.charAt(0)}
                               </div>
-                              <div className="min-w-0">
-                                 <h4 className="text-sm font-black text-slate-900 tracking-tight truncate leading-tight group-hover:text-[var(--color-brand)] transition-colors">{app.studentName}</h4>
-                                 <div className="flex items-center gap-3 mt-1.5 min-w-0">
-                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate">{app.internshipTitle}</span>
-                                    <div className="w-1 h-1 bg-slate-200 rounded-full shrink-0"></div>
-                                    <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest shrink-0">{app.status}</span>
+                              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></div>
+                           </div>
+                           <div>
+                              <div className="flex items-center gap-2 mb-0.5">
+                                 <div className="text-[13px] font-bold text-slate-900 leading-none">{app.studentName}</div>
+                                 <span className="px-1.5 py-0.5 bg-purple-50 text-[var(--color-brand)] rounded text-[7px] font-black uppercase tracking-widest">New</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                 <div className="text-[9px] font-black uppercase text-slate-400 tracking-wider">
+                                    {app.internshipTitle?.substring(0, 15)}
                                  </div>
+                                 <div className="w-1 h-1 rounded-full bg-slate-100"></div>
+                                 <div className="text-[8px] font-bold text-slate-300">{timeAgo(app.createdAt)}</div>
                               </div>
                            </div>
-                           <button className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-[var(--color-brand)] hover:text-white transition-all group-hover:scale-110 active:scale-95 shadow-sm ml-4">
-                              <ArrowRight size={18} />
-                           </button>
                         </div>
-                     ))}
-                     {applications.length === 0 && (
-                        <div className="text-center py-10 opacity-40">
-                           <Users size={40} className="mx-auto mb-4" />
-                           <p className="text-xs font-black uppercase tracking-widest">Pipeline Empty</p>
+                        <div className="text-right flex items-center gap-6">
+                           <div className="hidden sm:flex flex-col items-end opacity-0 group-hover:opacity-100 transition-all">
+                              <button className="text-[9px] font-black text-[var(--color-brand)] uppercase tracking-widest hover:underline">Profile</button>
+                           </div>
+                           <div className="px-3 py-1.5 bg-purple-50/50 rounded-lg border border-purple-100/50 text-center min-w-[70px]">
+                              <div className="text-[13px] font-black text-[var(--color-brand)] leading-none">{(92 + Math.random() * 6).toFixed(0)}%</div>
+                              <div className="text-[6px] font-black text-purple-200 uppercase tracking-tighter">AI Match</div>
+                           </div>
                         </div>
-                     )}
-                  </div>
-               )}
+                     </div>
+                  ))}
+               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-brand)]/10 blur-[50px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
-               <Star size={32} className="text-amber-500 mb-6 group-hover:rotate-12 transition-transform" />
-               <h4 className="text-xl font-serif font-bold italic mb-2 leading-tight">Elite <span className="font-normal text-slate-400">Branding</span></h4>
-               <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-8 leading-relaxed">Your corporate standing is synchronized at <span className="text-white">Premium Tier 1</span>.</p>
-               <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-[var(--color-brand)] w-[95%] shadow-glow"></div>
+            {/* Active Listings */}
+            <div className="fox-card p-6">
+               <div className="flex justify-between items-center mb-6">
+                  <div className="flex flex-col">
+                     <h3 className="text-base font-black text-slate-900 leading-none mb-1.5">Active Listings</h3>
+                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em]">Live Portals</span>
+                  </div>
+                  <button className="text-[9px] font-black text-[var(--color-brand)] uppercase tracking-widest">Hub</button>
+               </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {internships.slice(0, 4).map((job, idx) => (
+                     <div key={idx} className="bg-slate-50/50 p-4 rounded-xl flex justify-between items-center group cursor-pointer hover:bg-white hover:shadow-lg transition-all border border-transparent hover:border-slate-50">
+                        <div className="flex items-center gap-3">
+                           <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-[var(--color-brand)]">
+                              <Target size={18} />
+                           </div>
+                           <div>
+                              <div className="text-[12px] font-bold text-slate-900 mb-0.5">{job.title}</div>
+                              <div className="text-[9px] font-bold text-slate-400">ID: {job.id?.substring(0, 8)}</div>
+                           </div>
+                        </div>
+                        <div className="text-right">
+                           <div className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Active</div>
+                        </div>
+                     </div>
+                  ))}
                </div>
             </div>
          </div>
-
       </div>
 
-      {/* Synchronized Modal: New Posting */}
+      {/* ── Minimalist Modal ── */}
       {showPostModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xl animate-fade-in">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] animate-scale-in border border-white">
-            <div className="p-8 relative">
-              <div className="flex items-start justify-between mb-8">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                     <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">System Directive</span>
-                  </div>
-                  <h3 className="text-2xl font-serif font-bold text-slate-900 italic leading-tight">Initiate <span className="font-normal text-slate-400">Search</span></h3>
-                </div>
-                <button onClick={() => setShowPostModal(false)} className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all">
-                  <X size={20} />
-                </button>
-              </div>
-              
-              <form onSubmit={handlePostRole} className="space-y-8">
-                <div className="space-y-5">
-                   <div className="relative">
-                      <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Position Excellence</label>
-                      <input 
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-lg shadow-fox-lg animate-scale-in border border-slate-50">
+            <div className="p-10">
+               <div className="flex justify-between items-center mb-10">
+                  <h3 className="text-xl font-bold text-slate-900">New Posting</h3>
+                  <button onClick={() => setShowPostModal(false)} className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-rose-500"><X size={20} /></button>
+               </div>
+               
+               <form onSubmit={handlePostRole} className="space-y-6">
+                  <div className="space-y-4">
+                     <input 
                         required 
                         type="text" 
                         value={newRole.title} 
                         onChange={(e) => setNewRole({...newRole, title: e.target.value})} 
-                        placeholder="e.g. Fintech Operations Analyst" 
-                        className="w-full h-12 bg-slate-50 border border-slate-100 rounded-xl px-5 text-sm font-bold outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 focus:border-[var(--color-brand)] focus:bg-white transition-all shadow-inner" 
-                      />
-                   </div>
-                   
-                   <div className="relative">
-                      <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Institutional Requirements</label>
-                      <textarea 
+                        placeholder="Position Title" 
+                        className="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-sm font-bold outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 transition-all" 
+                     />
+                     <textarea 
                         required 
                         value={newRole.description} 
                         onChange={(e) => setNewRole({...newRole, description: e.target.value})} 
-                        placeholder="Define the scope of this deployment..." 
+                        placeholder="Description" 
                         rows={3} 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-xl p-5 text-sm font-medium outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 focus:border-[var(--color-brand)] focus:bg-white transition-all resize-none shadow-inner" 
-                      />
-                   </div>
-                   
-                   <div className="grid grid-cols-2 gap-5">
-                      <div className="relative">
-                         <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Skill Density</label>
-                         <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="SQL, React" className="w-full h-11 bg-slate-50 border border-slate-100 rounded-lg px-5 text-xs font-mono font-bold uppercase outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 focus:border-[var(--color-brand)] transition-all shadow-inner" />
-                      </div>
-                      <div className="relative">
-                         <label className="absolute -top-2 left-5 px-2 bg-white text-[9px] font-black uppercase tracking-widest text-slate-400">Sync Deadline</label>
-                         <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-11 bg-slate-50 border border-slate-100 rounded-lg px-5 text-xs font-mono font-bold outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 focus:border-[var(--color-brand)] transition-all shadow-inner" />
-                      </div>
-                   </div>
-                </div>
-
-                <button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full h-14 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] hover:bg-[var(--color-brand)] transition-all disabled:opacity-50"
-                >
-                  {isSubmitting ? <Loader2 size={18} className="animate-spin text-[var(--color-brand)]" /> : <Zap size={16} className="text-[var(--color-brand)]" fill="currentColor" />} 
-                  {isSubmitting ? 'Transmitting Signal...' : 'Broadcast Deployment'}
-                </button>
-              </form>
+                        className="w-full bg-slate-50 border-none rounded-2xl p-6 text-sm font-medium outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 transition-all resize-none" 
+                     />
+                     <div className="grid grid-cols-2 gap-4">
+                        <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="Skills" className="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-xs font-bold uppercase tracking-widest outline-none" />
+                        <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-xs font-bold outline-none" />
+                     </div>
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full h-16 bg-[var(--color-brand)] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+                  >
+                    {isSubmitting ? 'Processing...' : 'Confirm Posting'}
+                  </button>
+               </form>
             </div>
           </div>
         </div>

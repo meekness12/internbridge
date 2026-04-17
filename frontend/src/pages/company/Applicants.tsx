@@ -18,8 +18,7 @@ import { useToast } from '../../context/ToastContext';
 
 /**
  * Applicants Component
- * High-fidelity Talent Acquisition center with Clean Tech aesthetic.
- * Replaces standard table with a dense candidate signal feed.
+ * High-fidelity Recruitment Pipeline with Clean Tech aesthetic.
  */
 const Applicants: React.FC = () => {
   const { toast } = useToast();
@@ -60,10 +59,10 @@ const Applicants: React.FC = () => {
   const handleUpdateStatus = async (appId: string, status: string) => {
     try {
       await applicationService.updateStatus(appId, status);
-      toast(`Candidate ${status.toLowerCase()}.`, 'success', 'Status Synchronized');
+      toast(`Candidate ${status.toLowerCase()}.`, 'success', 'Status Updated');
       setApplications(prev => prev.map(a => a.id === appId ? { ...a, status } : a));
     } catch {
-      toast('Signal transmission failed.', 'error');
+      toast('Update failed.', 'error');
     }
   };
 
@@ -91,13 +90,13 @@ const Applicants: React.FC = () => {
       <div className="flex flex-col mb-16 px-4">
          <div className="flex items-center gap-3 mb-2">
             <div className="h-[1px] w-8 bg-[var(--color-brand)] opacity-30"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">Corporate Acquisition</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--color-brand)]">Recruitment Pipeline</span>
          </div>
          <div className="flex justify-between items-end">
-            <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Incoming <em className="italic text-slate-400 font-normal">Applicants</em></h1>
+            <h1 className="text-5xl font-serif font-bold text-slate-900 leading-tight">Pending <em className="italic text-slate-400 font-normal">Applicants</em></h1>
             <div className="text-right">
                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
-                  {applications.length} Detected Signals <br/>
+                  {applications.length} Candidates Found <br/>
                   <span className="text-[var(--color-brand)]">{applications.filter(a => a.status === 'PENDING').length} Pending review</span>
                </p>
             </div>
@@ -112,7 +111,7 @@ const Applicants: React.FC = () => {
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search candidate identity..."
+              placeholder="Search candidate name..."
               className="w-full h-14 pl-16 pr-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-bold uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-brand)] transition-all shadow-inner"
             />
          </div>
@@ -125,13 +124,13 @@ const Applicants: React.FC = () => {
               onChange={(e) => setFilterInternship(e.target.value)}
               className="h-14 px-6 bg-slate-50 border border-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest outline-none focus:bg-white focus:border-[var(--color-brand)] transition-all cursor-pointer shadow-inner pr-10"
             >
-               <option value="all">All Role Deployments</option>
+               <option value="all">All Job Listings</option>
                {internships.map(i => <option key={i.id} value={i.id}>{i.title}</option>)}
             </select>
          </div>
       </div>
 
-      {/* Applicant Signal Feed */}
+      {/* Applicant Feed */}
       {isLoading ? (
         <div className="space-y-6">
            {[1,2,3].map(i => <div key={i} className="h-32 bg-white border border-slate-50 rounded-[2.5rem] animate-pulse"></div>)}
@@ -175,14 +174,14 @@ const Applicants: React.FC = () => {
                                  <button 
                                    onClick={() => handleUpdateStatus(app.id, 'HIRED')}
                                    className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
-                                   title="Accept Signal"
+                                   title="Hire Candidate"
                                  >
                                     <UserCheck size={20} />
                                  </button>
                                  <button 
                                    onClick={() => handleUpdateStatus(app.id, 'REJECTED')}
                                    className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm"
-                                   title="Discard Signal"
+                                   title="Decline Applicant"
                                  >
                                     <UserX size={20} />
                                  </button>
@@ -190,7 +189,7 @@ const Applicants: React.FC = () => {
                             ) : (
                                <button className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all shadow-sm">
                                   <FileText size={20} />
-                               </button>
+                                </button>
                             )}
                             <button className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-[var(--color-brand)] hover:text-white transition-all shadow-sm">
                                <ArrowUpRight size={20} />
@@ -203,8 +202,8 @@ const Applicants: React.FC = () => {
            ) : (
               <div className="py-32 flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-[3rem] bg-slate-50/50">
                  <Target size={64} className="text-slate-100 mb-8" />
-                 <p className="text-sm font-black text-slate-300 uppercase tracking-[0.4em] italic mb-2">No Active Pipeline Signals</p>
-                 <p className="text-xs text-slate-400 font-medium">Verify your internship postings are broadcast correctly.</p>
+                 <p className="text-sm font-black text-slate-300 uppercase tracking-[0.4em] italic mb-2">No Active Pipeline Activity</p>
+                 <p className="text-xs text-slate-400 font-medium">Verified your active job postings are published correctly.</p>
               </div>
            )}
         </div>
