@@ -95,12 +95,15 @@ import InternProfile from './pages/intern/Profile';
 import InternSettings from './pages/intern/Settings';
 import InternHelp from './pages/intern/Help';
 
+import Landing from './pages/Landing';
+
 const App: React.FC = () => {
   return (
     <ToastProvider>
       <Router>
       <Routes>
         {/* Public Routes */}
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
@@ -158,8 +161,7 @@ const App: React.FC = () => {
         </Route>
 
         {/* Global Redirects */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
     </ToastProvider>

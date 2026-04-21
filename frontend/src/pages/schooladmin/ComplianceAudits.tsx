@@ -33,12 +33,12 @@ const ComplianceAudits: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-4 space-y-6">
-           <div className="card p-10 bg-white border border-slate-200 rounded-3xl shadow-sm">
+           <div className="card p-10 bg-[var(--surface)] border border-[var(--border)] rounded-3xl shadow-sm">
               <div className="label-mono text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-8">Oversight Score</div>
               <div className="flex items-center gap-6 mb-10">
                  <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-emerald-600 border border-emerald-100 shadow-inner relative">
                     <ShieldCheck size={40} />
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-white rounded-full border border-slate-100 flex items-center justify-center shadow-sm">
+                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-[var(--surface)] rounded-full border border-[var(--border)] flex items-center justify-center shadow-sm">
                        <CheckCircle2 size={12} className="text-emerald-500" />
                     </div>
                  </div>
@@ -58,7 +58,7 @@ const ComplianceAudits: React.FC = () => {
                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{m.label}</span>
                          <span className="text-[10px] font-mono font-bold text-[var(--color-navy)]">{m.val}%</span>
                       </div>
-                      <div className="h-1.5 w-full bg-slate-50 border border-slate-100 rounded-full overflow-hidden">
+                      <div className="h-1.5 w-full bg-[var(--background)] border border-[var(--border)] rounded-full overflow-hidden">
                          <div className="h-full bg-[var(--color-navy)] rounded-full transition-all duration-1000 shadow-sm" style={{ width: `${m.val}%` }}></div>
                       </div>
                    </div>
@@ -69,7 +69,7 @@ const ComplianceAudits: React.FC = () => {
            <div className="card p-8 bg-[var(--color-navy)] text-white border-0 rounded-3xl shadow-2xl relative overflow-hidden group">
               <h4 className="font-serif text-2xl mb-6 relative z-10">Historical <br /><em className="italic text-[var(--color-gold)] opacity-70">Archive</em></h4>
               <p className="text-white/40 text-[12px] leading-relaxed mb-8 relative z-10 italic">"Review past academic cycles and accreditation audits from the Institutional Knowledge Pool."</p>
-              <button className="w-full py-4 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all relative z-10 flex items-center justify-center gap-3">
+              <button className="w-full py-4 bg-[var(--surface)]/10 hover:bg-[var(--surface)]/20 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all relative z-10 flex items-center justify-center gap-3">
                  <FileText size={18} className="text-[var(--color-gold)]" /> Access Archives
               </button>
               <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[var(--color-gold)] opacity-5 rounded-full blur-3xl pointer-events-none group-hover:opacity-10 transition-opacity"></div>
@@ -78,21 +78,21 @@ const ComplianceAudits: React.FC = () => {
 
         <div className="lg:col-span-8 space-y-6">
            <div className="flex items-center justify-between mb-4">
-              <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+              <div className="flex bg-[var(--surface)] p-1 rounded-xl border border-[var(--border)] shadow-sm">
                  {['Pending', 'Verified', 'Flagged'].map((s, i) => (
-                    <button key={i} className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${i === 0 ? 'bg-[var(--color-navy)] text-white' : 'text-slate-400 hover:text-slate-600'}`}>
+                    <button key={i} className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${i === 0 ? 'bg-[var(--color-navy)] text-white' : 'text-slate-400 hover:text-[var(--color-muted)]'}`}>
                        {s}
                     </button>
                  ))}
               </div>
-              <button className="h-10 w-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-400 hover:text-[var(--color-navy)] transition-colors shadow-sm">
+              <button className="h-10 w-10 bg-[var(--surface)] border border-[var(--border)] rounded-xl flex items-center justify-center text-slate-400 hover:text-[var(--color-navy)] transition-colors shadow-sm">
                  <Filter size={20} />
               </button>
            </div>
 
            <div className="space-y-4">
               {audits.map((a) => (
-                <div key={a.id} className="card group bg-white border border-slate-200 rounded-2xl p-8 hover:border-[var(--color-gold)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-sm hover:shadow-xl relative overflow-hidden">
+                <div key={a.id} className="card group bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 hover:border-[var(--color-gold)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-sm hover:shadow-xl relative overflow-hidden">
                    <div className="flex items-start gap-6">
                       <div className={`mt-1 h-3 w-3 rounded-full shrink-0 ${
                         a.risk === 'HIGH' ? 'bg-rose-500 animate-pulse' : a.risk === 'MEDIUM' ? 'bg-amber-500' : 'bg-emerald-500'
@@ -118,12 +118,12 @@ const ComplianceAudits: React.FC = () => {
                            'bg-amber-50 text-amber-600 border-amber-100'
                          }`}>{a.status}</div>
                       </div>
-                      <div className="h-12 w-[1px] bg-slate-50 hidden md:block"></div>
+                      <div className="h-12 w-[1px] bg-[var(--background)] hidden md:block"></div>
                       <div className="text-right hidden md:block">
                          <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">Updated</div>
                          <div className="text-[11px] font-mono font-bold text-slate-400 uppercase leading-none">{a.date}</div>
                       </div>
-                      <button className="h-12 w-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-300 group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-sm">
+                      <button className="h-12 w-12 bg-[var(--background)] border border-[var(--border)] rounded-2xl flex items-center justify-center text-slate-300 group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-sm">
                          <ExternalLink size={20} />
                       </button>
                    </div>

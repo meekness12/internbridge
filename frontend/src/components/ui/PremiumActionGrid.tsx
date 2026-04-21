@@ -18,11 +18,11 @@ interface PremiumActionGridProps {
  */
 export const PremiumActionGrid: React.FC<PremiumActionGridProps> = ({ title, items }) => {
   return (
-    <div className="card bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+    <div className="card bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
       <div className="text-[13px] font-bold text-[var(--color-navy)] mb-6">{title}</div>
       <div className="grid grid-cols-2 gap-3">
         {items.map((a, i) => (
-          <button key={i} className="flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-[var(--color-navy)] hover:bg-white transition-all text-left group">
+          <button key={i} className="flex items-center gap-3 p-4 bg-[var(--background)] border border-[var(--border)] rounded-xl hover:border-[var(--color-navy)] hover:bg-[var(--surface)] transition-all text-left group">
             <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-lg transition-transform group-hover:scale-110 ${a.color}`}>
               {a.icon}
             </div>

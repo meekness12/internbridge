@@ -41,7 +41,7 @@ const InstitutionalReports: React.FC = () => {
            { label: 'Growth Index', val: '+12.4%', icon: <TrendingUp className="text-amber-600" />, bg: 'bg-amber-50' },
            { label: 'Data Quality', val: '98.8%', icon: <PieChart className="text-rose-600" />, bg: 'bg-rose-50' },
          ].map((m, i) => (
-           <div key={i} className="card p-8 bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-md transition-all">
+           <div key={i} className="card p-8 bg-[var(--surface)] border border-[var(--border)] rounded-3xl shadow-sm hover:shadow-md transition-all">
               <div className={`w-14 h-14 ${m.bg} rounded-2xl flex items-center justify-center mb-6 shadow-inner`}>
                 {React.cloneElement(m.icon as React.ReactElement<{ size?: number }>, { size: 24 })}
               </div>
@@ -55,16 +55,16 @@ const InstitutionalReports: React.FC = () => {
          <div className="lg:col-span-8 space-y-4">
             <div className="flex items-center justify-between mb-4 px-2">
                <h3 className="label-mono text-[11px] font-black uppercase tracking-[0.25em] text-[var(--color-navy)]">Operational Intelligence Library</h3>
-               <button className="h-10 w-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-400 hover:text-[var(--color-navy)] transition-colors shadow-sm">
+               <button className="h-10 w-10 bg-[var(--surface)] border border-[var(--border)] rounded-xl flex items-center justify-center text-slate-400 hover:text-[var(--color-navy)] transition-colors shadow-sm">
                   <Filter size={18} />
                </button>
             </div>
             
             <div className="space-y-4">
                {reports.map((r) => (
-                 <div key={r.id} className="card group bg-white border border-slate-200 rounded-2xl p-8 hover:border-[var(--color-gold)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-sm hover:shadow-md relative overflow-hidden">
+                 <div key={r.id} className="card group bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 hover:border-[var(--color-gold)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-sm hover:shadow-md relative overflow-hidden">
                     <div className="flex items-center gap-6">
-                       <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-300 group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-inner">
+                       <div className="w-16 h-16 bg-[var(--background)] border border-[var(--border)] rounded-2xl flex items-center justify-center text-slate-300 group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-inner">
                           <FileText size={28} />
                        </div>
                        <div>
@@ -72,7 +72,7 @@ const InstitutionalReports: React.FC = () => {
                              <h4 className="text-lg font-bold text-[var(--color-navy)] tracking-tight">{r.title}</h4>
                              <span className={`text-[8px] px-2 py-0.5 rounded border font-black uppercase tracking-widest ${
                                r.status === 'Finalized' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
-                               r.status === 'Review' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-slate-50 text-slate-400 border-slate-100'
+                               r.status === 'Review' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-[var(--background)] text-slate-400 border-[var(--border)]'
                              }`}>{r.status}</span>
                           </div>
                           <p className="text-[11px] text-slate-400 font-mono font-bold uppercase tracking-widest opacity-60 italic">{r.id} <span className="mx-2 font-sans opacity-20">•</span> {r.date}</p>
@@ -86,7 +86,7 @@ const InstitutionalReports: React.FC = () => {
                        <button className="h-12 px-6 bg-[var(--color-navy)] text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center gap-2 hover:bg-black transition-all shadow-lg shadow-black/10">
                           <Download size={18} /> Download
                        </button>
-                       <button className="h-12 w-12 flex items-center justify-center bg-white border border-slate-200 text-slate-300 hover:text-[var(--color-navy)] rounded-xl transition-all shadow-sm">
+                       <button className="h-12 w-12 flex items-center justify-center bg-[var(--surface)] border border-[var(--border)] text-slate-300 hover:text-[var(--color-navy)] rounded-xl transition-all shadow-sm">
                           <Share2 size={20} />
                        </button>
                     </div>
@@ -100,7 +100,7 @@ const InstitutionalReports: React.FC = () => {
                <div className="relative z-10">
                   <div className="flex justify-between items-start mb-10">
                      <h3 className="font-serif text-3xl tracking-tight leading-tight">Insight <br /><em className="italic text-[var(--color-gold)] opacity-70">Synthesizer</em></h3>
-                     <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-[var(--color-gold)] group-hover:scale-110 transition-transform"><PieChart size={24} /></div>
+                     <div className="w-12 h-12 bg-[var(--surface)]/5 border border-white/10 rounded-2xl flex items-center justify-center text-[var(--color-gold)] group-hover:scale-110 transition-transform"><PieChart size={24} /></div>
                   </div>
                   
                   <div className="space-y-4 mb-10">
@@ -114,7 +114,7 @@ const InstitutionalReports: React.FC = () => {
                              <span className="text-[10px] font-mono font-bold uppercase text-white/40 group-hover:text-white transition-colors">{s.label}</span>
                              <span className="text-[10px] font-mono font-black text-[var(--color-gold)]">{s.val}%</span>
                           </div>
-                          <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
+                          <div className="h-1.5 w-full bg-[var(--surface)]/5 rounded-full overflow-hidden border border-white/10">
                              <div className="h-full bg-[var(--color-gold)] transition-all duration-1000" style={{ width: `${s.val}%` }}></div>
                           </div>
                        </div>
@@ -134,7 +134,7 @@ const InstitutionalReports: React.FC = () => {
 
                {/* Design Grain */}
                <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/pinstriped-suit.png')]"></div>
-               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors duration-1000"></div>
+               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[var(--surface)]/5 rounded-full blur-3xl group-hover:bg-[var(--surface)]/10 transition-colors duration-1000"></div>
             </div>
          </div>
       </div>

@@ -89,7 +89,7 @@ const Profile: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-brand)]"></div>
+         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent)]"></div>
       </div>
     );
   }
@@ -104,7 +104,7 @@ const Profile: React.FC = () => {
            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
            <div className="absolute bottom-6 left-10 flex items-center gap-10">
               <div className="flex flex-col">
-                 <span className="text-[10px] font-black text-[var(--color-brand)] uppercase tracking-[0.4em] mb-1">Authenticated Intern</span>
+                 <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.4em] mb-1">Authenticated Intern</span>
                  <h1 className="text-4xl font-serif font-bold text-white tracking-tight italic">Digital Identity</h1>
               </div>
            </div>
@@ -113,8 +113,8 @@ const Profile: React.FC = () => {
         {/* Profile Avatar Overlay */}
         <div className="absolute -bottom-20 left-10 flex items-end gap-10">
            <div className="relative group">
-              <div className="w-40 h-40 rounded-[2.5rem] bg-white p-2 shadow-2xl">
-                 <div className="w-full h-full rounded-[2rem] bg-[var(--color-brand)] flex items-center justify-center text-white font-serif font-black text-6xl shadow-inner relative overflow-hidden">
+              <div className="w-40 h-40 rounded-[2.5rem] bg-[var(--surface)] p-2 shadow-2xl">
+                 <div className="w-full h-full rounded-[2rem] bg-[var(--accent)] flex items-center justify-center text-white font-serif font-black text-6xl shadow-inner relative overflow-hidden">
                     {profile?.name?.split(' ').map((n: string) => n[0]).join('') || 'IB'}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer">
                        <Camera className="text-white" size={32} />
@@ -134,7 +134,7 @@ const Profile: React.FC = () => {
                       <input 
                         value={formData.firstName}
                         onChange={e => setFormData({...formData, firstName: e.target.value})}
-                        className="h-10 px-4 bg-slate-50 border border-slate-200 rounded-xl text-lg font-bold outline-none focus:border-[var(--color-brand)] transition-all"
+                        className="h-10 px-4 bg-[var(--background)] border border-[var(--border)] rounded-xl text-lg font-bold outline-none focus:border-[var(--accent)] transition-all"
                       />
                    </div>
                    <div className="flex flex-col gap-1">
@@ -142,20 +142,20 @@ const Profile: React.FC = () => {
                       <input 
                         value={formData.lastName}
                         onChange={e => setFormData({...formData, lastName: e.target.value})}
-                        className="h-10 px-4 bg-slate-50 border border-slate-200 rounded-xl text-lg font-bold outline-none focus:border-[var(--color-brand)] transition-all"
+                        className="h-10 px-4 bg-[var(--background)] border border-[var(--border)] rounded-xl text-lg font-bold outline-none focus:border-[var(--accent)] transition-all"
                       />
                    </div>
                 </div>
               ) : (
-                <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-1">{profile?.name || 'Aisha Ibrahim'}</h2>
+                <h2 className="text-3xl font-bold text-[var(--text)] tracking-tight mb-1">{profile?.name || 'Aisha Ibrahim'}</h2>
               )}
               <div className="flex items-center gap-6">
                  <div className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-widest">
-                    <BookOpen size={14} className="text-[var(--color-brand)]" /> {profile?.role === 'INTERN' ? (profile?.major || 'Computer Science Discipline') : (profile?.companyName || 'Institutional Access')}
+                    <BookOpen size={14} className="text-[var(--accent)]" /> {profile?.role === 'INTERN' ? (profile?.major || 'Computer Science Discipline') : (profile?.companyName || 'Institutional Access')}
                  </div>
                  <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
                  <div className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-widest">
-                    <MapPin size={14} className="text-[var(--color-brand)]" /> {profile?.location || 'Digital Presence'}
+                    <MapPin size={14} className="text-[var(--accent)]" /> {profile?.location || 'Digital Presence'}
                  </div>
               </div>
            </div>
@@ -166,7 +166,7 @@ const Profile: React.FC = () => {
              <>
                <button 
                  onClick={() => setIsEditing(false)}
-                 className="h-12 px-8 bg-white border border-slate-200 text-slate-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm flex items-center gap-3"
+                 className="h-12 px-8 bg-[var(--surface)] border border-[var(--border)] text-slate-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-[var(--background)] transition-all shadow-sm flex items-center gap-3"
                >
                   <X size={16} /> Discard dispatches
                </button>
@@ -183,11 +183,11 @@ const Profile: React.FC = () => {
              <>
                <button 
                  onClick={() => setIsEditing(true)}
-                 className="h-12 px-8 bg-white border border-slate-200 text-slate-900 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm flex items-center gap-3"
+                 className="h-12 px-8 bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-[var(--background)] transition-all shadow-sm flex items-center gap-3"
                >
                   <Edit3 size={16} /> Edit Dispatch
                </button>
-               <button className="h-12 px-8 bg-[var(--color-brand)] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-teal-500/20 hover:scale-[1.02] transition-all flex items-center gap-3">
+               <button className="h-12 px-8 bg-[var(--accent)] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-teal-500/20 hover:scale-[1.02] transition-all flex items-center gap-3">
                   <Globe size={16} /> Share Profile
                </button>
              </>
@@ -200,15 +200,15 @@ const Profile: React.FC = () => {
         {/* Identity Records (Left Column) */}
         <div className="lg:col-span-2 space-y-10">
            
-           <div className="bg-white rounded-[3rem] border border-slate-100 p-10 shadow-xl shadow-slate-200/20">
+           <div className="bg-[var(--surface)] rounded-[3rem] border border-[var(--border)] p-10 shadow-xl shadow-slate-200/20">
               <div className="flex items-center gap-4 mb-8">
-                 <h3 className="text-xl font-heading font-black text-slate-900">Institutional Records</h3>
-                 <div className="h-px flex-1 bg-slate-50"></div>
+                 <h3 className="text-xl font-heading font-black text-[var(--text)]">Institutional Records</h3>
+                 <div className="h-px flex-1 bg-[var(--background)]"></div>
               </div>
               
               <div className="grid grid-cols-2 gap-10">
                  <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--background)] flex items-center justify-center text-slate-400">
                        <User size={18} />
                     </div>
                     <div>
@@ -218,7 +218,7 @@ const Profile: React.FC = () => {
                  </div>
 
                  <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--background)] flex items-center justify-center text-slate-400">
                        <Mail size={18} />
                     </div>
                     <div className="flex-1">
@@ -227,7 +227,7 @@ const Profile: React.FC = () => {
                          <input 
                            value={formData.email}
                            onChange={e => setFormData({...formData, email: e.target.value})}
-                           className="w-full h-8 bg-slate-50 border border-slate-100 rounded-lg px-3 text-sm font-bold outline-none focus:border-[var(--color-brand)] transition-all"
+                           className="w-full h-8 bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 text-sm font-bold outline-none focus:border-[var(--accent)] transition-all"
                          />
                        ) : (
                          <div className="text-sm font-bold text-slate-700">{profile?.email}</div>
@@ -236,7 +236,7 @@ const Profile: React.FC = () => {
                  </div>
 
                  <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--background)] flex items-center justify-center text-slate-400">
                        <Target size={18} />
                     </div>
                     <div>
@@ -246,7 +246,7 @@ const Profile: React.FC = () => {
                  </div>
 
                  <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--background)] flex items-center justify-center text-slate-400">
                        <Phone size={18} />
                     </div>
                     <div>
@@ -257,24 +257,24 @@ const Profile: React.FC = () => {
               </div>
            </div>
 
-           <div className="bg-white rounded-[3rem] border border-slate-100 p-10 shadow-xl shadow-slate-200/20 relative overflow-hidden group">
+           <div className="bg-[var(--surface)] rounded-[3rem] border border-[var(--border)] p-10 shadow-xl shadow-slate-200/20 relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:rotate-12 transition-transform">
-                 <Award size={120} className="text-[var(--color-brand)]" />
+                 <Award size={120} className="text-[var(--accent)]" />
               </div>
               <div className="flex items-center gap-4 mb-8">
-                 <h3 className="text-xl font-heading font-black text-slate-900">Career Credentials</h3>
-                 <div className="h-px flex-1 bg-slate-50"></div>
+                 <h3 className="text-xl font-heading font-black text-[var(--text)]">Career Credentials</h3>
+                 <div className="h-px flex-1 bg-[var(--background)]"></div>
               </div>
               <div className="space-y-6">
-                 <div className="p-6 bg-slate-50 rounded-2xl border border-white">
+                 <div className="p-6 bg-[var(--background)] rounded-2xl border border-white">
                     <div className="flex justify-between items-start">
                        <div className="flex gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-[var(--color-brand)] shadow-sm">
+                          <div className="w-12 h-12 rounded-xl bg-[var(--surface)] flex items-center justify-center text-[var(--accent)] shadow-sm">
                              <Zap size={24} />
                           </div>
                           <div>
-                             <h4 className="text-base font-bold text-slate-900">Senior Web Engineering Intern</h4>
-                             <p className="text-xs text-slate-500 font-medium">Verified by Google Developers</p>
+                             <h4 className="text-base font-bold text-[var(--text)]">Senior Web Engineering Intern</h4>
+                             <p className="text-xs text-[var(--color-muted)] font-medium">Verified by Google Developers</p>
                           </div>
                        </div>
                        <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-100">Synchronized</span>
@@ -298,11 +298,11 @@ const Profile: React.FC = () => {
                           <span>98%</span>
                        </div>
                        <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                          <div className="h-full bg-[var(--color-brand)] w-[98%] shadow-glow"></div>
+                          <div className="h-full bg-[var(--accent)] w-[98%] shadow-glow"></div>
                        </div>
                     </div>
                     <div className="flex items-center gap-4 mt-10">
-                       <div className="w-12 h-12 rounded-2xl bg-[var(--color-brand)]/20 flex items-center justify-center text-[var(--color-brand)] border border-[var(--color-brand)]/30">
+                       <div className="w-12 h-12 rounded-2xl bg-[var(--accent)]/20 flex items-center justify-center text-[var(--accent)] border border-[var(--accent)]/30">
                           <ShieldCheck size={24} />
                        </div>
                        <div>
@@ -312,15 +312,15 @@ const Profile: React.FC = () => {
                     </div>
                  </div>
               </div>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-brand)]/10 blur-[50px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/10 blur-[50px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
            </div>
 
-           <div className="bg-white rounded-[3rem] border border-slate-100 p-10 shadow-xl shadow-slate-200/20">
-              <h3 className="text-lg font-bold text-slate-900 mb-6">Discovery Pulse</h3>
+           <div className="bg-[var(--surface)] rounded-[3rem] border border-[var(--border)] p-10 shadow-xl shadow-slate-200/20">
+              <h3 className="text-lg font-bold text-[var(--text)] mb-6">Discovery Pulse</h3>
               <div className="space-y-4">
                  {[
                    { label: 'Profile Visibility', value: 'High Accuracy', color: 'text-emerald-500' },
-                   { label: 'Transmission Rate', value: 'Instant', color: 'text-[var(--color-brand)]' },
+                   { label: 'Transmission Rate', value: 'Instant', color: 'text-[var(--accent)]' },
                    { label: 'Security Level', value: 'Tier 1 Encryption', color: 'text-slate-400' }
                  ].map((p, idx) => (
                     <div key={idx} className="flex justify-between items-center py-2">

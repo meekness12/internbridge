@@ -33,37 +33,37 @@ const SchoolAdminDashboard: React.FC = () => {
         
         {/* Left Column: Institutional Identity */}
         <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
-           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-              <div className="h-14 bg-[var(--color-forest)] w-full"></div>
+           <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] overflow-hidden shadow-sm">
+              <div className="h-14 bg-[var(--accent)] w-full"></div>
               <div className="px-4 pb-4 -mt-7 text-center">
                  <div className="w-16 h-16 rounded-full border-4 border-white bg-indigo-600 mx-auto flex items-center justify-center text-white font-serif font-black text-xl shadow-md mb-3">
                     {institutionName.split(' ').map(n => n[0]).join('')}
                  </div>
-                 <h3 className="text-base font-bold text-slate-900 tracking-tight">{institutionName}</h3>
-                 <p className="text-xs text-slate-500 font-medium mb-4">Institutional Registry · Ghana</p>
-                 <div className="pt-4 border-t border-slate-100 flex flex-col items-start gap-4">
+                 <h3 className="text-base font-bold text-[var(--text)] tracking-tight">{institutionName}</h3>
+                 <p className="text-xs text-[var(--color-muted)] font-medium mb-4">Institutional Registry · Ghana</p>
+                 <div className="pt-4 border-t border-[var(--border)] flex flex-col items-start gap-4">
                     <div className="flex justify-between w-full text-[11px] font-bold">
-                       <span className="text-slate-500">Placement Rate</span>
-                       <span className="text-[var(--color-forest)]">86%</span>
+                       <span className="text-[var(--color-muted)]">Placement Rate</span>
+                       <span className="text-[var(--accent)]">86%</span>
                     </div>
                     <div className="flex justify-between w-full text-[11px] font-bold">
-                       <span className="text-slate-500">Industry Nodes</span>
-                       <span className="text-[var(--color-forest)]">42</span>
+                       <span className="text-[var(--color-muted)]">Industry Nodes</span>
+                       <span className="text-[var(--accent)]">42</span>
                     </div>
                  </div>
               </div>
            </div>
 
-           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">Global Health</h4>
+           <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] p-5 shadow-sm">
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-[var(--color-muted)] mb-4 px-1">Global Health</h4>
               <div className="grid grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-0">
                 {stats.map((s, i) => (
-                  <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group border-b border-slate-50 lg:last:border-0">
-                     <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[var(--color-forest)] transition-colors shrink-0">
+                  <div key={i} className="flex items-center gap-3 py-2 px-1 hover:bg-[var(--background)] rounded-lg transition-colors cursor-pointer group border-b border-slate-50 lg:last:border-0">
+                     <div className="w-8 h-8 rounded bg-[var(--background)] flex items-center justify-center text-slate-400 group-hover:text-[var(--accent)] transition-colors shrink-0">
                         {s.icon}
                      </div>
                      <div className="min-w-0">
-                        <div className="text-[9px] sm:text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1 truncate">{s.label}</div>
+                        <div className="text-[9px] sm:text-[10px] font-black text-[var(--color-muted)] uppercase tracking-widest leading-none mb-1 truncate">{s.label}</div>
                         <div className="text-xs font-bold text-slate-700 leading-none">{s.value}</div>
                      </div>
                   </div>
@@ -74,11 +74,11 @@ const SchoolAdminDashboard: React.FC = () => {
 
         {/* Middle Column: Faculty Compliance Feed */}
         <div className="lg:col-span-6 space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] p-4 shadow-sm">
              <div className="flex items-center justify-between px-2">
                 <div className="flex items-center gap-3">
                    <div className="w-1.5 h-6 bg-[var(--color-gold)] rounded-full"></div>
-                   <h3 className="text-base font-bold text-slate-900">Faculty Compliance Index</h3>
+                   <h3 className="text-base font-bold text-[var(--text)]">Faculty Compliance Index</h3>
                 </div>
                 <button className="text-[10px] font-bold text-[var(--color-gold)] uppercase tracking-widest hover:underline">Full Analytics</button>
              </div>
@@ -97,15 +97,15 @@ const SchoolAdminDashboard: React.FC = () => {
                { name: 'Business Administration', compliance: 88, students: 510, status: 'Stable' },
                { name: 'Architecture', compliance: 64, students: 180, status: 'Critical' },
              ].map((f, i) => (
-               <div key={i} className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+               <div key={i} className="bg-[var(--surface)] rounded-xl border border-[var(--border)] p-6 shadow-sm hover:shadow-md transition-all group animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
                   <div className="flex justify-between items-start mb-6">
                      <div className="flex gap-4">
-                        <div className={`w-12 h-12 rounded-lg ${f.compliance > 90 ? 'bg-[var(--color-forest)]' : f.compliance > 70 ? 'bg-[var(--color-gold)]' : 'bg-rose-600'} flex items-center justify-center text-white font-serif font-black text-xl shadow-lg transition-transform group-hover:scale-110`}>
+                        <div className={`w-12 h-12 rounded-lg ${f.compliance > 90 ? 'bg-[var(--accent)]' : f.compliance > 70 ? 'bg-[var(--color-gold)]' : 'bg-rose-600'} flex items-center justify-center text-white font-serif font-black text-xl shadow-lg transition-transform group-hover:scale-110`}>
                           {f.name.charAt(0)}
                         </div>
                         <div>
-                           <h4 className="text-base font-bold text-slate-900 group-hover:text-[var(--color-forest)] transition-colors leading-tight">{f.name}</h4>
-                           <p className="text-xs text-slate-500 font-medium mt-1">{f.students} Enrolled · <span className={f.compliance > 70 ? 'text-emerald-600' : 'text-rose-600'}>{f.status}</span></p>
+                           <h4 className="text-base font-bold text-[var(--text)] group-hover:text-[var(--accent)] transition-colors leading-tight">{f.name}</h4>
+                           <p className="text-xs text-[var(--color-muted)] font-medium mt-1">{f.students} Enrolled · <span className={f.compliance > 70 ? 'text-emerald-600' : 'text-rose-600'}>{f.status}</span></p>
                         </div>
                      </div>
                      <button className="p-2 text-slate-200 hover:text-[var(--color-gold)] transition-colors">
@@ -115,23 +115,23 @@ const SchoolAdminDashboard: React.FC = () => {
 
                   <div className="space-y-3">
                      <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Administrative Compliance</span>
+                        <span className="text-[10px] font-black text-[var(--color-muted)] uppercase tracking-widest">Administrative Compliance</span>
                         <span className="text-xs font-black text-slate-700">{f.compliance}%</span>
                      </div>
-                     <div className="h-2 w-full bg-slate-50 rounded-full border border-slate-100 overflow-hidden">
+                     <div className="h-2 w-full bg-[var(--background)] rounded-full border border-[var(--border)] overflow-hidden">
                         <div 
-                          className={`h-full transition-all duration-1000 ${f.compliance > 90 ? 'bg-[var(--color-forest)]' : f.compliance > 70 ? 'bg-[var(--color-gold)]' : 'bg-rose-500'}`} 
+                          className={`h-full transition-all duration-1000 ${f.compliance > 90 ? 'bg-[var(--accent)]' : f.compliance > 70 ? 'bg-[var(--color-gold)]' : 'bg-rose-500'}`} 
                           style={{ width: `${f.compliance}%` }}
                         ></div>
                      </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-6 mt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between pt-6 mt-2 border-t border-[var(--border)]">
                      <div className="flex items-center gap-4">
-                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Audit v2.1</div>
+                        <div className="text-[10px] text-[var(--color-muted)] font-bold uppercase tracking-widest">Audit v2.1</div>
                         <div className="text-[10px] text-slate-400 font-medium">Updated 3h ago</div>
                      </div>
-                     <button className="px-5 py-2 bg-white border-2 border-slate-200 text-slate-600 rounded-full text-xs font-black uppercase tracking-widest hover:border-[var(--color-forest)] hover:text-[var(--color-forest)] transition-all shadow-sm">
+                     <button className="px-5 py-2 bg-[var(--surface)] border-2 border-[var(--border)] text-[var(--color-muted)] rounded-full text-xs font-black uppercase tracking-widest hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all shadow-sm">
                         Audit Logs
                      </button>
                   </div>
@@ -142,18 +142,18 @@ const SchoolAdminDashboard: React.FC = () => {
 
         {/* Right Column: Coordination */}
         <div className="lg:col-span-3 space-y-4 sticky top-[100px] h-fit">
-           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-6 px-1">Coordination Center</h4>
+           <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] p-5 shadow-sm">
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-[var(--color-muted)] mb-6 px-1">Coordination Center</h4>
               <div className="space-y-3">
                  {quickActions.map((action, i) => (
-                   <button key={i} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
+                   <button key={i} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-[var(--background)] transition-all group border border-transparent hover:border-[var(--border)]">
                       <div className="flex items-center gap-3 text-left">
                         <div className={`w-10 h-10 ${action.color} rounded-lg flex items-center justify-center text-xl shadow-sm`}>
                           {action.icon}
                         </div>
                         <div>
                           <div className="text-xs font-bold text-slate-800">{action.label}</div>
-                          <div className="text-[10px] text-slate-500 font-medium">{action.sub}</div>
+                          <div className="text-[10px] text-[var(--color-muted)] font-medium">{action.sub}</div>
                         </div>
                       </div>
                       <ChevronRight size={14} className="text-slate-300 group-hover:text-[var(--color-gold)] transition-all" />
@@ -162,13 +162,13 @@ const SchoolAdminDashboard: React.FC = () => {
               </div>
            </div>
 
-           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 flex items-center justify-between">
+           <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] p-5 shadow-sm">
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-[var(--color-muted)] mb-4 px-1 flex items-center justify-between">
                 Institutional Stream <Settings size={14} className="text-slate-300" />
               </h4>
               <div className="space-y-4">
                  {[
-                   { t: 'Techwave MoU Signed', d: '45m ago', color: 'bg-[var(--color-forest)]' },
+                   { t: 'Techwave MoU Signed', d: '45m ago', color: 'bg-[var(--accent)]' },
                    { t: 'Yearly Audit Ready', d: '3h ago', color: 'bg-[var(--color-gold)]' },
                    { t: 'Compliance Alert: CS', d: 'Yesterday', color: 'bg-rose-500' },
                  ].map((s, i) => (
@@ -176,14 +176,14 @@ const SchoolAdminDashboard: React.FC = () => {
                       <div className={`w-1 h-10 ${s.color} rounded-full shrink-0`}></div>
                       <div>
                         <div className="text-[12px] font-bold text-slate-800 group-hover:underline">{s.t}</div>
-                        <div className="text-[9px] text-slate-500 font-black uppercase tracking-widest">{s.d}</div>
+                        <div className="text-[9px] text-[var(--color-muted)] font-black uppercase tracking-widest">{s.d}</div>
                       </div>
                    </div>
                  ))}
               </div>
            </div>
 
-           <div className="px-4 py-8 text-center text-slate-500">
+           <div className="px-4 py-8 text-center text-[var(--color-muted)]">
               <div className="text-[9px] font-black uppercase tracking-[0.3em] font-mono leading-relaxed mb-4">
                  InternBridge © 2026<br/>Global Identity Registry
               </div>

@@ -80,7 +80,7 @@ const FacultyManagement: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-6 relative min-h-[400px]">
         {isLoading && (
-          <div className="absolute inset-0 bg-white/40 backdrop-blur-sm z-20 flex items-center justify-center rounded-2xl">
+          <div className="absolute inset-0 bg-[var(--surface)]/40 backdrop-blur-sm z-20 flex items-center justify-center rounded-2xl">
             <div className="flex flex-col items-center gap-4">
                <div className="w-10 h-10 border-2 border-[var(--color-navy)] border-t-transparent rounded-full animate-spin"></div>
                <span className="label-mono text-[10px] uppercase font-black tracking-widest text-[var(--color-navy)]">Accessing Academic Vault...</span>
@@ -92,11 +92,11 @@ const FacultyManagement: React.FC = () => {
           const color = colors[i % colors.length];
           
           return (
-            <div key={f.id} className={`card group bg-white border border-slate-200 border-l-4 ${color} rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all`}>
+            <div key={f.id} className={`card group bg-[var(--surface)] border border-[var(--border)] border-l-4 ${color} rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all`}>
               <div className="p-8 flex flex-col lg:flex-row justify-between gap-10">
                  <div className="flex-1">
                     <div className="flex items-center gap-4 mb-4">
-                       <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-inner">
+                       <div className="w-14 h-14 bg-[var(--background)] border border-[var(--border)] rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-inner">
                           <Building size={28} />
                        </div>
                        <div>
@@ -109,7 +109,7 @@ const FacultyManagement: React.FC = () => {
                     </div>
                     <div className="flex flex-wrap gap-2 mt-6">
                       {f.departments?.map((dept: string, idx: number) => (
-                        <span key={idx} className="px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-400 hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-all cursor-default">
+                        <span key={idx} className="px-3 py-1.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-400 hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-all cursor-default">
                           {dept}
                         </span>
                       ))}
@@ -129,9 +129,9 @@ const FacultyManagement: React.FC = () => {
                     </div>
                     <div className="flex items-center justify-between mt-auto">
                        <div className="flex gap-4">
-                          <button className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 hover:text-[var(--color-navy)] transition-colors"><MapPin size={18} /></button>
-                          <button className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 hover:text-[var(--color-navy)] transition-colors"><Phone size={18} /></button>
-                          <button className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 hover:text-[var(--color-navy)] transition-colors"><Mail size={18} /></button>
+                          <button className="h-10 w-10 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-slate-300 hover:text-[var(--color-navy)] transition-colors"><MapPin size={18} /></button>
+                          <button className="h-10 w-10 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-slate-300 hover:text-[var(--color-navy)] transition-colors"><Phone size={18} /></button>
+                          <button className="h-10 w-10 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-slate-300 hover:text-[var(--color-navy)] transition-colors"><Mail size={18} /></button>
                        </div>
                        <button className="h-10 px-5 flex items-center gap-2 bg-[var(--color-navy)] text-white text-[9px] font-bold uppercase tracking-widest rounded-xl hover:bg-black transition-all shadow-lg shadow-black/10 group/btn">
                           Manage <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -141,7 +141,7 @@ const FacultyManagement: React.FC = () => {
               </div>
               {/* Visual Decorative Element */}
               <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-10 transition-opacity">
-                 <ArrowUpRight size={120} className="text-slate-900" />
+                 <ArrowUpRight size={120} className="text-[var(--text)]" />
               </div>
             </div>
           );

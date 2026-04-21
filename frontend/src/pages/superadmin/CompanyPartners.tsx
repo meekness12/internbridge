@@ -89,33 +89,33 @@ const CompanyPartners: React.FC = () => {
         title="Partner"
         italicTitle="Network"
         subtitle="Global oversight of verified industry partners, corporate residency benchmarks, and institutional expansion."
-        eyebrowColor="text-[var(--color-brand)]"
+        eyebrowColor="text-[var(--accent)]"
         primaryAction={
           <button 
             onClick={() => setIsModalOpen(true)}
             className="h-14 px-10 bg-slate-900 text-white rounded-2xl flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.25em] shadow-2xl hover:bg-black transition-all"
           >
-            Add Partner <Plus size={20} className="text-[var(--color-brand)]" />
+            Add Partner <Plus size={20} className="text-[var(--accent)]" />
           </button>
         }
       />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 animate-fade-up">
-         <div className="md:col-span-3 flex items-center bg-white border border-slate-50 p-4 rounded-[2.5rem] shadow-xl shadow-slate-200/20 group">
+         <div className="md:col-span-3 flex items-center bg-[var(--surface)] border border-slate-50 p-4 rounded-[2.5rem] shadow-xl shadow-slate-200/20 group">
             <div className="relative flex-1 group/search">
                <input 
                  type="text" 
                  placeholder="Search alliance network by name or industry..." 
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
-                 className="w-full h-14 bg-slate-50/50 border border-slate-50 rounded-2xl px-8 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner"
+                 className="w-full h-14 bg-[var(--background)]/50 border border-slate-50 rounded-2xl px-8 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--accent)] focus:bg-[var(--surface)] transition-all shadow-inner"
                />
             </div>
          </div>
          <div className="bg-slate-900 rounded-[2.5rem] p-4 text-white flex items-center justify-center shadow-2xl relative overflow-hidden group">
             <div className="relative z-10 flex flex-col items-center">
                <span className="text-[10px] font-black uppercase tracking-widest text-white/30 truncate">Target Performance</span>
-               <div className="text-xl font-serif font-black italic text-[var(--color-brand)]">Optimal</div>
+               <div className="text-xl font-serif font-black italic text-[var(--accent)]">Optimal</div>
             </div>
          </div>
       </div>
@@ -123,7 +123,7 @@ const CompanyPartners: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 min-h-[400px] animate-fade-up delay-2">
         {isLoading ? (
           <div className="col-span-full flex flex-col items-center justify-center py-40 gap-6 opacity-30">
-             <RefreshCw size={50} className="text-[var(--color-brand)] animate-spin" />
+             <RefreshCw size={50} className="text-[var(--accent)] animate-spin" />
              <span className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-400">Loading Partners...</span>
           </div>
         ) : (
@@ -135,10 +135,10 @@ const CompanyPartners: React.FC = () => {
             c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
             c.industry.toLowerCase().includes(searchQuery.toLowerCase())
           ).map((company, idx) => (
-            <div key={company.id} className="bg-white rounded-[3.5rem] border border-slate-50 p-10 hover:shadow-2xl hover:shadow-slate-200/30 transition-all group relative overflow-hidden flex flex-col justify-between animate-fade-up" style={{ animationDelay: `${idx * 0.1}s` }}>
+            <div key={company.id} className="bg-[var(--surface)] rounded-[3.5rem] border border-slate-50 p-10 hover:shadow-2xl hover:shadow-slate-200/30 transition-all group relative overflow-hidden flex flex-col justify-between animate-fade-up" style={{ animationDelay: `${idx * 0.1}s` }}>
               <div>
                 <div className="flex justify-between items-start mb-10">
-                  <div className="w-20 h-20 bg-slate-50 rounded-[1.8rem] flex items-center justify-center text-slate-900 font-serif font-black text-3xl border border-slate-100 group-hover:bg-slate-900 group-hover:text-[var(--color-brand)] transition-all duration-500 shadow-inner overflow-hidden">
+                  <div className="w-20 h-20 bg-[var(--background)] rounded-[1.8rem] flex items-center justify-center text-[var(--text)] font-serif font-black text-3xl border border-[var(--border)] group-hover:bg-slate-900 group-hover:text-[var(--accent)] transition-all duration-500 shadow-inner overflow-hidden">
                     {company.logo || company.name.substring(0, 2).toUpperCase()}
                   </div>
                   <span className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.15em] border transition-all ${
@@ -151,7 +151,7 @@ const CompanyPartners: React.FC = () => {
                 </div>
 
                 <div className="mb-10">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2 group-hover:text-[var(--color-brand)] transition-all duration-500 flex items-center gap-4">
+                  <h3 className="text-2xl font-bold text-[var(--text)] mb-2 group-hover:text-[var(--accent)] transition-all duration-500 flex items-center gap-4">
                     {company.name}
                     {company.status === 'VERIFIED' && <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center"><FileCheck size={12} className="text-white" /></div>}
                   </h3>
@@ -162,13 +162,13 @@ const CompanyPartners: React.FC = () => {
                   </div>
                   
                   <div className="grid grid-cols-2 gap-6">
-                    <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-50">
-                       <MapPin size={18} className="text-[var(--color-brand)] opacity-30" /> 
-                       <span className="text-xs font-bold text-slate-500">{company.location}</span>
+                    <div className="flex items-center gap-4 p-4 bg-[var(--background)]/50 rounded-2xl border border-slate-50">
+                       <MapPin size={18} className="text-[var(--accent)] opacity-30" /> 
+                       <span className="text-xs font-bold text-[var(--color-muted)]">{company.location}</span>
                     </div>
-                    <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-50">
-                       <Globe size={18} className="text-[var(--color-brand)] opacity-30" /> 
-                       <span className="text-xs font-bold text-slate-500 truncate">{company.website || `www.${company.name.toLowerCase().split(' ')[0]}.com`}</span>
+                    <div className="flex items-center gap-4 p-4 bg-[var(--background)]/50 rounded-2xl border border-slate-50">
+                       <Globe size={18} className="text-[var(--accent)] opacity-30" /> 
+                       <span className="text-xs font-bold text-[var(--color-muted)] truncate">{company.website || `www.${company.name.toLowerCase().split(' ')[0]}.com`}</span>
                     </div>
                   </div>
                 </div>
@@ -178,19 +178,19 @@ const CompanyPartners: React.FC = () => {
                 <div className="flex gap-12">
                   <div className="flex flex-col gap-1">
                     <span className="text-[9px] font-black text-slate-200 uppercase tracking-widest">Active Interns</span>
-                    <span className="text-2xl font-serif font-black text-slate-900 italic tracking-tighter">{company.interns || 0}</span>
+                    <span className="text-2xl font-serif font-black text-[var(--text)] italic tracking-tighter">{company.interns || 0}</span>
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="text-[9px] font-black text-slate-200 uppercase tracking-widest">Growth Index</span>
-                    <span className="text-2xl font-serif font-black text-slate-900 italic tracking-tighter">{company.rating || '4.0'}</span>
+                    <span className="text-2xl font-serif font-black text-[var(--text)] italic tracking-tighter">{company.rating || '4.0'}</span>
                   </div>
                 </div>
-                <button className="h-14 w-14 rounded-2xl bg-slate-950 text-[var(--color-brand)] flex items-center justify-center group-hover:scale-110 transition-all shadow-xl shadow-black/10">
+                <button className="h-14 w-14 rounded-2xl bg-slate-950 text-[var(--accent)] flex items-center justify-center group-hover:scale-110 transition-all shadow-xl shadow-black/10">
                   <ArrowUpRight size={24} />
                 </button>
               </div>
               
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-brand)]/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
           ))
         )}
@@ -206,16 +206,16 @@ const CompanyPartners: React.FC = () => {
       {/* Add Partner Provisioning Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-2xl animate-fade-in">
-          <div className="bg-white rounded-[3.5rem] w-full max-w-2xl overflow-hidden shadow-[0_60px_150px_rgba(99,102,241,0.3)] animate-scale-in relative border border-slate-100 max-h-[90vh] overflow-y-auto">
-            <div className="absolute top-0 left-0 w-full h-[6px] bg-[var(--color-brand)]"></div>
+          <div className="bg-[var(--surface)] rounded-[3.5rem] w-full max-w-2xl overflow-hidden shadow-[0_60px_150px_rgba(99,102,241,0.3)] animate-scale-in relative border border-[var(--border)] max-h-[90vh] overflow-y-auto">
+            <div className="absolute top-0 left-0 w-full h-[6px] bg-[var(--accent)]"></div>
             
             <div className="p-16">
               <div className="flex items-center justify-between mb-12">
                 <div>
-                  <h3 className="text-3xl font-serif font-black text-slate-900 italic leading-none">Partner <span className="text-slate-400 not-italic">Onboarding</span></h3>
+                  <h3 className="text-3xl font-serif font-black text-[var(--text)] italic leading-none">Partner <span className="text-slate-400 not-italic">Onboarding</span></h3>
                   <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-2">Provision New Corporate Identity</p>
                 </div>
-                <button onClick={() => setIsModalOpen(false)} className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-rose-50 hover:text-rose-600 transition-all">
+                <button onClick={() => setIsModalOpen(false)} className="w-14 h-14 rounded-2xl bg-[var(--background)] flex items-center justify-center text-slate-300 hover:bg-rose-50 hover:text-rose-600 transition-all">
                   <X size={28} />
                 </button>
               </div>
@@ -224,9 +224,9 @@ const CompanyPartners: React.FC = () => {
                 {/* Section 1: Organization Data */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
-                    <div className="h-px flex-1 bg-slate-50"></div>
+                    <div className="h-px flex-1 bg-[var(--background)]"></div>
                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-200">Organization profile</span>
-                    <div className="h-px flex-1 bg-slate-50"></div>
+                    <div className="h-px flex-1 bg-[var(--background)]"></div>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-6">
@@ -237,7 +237,7 @@ const CompanyPartners: React.FC = () => {
                         value={newPartner.companyName}
                         onChange={(e) => setNewPartner({...newPartner, companyName: e.target.value})}
                         placeholder="e.g. Global Tech Solutions"
-                        className="w-full h-16 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner" 
+                        className="w-full h-16 bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--accent)] focus:bg-[var(--surface)] transition-all shadow-inner" 
                       />
                     </div>
                     <div className="space-y-3">
@@ -247,7 +247,7 @@ const CompanyPartners: React.FC = () => {
                         value={newPartner.industry}
                         onChange={(e) => setNewPartner({...newPartner, industry: e.target.value})}
                         placeholder="e.g. Fintech, Logistics..."
-                        className="w-full h-16 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner" 
+                        className="w-full h-16 bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--accent)] focus:bg-[var(--surface)] transition-all shadow-inner" 
                       />
                     </div>
                   </div>
@@ -256,9 +256,9 @@ const CompanyPartners: React.FC = () => {
                 {/* Section 2: Administrative Identity */}
                 <div className="space-y-6">
                    <div className="flex items-center gap-4">
-                    <div className="h-px flex-1 bg-slate-50"></div>
+                    <div className="h-px flex-1 bg-[var(--background)]"></div>
                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-200">Admin credentials</span>
-                    <div className="h-px flex-1 bg-slate-50"></div>
+                    <div className="h-px flex-1 bg-[var(--background)]"></div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-6">
@@ -268,7 +268,7 @@ const CompanyPartners: React.FC = () => {
                         required type="text" 
                         value={newPartner.adminFirstName}
                         onChange={(e) => setNewPartner({...newPartner, adminFirstName: e.target.value})}
-                        className="w-full h-16 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner" 
+                        className="w-full h-16 bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--accent)] focus:bg-[var(--surface)] transition-all shadow-inner" 
                       />
                     </div>
                     <div className="space-y-3">
@@ -277,7 +277,7 @@ const CompanyPartners: React.FC = () => {
                         required type="text" 
                         value={newPartner.adminLastName}
                         onChange={(e) => setNewPartner({...newPartner, adminLastName: e.target.value})}
-                        className="w-full h-16 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner" 
+                        className="w-full h-16 bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--accent)] focus:bg-[var(--surface)] transition-all shadow-inner" 
                       />
                     </div>
                   </div>
@@ -290,7 +290,7 @@ const CompanyPartners: React.FC = () => {
                         value={newPartner.email}
                         onChange={(e) => setNewPartner({...newPartner, email: e.target.value})}
                         placeholder="admin@company.com"
-                        className="w-full h-16 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner" 
+                        className="w-full h-16 bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--accent)] focus:bg-[var(--surface)] transition-all shadow-inner" 
                       />
                     </div>
                     <div className="space-y-3">
@@ -299,7 +299,7 @@ const CompanyPartners: React.FC = () => {
                         required type="password" 
                         value={newPartner.password}
                         onChange={(e) => setNewPartner({...newPartner, password: e.target.value})}
-                        className="w-full h-16 bg-slate-50/50 border border-slate-100 rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner" 
+                        className="w-full h-16 bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl px-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--accent)] focus:bg-[var(--surface)] transition-all shadow-inner" 
                       />
                     </div>
                   </div>
@@ -311,7 +311,7 @@ const CompanyPartners: React.FC = () => {
                     disabled={isLoading}
                     className="w-full h-20 bg-slate-900 text-white rounded-[2rem] text-[11px] font-black uppercase tracking-[0.45em] shadow-2xl hover:bg-black transition-all flex items-center justify-center gap-4 disabled:opacity-50"
                   >
-                    {isLoading ? <RefreshCw className="animate-spin text-[var(--color-brand)]" size={24} /> : <ShieldCheck size={24} className="text-[var(--color-brand)]" />}
+                    {isLoading ? <RefreshCw className="animate-spin text-[var(--accent)]" size={24} /> : <ShieldCheck size={24} className="text-[var(--accent)]" />}
                     {isLoading ? 'Processing Provisioning...' : 'Provision Partner'}
                   </button>
                   <p className="text-center mt-6 text-[9px] font-black text-slate-200 uppercase tracking-widest">

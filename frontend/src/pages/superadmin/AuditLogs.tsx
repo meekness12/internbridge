@@ -62,7 +62,7 @@ const AuditLogs: React.FC = () => {
         title="Operational"
         italicTitle="Ledger"
         subtitle="Forensic stream of platform interactions, security handshakes, and policy governance."
-        eyebrowColor="text-[var(--color-brand)]"
+        eyebrowColor="text-[var(--accent)]"
         primaryAction={
           <button 
             onClick={() => fetchLogs()}
@@ -74,22 +74,22 @@ const AuditLogs: React.FC = () => {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <div className="md:col-span-3 flex flex-col md:flex-row gap-6 items-center bg-white/50 backdrop-blur-xl p-6 rounded-[2.5rem] border border-white shadow-2xl shadow-slate-200/20">
+        <div className="md:col-span-3 flex flex-col md:flex-row gap-6 items-center bg-[var(--surface)]/50 backdrop-blur-xl p-6 rounded-[2.5rem] border border-white shadow-2xl shadow-slate-200/20">
           <div className="relative group flex-1 w-full">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-brand)] transition-colors" size={20} />
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--accent)] transition-colors" size={20} />
             <input 
               type="text" 
               placeholder="Query logs by action, agent, or metadata details..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl pl-16 pr-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--color-brand)] focus:bg-white transition-all shadow-inner"
+              className="w-full h-14 bg-[var(--background)] border border-[var(--border)] rounded-2xl pl-16 pr-6 text-sm font-medium outline-none focus:ring-1 focus:ring-[var(--accent)] focus:bg-[var(--surface)] transition-all shadow-inner"
             />
           </div>
           <div className="flex gap-4 w-full md:w-auto">
-             <button className="flex-1 md:flex-none h-14 px-8 bg-white border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-3 hover:bg-slate-50 transition-all">
+             <button className="flex-1 md:flex-none h-14 px-8 bg-[var(--surface)] border border-[var(--border)] rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-3 hover:bg-[var(--background)] transition-all">
                <Filter size={18} /> Severity
              </button>
-             <button className="flex-1 md:flex-none h-14 px-8 bg-white border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-3 hover:bg-slate-50 transition-all">
+             <button className="flex-1 md:flex-none h-14 px-8 bg-[var(--surface)] border border-[var(--border)] rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-3 hover:bg-[var(--background)] transition-all">
                View All Logs <Terminal size={18} />
              </button>
           </div>
@@ -97,27 +97,27 @@ const AuditLogs: React.FC = () => {
         <div className="bg-slate-900 rounded-[2.5rem] p-6 text-white flex flex-col justify-center shadow-2xl relative overflow-hidden group">
            <div className="relative z-10 flex flex-col items-center">
               <span className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Registry Health</span>
-              <div className="text-3xl font-serif font-black italic text-[var(--color-brand)]">Optimal</div>
+              <div className="text-3xl font-serif font-black italic text-[var(--accent)]">Optimal</div>
               <div className="mt-4 flex gap-2">
                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-glow"></div>
                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/20"></div>
                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/10"></div>
               </div>
            </div>
-           <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[var(--color-brand)]/10 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+           <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[var(--accent)]/10 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
         </div>
       </div>
 
       <div className="space-y-4 relative min-h-[400px]">
         {isLoading && (
-          <div className="absolute inset-0 bg-white/40 backdrop-blur-md z-30 flex flex-col items-center justify-center gap-6 rounded-[3.5rem] border border-white">
-             <RefreshCw size={40} className="animate-spin text-[var(--color-brand)]" />
+          <div className="absolute inset-0 bg-[var(--surface)]/40 backdrop-blur-md z-30 flex flex-col items-center justify-center gap-6 rounded-[3.5rem] border border-white">
+             <RefreshCw size={40} className="animate-spin text-[var(--accent)]" />
              <span className="text-[10px] font-black tracking-[0.45em] uppercase text-slate-400">Loading Activity Logs...</span>
           </div>
         )}
 
-        <div className="bg-white rounded-[3.5rem] border border-slate-100 shadow-2xl shadow-slate-200/20 overflow-hidden">
-          <div className="bg-slate-50/50 px-10 py-6 border-b border-slate-100 flex items-center justify-between">
+        <div className="bg-[var(--surface)] rounded-[3.5rem] border border-[var(--border)] shadow-2xl shadow-slate-200/20 overflow-hidden">
+          <div className="bg-[var(--background)]/50 px-10 py-6 border-b border-[var(--border)] flex items-center justify-between">
              <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
@@ -132,14 +132,14 @@ const AuditLogs: React.FC = () => {
                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Violation</span>
                 </div>
              </div>
-             <button className="text-[10px] font-black uppercase tracking-widest text-[var(--color-brand)] flex items-center gap-2 hover:underline">
+             <button className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)] flex items-center gap-2 hover:underline">
                 <Download size={14} /> Full Export (.csv)
              </button>
           </div>
 
           <div className="divide-y divide-slate-50">
             {filteredLogs.map((log, idx) => (
-              <div key={log.id} className="p-10 hover:bg-slate-50/50 transition-all group animate-fade-up" style={{ animationDelay: `${idx * 0.05}s` }}>
+              <div key={log.id} className="p-10 hover:bg-[var(--background)]/50 transition-all group animate-fade-up" style={{ animationDelay: `${idx * 0.05}s` }}>
                 <div className="flex flex-col md:flex-row items-start justify-between gap-8">
                   <div className="flex gap-10 min-w-0 flex-1">
                     <div className="flex flex-col items-center">
@@ -156,7 +156,7 @@ const AuditLogs: React.FC = () => {
                     
                     <div className="min-w-0">
                       <div className="flex items-center gap-4 mb-2">
-                         <h4 className="text-xl font-bold text-slate-900 group-hover:text-[var(--color-brand)] transition-colors">{log.action}</h4>
+                         <h4 className="text-xl font-bold text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">{log.action}</h4>
                          <span className="h-5 px-3 bg-slate-100 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-center">ID-{log.id}</span>
                       </div>
                       <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-2xl">{log.details}</p>
@@ -164,7 +164,7 @@ const AuditLogs: React.FC = () => {
                       <div className="flex items-center gap-8 mt-6">
                          <div className="flex items-center gap-2">
                             <span className="text-[9px] font-black text-slate-200 uppercase tracking-widest">Agent Origin</span>
-                            <div className="px-4 py-1.5 bg-slate-900 text-[var(--color-brand)] rounded-xl text-[10px] font-mono font-black uppercase tracking-tighter shadow-xl">
+                            <div className="px-4 py-1.5 bg-slate-900 text-[var(--accent)] rounded-xl text-[10px] font-mono font-black uppercase tracking-tighter shadow-xl">
                                {log.userName}
                             </div>
                          </div>
@@ -179,10 +179,10 @@ const AuditLogs: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-4 w-full md:w-auto justify-end">
-                     <button className="w-12 h-12 rounded-2xl border border-slate-100 flex items-center justify-center text-slate-300 hover:text-slate-900 hover:bg-white hover:shadow-xl transition-all">
+                     <button className="w-12 h-12 rounded-2xl border border-[var(--border)] flex items-center justify-center text-slate-300 hover:text-[var(--text)] hover:bg-[var(--surface)] hover:shadow-xl transition-all">
                         <Database size={18} />
                      </button>
-                     <button className="w-12 h-12 rounded-2xl border border-slate-100 flex items-center justify-center text-slate-300 hover:text-slate-900 hover:bg-white hover:shadow-xl transition-all">
+                     <button className="w-12 h-12 rounded-2xl border border-[var(--border)] flex items-center justify-center text-slate-300 hover:text-[var(--text)] hover:bg-[var(--surface)] hover:shadow-xl transition-all">
                         <MoreHorizontal size={18} />
                      </button>
                   </div>

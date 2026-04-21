@@ -49,7 +49,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-white font-sans text-slate-900 overflow-hidden">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[var(--surface)] font-sans text-[var(--text)] overflow-hidden">
       
       {/* Left Column: Illustrative Hero */}
       <div className="hidden lg:flex flex-col w-[60%] bg-[#FFF5EE] relative p-12 items-center justify-center overflow-hidden">
@@ -64,10 +64,10 @@ const Register: React.FC = () => {
            />
            
            <div className="mt-12 space-y-4">
-              <h1 className="text-5xl font-bold tracking-tight text-slate-900 max-w-lg mx-auto leading-tight">
-                 Start your <span className="text-[var(--color-brand)]">verified journey.</span>
+              <h1 className="text-5xl font-bold tracking-tight text-[var(--text)] max-w-lg mx-auto leading-tight">
+                 Start your <span className="text-[var(--accent)]">verified journey.</span>
               </h1>
-              <p className="text-slate-500 font-medium text-lg max-w-sm mx-auto leading-relaxed">
+              <p className="text-[var(--color-muted)] font-medium text-lg max-w-sm mx-auto leading-relaxed">
                  Join 2,000+ professionals ensuring academic and career excellence.
               </p>
            </div>
@@ -75,16 +75,16 @@ const Register: React.FC = () => {
       </div>
 
       {/* Right Column: Registration Form */}
-      <div className="flex-1 flex flex-col justify-center items-center p-8 md:p-12 relative bg-white overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-center items-center p-8 md:p-12 relative bg-[var(--surface)] overflow-y-auto">
         <div className="w-full max-w-[440px] animate-fade-up my-auto">
           
           {/* Mobile Identity */}
           <div className="lg:hidden flex justify-center mb-10">
-            <div className="w-14 h-14 bg-[var(--color-brand)] rounded-2xl flex items-center justify-center text-white font-serif font-black text-xl shadow-xl">IB</div>
+            <div className="w-14 h-14 bg-[var(--accent)] rounded-2xl flex items-center justify-center text-white font-serif font-black text-xl shadow-xl">IB</div>
           </div>
 
           <div className="mb-10">
-             <h2 className="text-4xl font-bold text-slate-900 mb-2">Create an account</h2>
+             <h2 className="text-4xl font-bold text-[var(--text)] mb-2">Create an account</h2>
              <p className="text-slate-400 text-sm font-medium">Initialize your professional record today.</p>
           </div>
 
@@ -98,7 +98,7 @@ const Register: React.FC = () => {
                    value={formData.firstName}
                    onChange={handleChange}
                    placeholder="e.g. Liam" 
-                   className="w-full h-14 bg-slate-50 border border-slate-100 rounded-xl px-6 text-sm font-medium focus:bg-white focus:border-[var(--color-brand)] outline-none transition-all placeholder:text-slate-200"
+                   className="w-full h-14 bg-[var(--background)] border border-[var(--border)] rounded-xl px-6 text-sm font-medium focus:bg-[var(--surface)] focus:border-[var(--accent)] outline-none transition-all placeholder:text-slate-200"
                    required
                  />
                </div>
@@ -110,7 +110,7 @@ const Register: React.FC = () => {
                    value={formData.lastName}
                    onChange={handleChange}
                    placeholder="e.g. Sterling" 
-                   className="w-full h-14 bg-slate-50 border border-slate-100 rounded-xl px-6 text-sm font-medium focus:bg-white focus:border-[var(--color-brand)] outline-none transition-all placeholder:text-slate-200"
+                   className="w-full h-14 bg-[var(--background)] border border-[var(--border)] rounded-xl px-6 text-sm font-medium focus:bg-[var(--surface)] focus:border-[var(--accent)] outline-none transition-all placeholder:text-slate-200"
                    required
                  />
                </div>
@@ -124,7 +124,7 @@ const Register: React.FC = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="mail@abc.com" 
-                className="w-full h-14 bg-slate-50 border border-slate-100 rounded-xl px-6 text-sm font-medium focus:bg-white focus:border-[var(--color-brand)] outline-none transition-all placeholder:text-slate-200"
+                className="w-full h-14 bg-[var(--background)] border border-[var(--border)] rounded-xl px-6 text-sm font-medium focus:bg-[var(--surface)] focus:border-[var(--accent)] outline-none transition-all placeholder:text-slate-200"
                 required
               />
             </div>
@@ -137,7 +137,7 @@ const Register: React.FC = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••••••" 
-                className="w-full h-14 bg-slate-50 border border-slate-100 rounded-xl px-6 text-sm font-medium focus:bg-white focus:border-[var(--color-brand)] outline-none transition-all placeholder:text-slate-200 font-mono tracking-widest"
+                className="w-full h-14 bg-[var(--background)] border border-[var(--border)] rounded-xl px-6 text-sm font-medium focus:bg-[var(--surface)] focus:border-[var(--accent)] outline-none transition-all placeholder:text-slate-200 font-mono tracking-widest"
                 required
               />
               <p className="text-[9px] text-slate-300 font-bold uppercase tracking-wider ml-1">Must be 12+ characters for security audit.</p>
@@ -146,16 +146,16 @@ const Register: React.FC = () => {
             <div className="pt-2">
               <label className="flex items-center gap-3 cursor-pointer group mb-8">
                 <div className="relative flex items-center">
-                  <input type="checkbox" required className="peer appearance-none w-5 h-5 bg-white border border-slate-200 rounded-lg checked:bg-[var(--color-brand)] transition-all cursor-pointer shadow-sm" />
+                  <input type="checkbox" required className="peer appearance-none w-5 h-5 bg-[var(--surface)] border border-[var(--border)] rounded-lg checked:bg-[var(--accent)] transition-all cursor-pointer shadow-sm" />
                   <CheckCircle2 size={12} className="absolute inset-0 m-auto text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium leading-tight select-none">I agree to the <button type="button" className="text-[var(--color-brand)] font-extrabold hover:underline">Governance Protocols</button> and Data Privacy policies.</span>
+                <span className="text-[10px] text-slate-400 font-medium leading-tight select-none">I agree to the <button type="button" className="text-[var(--accent)] font-extrabold hover:underline">Governance Protocols</button> and Data Privacy policies.</span>
               </label>
 
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full h-16 bg-[var(--color-brand)] hover:bg-[#4338CA] text-white rounded-xl text-[12px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-4 transition-all shadow-xl shadow-indigo-500/10 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+                className="w-full h-16 bg-[var(--accent)] hover:bg-[#4338CA] text-white rounded-xl text-[12px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-4 transition-all shadow-xl shadow-indigo-500/10 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
               >
                 {loading ? (
                   <RefreshCw size={24} className="animate-spin text-white" />
@@ -184,7 +184,7 @@ const Register: React.FC = () => {
               Already have an account?{' '}
               <button
                 onClick={() => navigate('/login')}
-                className="text-[var(--color-brand)] font-extrabold hover:underline"
+                className="text-[var(--accent)] font-extrabold hover:underline"
               >
                 Sign In
               </button>

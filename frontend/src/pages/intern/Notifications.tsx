@@ -83,7 +83,7 @@ const Notifications: React.FC = () => {
     const lower = msg.toLowerCase();
     if (lower.includes('hired') || lower.includes('approved')) return 'bg-emerald-500';
     if (lower.includes('urgent') || lower.includes('deadline') || lower.includes('rejected')) return 'bg-rose-500';
-    return 'bg-[var(--color-brand)]';
+    return 'bg-[var(--accent)]';
   };
 
   const unreadNotifications = notifications.filter(n => !n.isRead);
@@ -94,8 +94,8 @@ const Notifications: React.FC = () => {
       
       {/* Header (FB Style) */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-900 font-sans tracking-tight">Notifications</h1>
-        <button className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors">
+        <h1 className="text-2xl font-bold text-[var(--text)] font-sans tracking-tight">Notifications</h1>
+        <button className="p-2 hover:bg-slate-100 rounded-full text-[var(--color-muted)] transition-colors">
           <MoreHorizontal size={20} />
         </button>
       </div>
@@ -104,13 +104,13 @@ const Notifications: React.FC = () => {
       <div className="flex gap-2 mb-8">
         <button 
           onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === 'all' ? 'bg-[var(--color-teal-faint)] text-[var(--color-brand)]' : 'hover:bg-slate-100 text-slate-600'}`}
+          className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === 'all' ? 'bg-[var(--color-teal-faint)] text-[var(--accent)]' : 'hover:bg-slate-100 text-[var(--color-muted)]'}`}
         >
           All
         </button>
         <button 
           onClick={() => setFilter('unread')}
-          className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === 'unread' ? 'bg-[var(--color-teal-faint)] text-[var(--color-brand)]' : 'hover:bg-slate-100 text-slate-600'}`}
+          className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === 'unread' ? 'bg-[var(--color-teal-faint)] text-[var(--accent)]' : 'hover:bg-slate-100 text-[var(--color-muted)]'}`}
         >
           Unread
         </button>
@@ -123,7 +123,7 @@ const Notifications: React.FC = () => {
               <div className="w-14 h-14 rounded-full bg-slate-100"></div>
               <div className="flex-1 space-y-2">
                 <div className="h-4 bg-slate-100 rounded w-3/4"></div>
-                <div className="h-3 bg-slate-50 rounded w-1/4"></div>
+                <div className="h-3 bg-[var(--background)] rounded w-1/4"></div>
               </div>
             </div>
           ))}
@@ -133,15 +133,15 @@ const Notifications: React.FC = () => {
           
           {unreadNotifications.length > 0 && (
             <div className="space-y-1">
-              <h3 className="text-base font-bold text-slate-900 px-2 mb-3">New</h3>
+              <h3 className="text-base font-bold text-[var(--text)] px-2 mb-3">New</h3>
               {unreadNotifications.map(note => (
                 <div 
                   key={note.id}
                   onClick={() => handleMarkAsRead(note.id)}
-                  className="flex gap-4 p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-all group relative items-center"
+                  className="flex gap-4 p-3 rounded-xl hover:bg-[var(--background)] cursor-pointer transition-all group relative items-center"
                 >
                   <div className="relative shrink-0">
-                    <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-[var(--color-brand)] font-bold text-lg overflow-hidden border border-slate-50">
+                    <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-[var(--accent)] font-bold text-lg overflow-hidden border border-slate-50">
                        {note.message[0] || 'N'}
                     </div>
                     <div className={`absolute -bottom-1 -right-1 w-7 h-7 rounded-full ${getBgColor(note.message)} flex items-center justify-center border-2 border-white shadow-sm`}>
@@ -153,13 +153,13 @@ const Notifications: React.FC = () => {
                     <p className="text-[15px] text-slate-800 leading-tight">
                       {parseMessage(note.message)}
                     </p>
-                    <span className="text-xs font-bold text-[var(--color-brand)] mt-1 block">
+                    <span className="text-xs font-bold text-[var(--accent)] mt-1 block">
                       {getRelativeTime(note.createdAt)}
                     </span>
                   </div>
 
                   <div className="shrink-0 ml-2">
-                    <Circle size={12} fill="var(--color-teal)" className="text-[var(--color-brand)]" />
+                    <Circle size={12} fill="var(--color-teal)" className="text-[var(--accent)]" />
                   </div>
                 </div>
               ))}
@@ -168,7 +168,7 @@ const Notifications: React.FC = () => {
 
           {readNotifications.length > 0 && (
             <div className="space-y-1">
-              <h3 className="text-base font-bold text-slate-900 px-2 mb-3">Earlier</h3>
+              <h3 className="text-base font-bold text-[var(--text)] px-2 mb-3">Earlier</h3>
               {readNotifications.map(note => (
                 <div 
                   key={note.id}
@@ -184,7 +184,7 @@ const Notifications: React.FC = () => {
                   </div>
                   
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] text-slate-500 leading-tight">
+                    <p className="text-[15px] text-[var(--color-muted)] leading-tight">
                       {parseMessage(note.message)}
                     </p>
                     <span className="text-xs font-medium text-slate-400 mt-1 block">
@@ -198,7 +198,7 @@ const Notifications: React.FC = () => {
 
           {notifications.length === 0 && (
             <div className="text-center py-20">
-               <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+               <div className="w-20 h-20 bg-[var(--background)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Bell className="text-slate-200" size={32} />
                </div>
                <p className="text-slate-400 font-medium">No notifications yet.</p>

@@ -119,7 +119,7 @@ const CompanyDashboard: React.FC = () => {
                      </div>
                   </div>
                   <div className="flex items-end justify-between">
-                     <div className="text-lg font-black text-slate-900 leading-none">{metric.value}</div>
+                     <div className="text-lg font-black text-[var(--text)] leading-none">{metric.value}</div>
                   </div>
                   <div className="mt-3 text-[9px] font-bold text-black/20 uppercase tracking-[0.15em]">Current Volume</div>
                </div>
@@ -134,18 +134,18 @@ const CompanyDashboard: React.FC = () => {
          <div className="lg:col-span-4 space-y-6">
             <div className="fox-card p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group">
                <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-all">
-                  <Zap size={60} className="text-[var(--color-brand)]" />
+                  <Zap size={60} className="text-[var(--accent)]" />
                </div>
-               <div className="w-11 h-11 bg-purple-50 rounded-xl flex items-center justify-center text-[var(--color-brand)] mb-4 shadow-sm">
+               <div className="w-11 h-11 bg-purple-50 rounded-xl flex items-center justify-center text-[var(--accent)] mb-4 shadow-sm">
                   <Zap size={22} />
                </div>
-               <h3 className="text-base font-black text-slate-900 mb-1">Post New Role</h3>
+               <h3 className="text-base font-black text-[var(--text)] mb-1">Post New Role</h3>
                <p className="text-[10px] font-medium text-slate-400 mb-6 max-w-[160px]">
                   Expand department capacity with a new posting.
                </p>
                <button 
                   onClick={() => setShowPostModal(true)}
-                  className="w-full h-10 bg-[var(--color-brand)] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.15em] shadow-lg shadow-purple-200 hover:scale-[1.02] transition-all"
+                  className="w-full h-10 bg-[var(--accent)] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.15em] shadow-lg shadow-purple-200 hover:scale-[1.02] transition-all"
                >
                   Initiate Posting
                </button>
@@ -154,19 +154,19 @@ const CompanyDashboard: React.FC = () => {
             <section className="space-y-3">
                <h3 className="text-[11px] font-bold text-slate-800 px-2 uppercase tracking-widest">Performance</h3>
                <div className="flex flex-col gap-3">
-                  <div className="bg-[var(--color-brand)] p-5 rounded-2xl text-white shadow-lg relative overflow-hidden group">
+                  <div className="bg-[var(--accent)] p-5 rounded-2xl text-white shadow-lg relative overflow-hidden group">
                      <div className="flex justify-between items-center mb-4 relative z-10">
                         <span className="text-[9px] font-bold text-white/60 uppercase tracking-widest">Engagement</span>
-                        <div className="px-1.5 py-0.5 bg-white/20 rounded text-[8px] font-bold">Stable</div>
+                        <div className="px-1.5 py-0.5 bg-[var(--surface)]/20 rounded text-[8px] font-bold">Stable</div>
                      </div>
                      <div className="text-xl font-black mb-4 relative z-10">{applications.length * 12}.5 pts</div>
-                     <div className="w-full h-8 bg-white/10 rounded-lg flex items-center justify-center text-[8px] font-black uppercase tracking-widest relative z-10">Pipeline Health</div>
+                     <div className="w-full h-8 bg-[var(--surface)]/10 rounded-lg flex items-center justify-center text-[8px] font-black uppercase tracking-widest relative z-10">Pipeline Health</div>
                   </div>
 
                   <div className="bg-[#1F1F2D] p-5 rounded-2xl text-white shadow-lg group">
                      <div className="flex justify-between items-center mb-4">
                         <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">Talent Pool</span>
-                        <button className="w-6 h-6 rounded-lg bg-[var(--color-brand)] flex items-center justify-center hover:scale-105 transition-all">
+                        <button className="w-6 h-6 rounded-lg bg-[var(--accent)] flex items-center justify-center hover:scale-105 transition-all">
                            <ArrowRight size={12} />
                         </button>
                      </div>
@@ -183,14 +183,14 @@ const CompanyDashboard: React.FC = () => {
             <div className="fox-card p-6">
                <div className="flex justify-between items-center mb-6">
                   <div className="flex flex-col">
-                     <h3 className="text-base font-black text-slate-900 leading-none mb-1.5">Applicants Watchlist</h3>
+                     <h3 className="text-base font-black text-[var(--text)] leading-none mb-1.5">Applicants Watchlist</h3>
                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em]">Latest Feed</span>
                   </div>
-                  <button className="w-7 h-7 rounded-lg bg-[var(--color-brand)] text-white flex items-center justify-center shadow-lg shadow-purple-200"><Plus size={16} /></button>
+                  <button className="w-7 h-7 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center shadow-lg shadow-purple-200"><Plus size={16} /></button>
                </div>
                <div className="space-y-2">
                   {applications.slice(0, 5).map((app, i) => (
-                     <div key={i} className="flex justify-between items-center group cursor-pointer hover:bg-slate-50/50 p-2.5 -mx-2.5 rounded-xl transition-all duration-300">
+                     <div key={i} className="flex justify-between items-center group cursor-pointer hover:bg-[var(--background)]/50 p-2.5 -mx-2.5 rounded-xl transition-all duration-300">
                         <div className="flex items-center gap-3">
                            <div className="relative">
                               <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-white font-black text-xs">
@@ -200,8 +200,8 @@ const CompanyDashboard: React.FC = () => {
                            </div>
                            <div>
                               <div className="flex items-center gap-2 mb-0.5">
-                                 <div className="text-[13px] font-bold text-slate-900 leading-none">{app.studentName}</div>
-                                 <span className="px-1.5 py-0.5 bg-purple-50 text-[var(--color-brand)] rounded text-[7px] font-black uppercase tracking-widest">New</span>
+                                 <div className="text-[13px] font-bold text-[var(--text)] leading-none">{app.studentName}</div>
+                                 <span className="px-1.5 py-0.5 bg-purple-50 text-[var(--accent)] rounded text-[7px] font-black uppercase tracking-widest">New</span>
                               </div>
                               <div className="flex items-center gap-2">
                                  <div className="text-[9px] font-black uppercase text-slate-400 tracking-wider">
@@ -214,10 +214,10 @@ const CompanyDashboard: React.FC = () => {
                         </div>
                         <div className="text-right flex items-center gap-6">
                            <div className="hidden sm:flex flex-col items-end opacity-0 group-hover:opacity-100 transition-all">
-                              <button className="text-[9px] font-black text-[var(--color-brand)] uppercase tracking-widest hover:underline">Profile</button>
+                              <button className="text-[9px] font-black text-[var(--accent)] uppercase tracking-widest hover:underline">Profile</button>
                            </div>
                            <div className="px-3 py-1.5 bg-purple-50/50 rounded-lg border border-purple-100/50 text-center min-w-[70px]">
-                              <div className="text-[13px] font-black text-[var(--color-brand)] leading-none">{(92 + Math.random() * 6).toFixed(0)}%</div>
+                              <div className="text-[13px] font-black text-[var(--accent)] leading-none">{(92 + Math.random() * 6).toFixed(0)}%</div>
                               <div className="text-[6px] font-black text-purple-200 uppercase tracking-tighter">AI Match</div>
                            </div>
                         </div>
@@ -230,20 +230,20 @@ const CompanyDashboard: React.FC = () => {
             <div className="fox-card p-6">
                <div className="flex justify-between items-center mb-6">
                   <div className="flex flex-col">
-                     <h3 className="text-base font-black text-slate-900 leading-none mb-1.5">Active Listings</h3>
+                     <h3 className="text-base font-black text-[var(--text)] leading-none mb-1.5">Active Listings</h3>
                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em]">Live Portals</span>
                   </div>
-                  <button className="text-[9px] font-black text-[var(--color-brand)] uppercase tracking-widest">Hub</button>
+                  <button className="text-[9px] font-black text-[var(--accent)] uppercase tracking-widest">Hub</button>
                </div>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {internships.slice(0, 4).map((job, idx) => (
-                     <div key={idx} className="bg-slate-50/50 p-4 rounded-xl flex justify-between items-center group cursor-pointer hover:bg-white hover:shadow-lg transition-all border border-transparent hover:border-slate-50">
+                     <div key={idx} className="bg-[var(--background)]/50 p-4 rounded-xl flex justify-between items-center group cursor-pointer hover:bg-[var(--surface)] hover:shadow-lg transition-all border border-transparent hover:border-slate-50">
                         <div className="flex items-center gap-3">
-                           <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-[var(--color-brand)]">
+                           <div className="w-10 h-10 rounded-xl bg-[var(--surface)] shadow-sm flex items-center justify-center text-[var(--accent)]">
                               <Target size={18} />
                            </div>
                            <div>
-                              <div className="text-[12px] font-bold text-slate-900 mb-0.5">{job.title}</div>
+                              <div className="text-[12px] font-bold text-[var(--text)] mb-0.5">{job.title}</div>
                               <div className="text-[9px] font-bold text-slate-400">ID: {job.id?.substring(0, 8)}</div>
                            </div>
                         </div>
@@ -260,11 +260,11 @@ const CompanyDashboard: React.FC = () => {
       {/* ── Minimalist Modal ── */}
       {showPostModal && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-lg shadow-fox-lg animate-scale-in border border-slate-50">
+          <div className="bg-[var(--surface)] rounded-[2.5rem] w-full max-w-lg shadow-fox-lg animate-scale-in border border-slate-50">
             <div className="p-10">
                <div className="flex justify-between items-center mb-10">
-                  <h3 className="text-xl font-bold text-slate-900">New Posting</h3>
-                  <button onClick={() => setShowPostModal(false)} className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-rose-500"><X size={20} /></button>
+                  <h3 className="text-xl font-bold text-[var(--text)]">New Posting</h3>
+                  <button onClick={() => setShowPostModal(false)} className="w-10 h-10 rounded-2xl bg-[var(--background)] flex items-center justify-center text-slate-400 hover:text-rose-500"><X size={20} /></button>
                </div>
                
                <form onSubmit={handlePostRole} className="space-y-6">
@@ -275,7 +275,7 @@ const CompanyDashboard: React.FC = () => {
                         value={newRole.title} 
                         onChange={(e) => setNewRole({...newRole, title: e.target.value})} 
                         placeholder="Position Title" 
-                        className="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-sm font-bold outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 transition-all" 
+                        className="w-full h-14 bg-[var(--background)] border-none rounded-2xl px-6 text-sm font-bold outline-none focus:ring-4 focus:ring-[var(--accent)]/5 transition-all" 
                      />
                      <textarea 
                         required 
@@ -283,17 +283,17 @@ const CompanyDashboard: React.FC = () => {
                         onChange={(e) => setNewRole({...newRole, description: e.target.value})} 
                         placeholder="Description" 
                         rows={3} 
-                        className="w-full bg-slate-50 border-none rounded-2xl p-6 text-sm font-medium outline-none focus:ring-4 focus:ring-[var(--color-brand)]/5 transition-all resize-none" 
+                        className="w-full bg-[var(--background)] border-none rounded-2xl p-6 text-sm font-medium outline-none focus:ring-4 focus:ring-[var(--accent)]/5 transition-all resize-none" 
                      />
                      <div className="grid grid-cols-2 gap-4">
-                        <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="Skills" className="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-xs font-bold uppercase tracking-widest outline-none" />
-                        <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-xs font-bold outline-none" />
+                        <input required type="text" value={newRole.requiredSkills} onChange={(e) => setNewRole({...newRole, requiredSkills: e.target.value})} placeholder="Skills" className="w-full h-14 bg-[var(--background)] border-none rounded-2xl px-6 text-xs font-bold uppercase tracking-widest outline-none" />
+                        <input required type="date" value={newRole.deadline} onChange={(e) => setNewRole({...newRole, deadline: e.target.value})} className="w-full h-14 bg-[var(--background)] border-none rounded-2xl px-6 text-xs font-bold outline-none" />
                      </div>
                   </div>
                   <button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="w-full h-16 bg-[var(--color-brand)] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+                    className="w-full h-16 bg-[var(--accent)] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
                   >
                     {isSubmitting ? 'Processing...' : 'Confirm Posting'}
                   </button>

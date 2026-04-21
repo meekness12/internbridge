@@ -31,7 +31,7 @@ const Placements: React.FC = () => {
            </button>
         }
         secondaryAction={
-          <button className="bg-white border border-slate-200 rounded-xl px-4 flex items-center gap-3 h-11 text-[10px] font-bold text-slate-400 hover:text-[var(--color-navy)] transition-all shadow-sm">
+          <button className="bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 flex items-center gap-3 h-11 text-[10px] font-bold text-slate-400 hover:text-[var(--color-navy)] transition-all shadow-sm">
              <Building size={16} /> Partner Database
           </button>
         }
@@ -44,13 +44,13 @@ const Placements: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {placements.map((p) => (
-          <div key={p.id} className="card p-8 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
+          <div key={p.id} className="card p-8 bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
             <div className="flex justify-between items-start mb-8">
-               <div className="w-12 h-12 bg-[var(--color-cream-2)] rounded-2xl flex items-center justify-center text-[var(--color-forest)] border border-white shadow-inner group-hover:scale-110 transition-transform">
+               <div className="w-12 h-12 bg-[var(--color-cream-2)] rounded-2xl flex items-center justify-center text-[var(--accent)] border border-white shadow-inner group-hover:scale-110 transition-transform">
                  <Briefcase size={22} />
                </div>
                <span className={`text-[9px] font-black px-3 py-1.5 rounded-full border tracking-widest uppercase ${
-                 p.status === 'OPEN' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100'
+                 p.status === 'OPEN' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-[var(--background)] text-slate-400 border-[var(--border)]'
                }`}>{p.status}</span>
             </div>
             
@@ -69,7 +69,7 @@ const Placements: React.FC = () => {
                </div>
             </div>
 
-            <button className="w-full mt-10 py-4 bg-slate-50 group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all text-[var(--color-navy)] text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 shadow-inner group-hover:shadow-lg group-hover:shadow-black/10">
+            <button className="w-full mt-10 py-4 bg-[var(--background)] group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all text-[var(--color-navy)] text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 shadow-inner group-hover:shadow-lg group-hover:shadow-black/10">
                Assignment Details <ArrowUpRight size={16} />
             </button>
             
@@ -79,9 +79,9 @@ const Placements: React.FC = () => {
         ))}
       </div>
 
-      <div className="card p-12 bg-[var(--color-cream-2)] border-dashed border-2 border-slate-200 flex flex-col md:flex-row items-center justify-between gap-8 rounded-2xl group hover:border-[var(--color-gold)] transition-all">
+      <div className="card p-12 bg-[var(--color-cream-2)] border-dashed border-2 border-[var(--border)] flex flex-col md:flex-row items-center justify-between gap-8 rounded-2xl group hover:border-[var(--color-gold)] transition-all">
          <div className="flex items-center gap-8">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+            <div className="w-16 h-16 bg-[var(--surface)] rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                <CheckCircle2 size={36} className="text-slate-200 group-hover:text-emerald-500 transition-colors" />
             </div>
             <div className="text-center md:text-left">
@@ -92,7 +92,7 @@ const Placements: React.FC = () => {
                </p>
             </div>
          </div>
-         <button className="text-[10px] font-bold text-[var(--color-navy)] uppercase tracking-[0.2em] px-10 py-4 border border-slate-300 rounded-xl hover:bg-white hover:border-[var(--color-gold)] transition-all shadow-sm">
+         <button className="text-[10px] font-bold text-[var(--color-navy)] uppercase tracking-[0.2em] px-10 py-4 border border-slate-300 rounded-xl hover:bg-[var(--surface)] hover:border-[var(--color-gold)] transition-all shadow-sm">
             Compliance Report
          </button>
       </div>

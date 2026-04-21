@@ -1,48 +1,63 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500&family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
 
 @import "tailwindcss";
 
 @theme {
-  /* ── Typography (Clean Sans-serif) ── */
-  --font-heading:  "Inter", system-ui, sans-serif;
+  /* ── Typography ── */
+  --font-heading:  "Syne", "Inter", system-ui, sans-serif;
   --font-sans:     "Inter", system-ui, sans-serif;
   --font-mono:     "JetBrains Mono", monospace;
+  --font-display:  "Instrument Serif", Georgia, serif;
 
-  /* ── Foxstocks Palette ── */
-  --color-bg:             #F8F9FB;   /* main background */
-  --color-surface:        #FFFFFF;   /* cards/modals */
-  --color-surface-dim:    #F3F4F6;   /* chips/inputs */
+  /* ── Base Palette (light mode — unchanged) ── */
+  --color-bg:             #F8F9FB;
+  --color-surface:        #FFFFFF;
+  --color-surface-dim:    #F3F4F6;
 
-  --color-brand:           #7C3AED;   /* Foxstocks Purple */
-  --color-brand-light:     #F3E8FF;   /* Soft Purple Active */
-  
-  --color-mint:            #ACF0DE;   /* Stock Green */
-  --color-mint-dark:       #10B981;
-  
-  --color-gold:            #FDE68A;   /* Stock Yellow */
-  --color-gold-dark:       #F59E0B;
+  --color-brand:          #7C3AED;
+  --color-brand-light:    #F3E8FF;
 
-  --color-pink:            #FBCFE8;   /* Stock Pink */
-  --color-pink-dark:       #EC4899;
+  --color-mint:           #ACF0DE;
+  --color-mint-dark:      #10B981;
 
-  --color-slate-900:       #111827;
-  --color-slate-600:       #4B5563;
-  --color-slate-400:       #9CA3AF;
+  --color-gold:           #FDE68A;
+  --color-gold-dark:      #F59E0B;
 
-  --color-border:          #F3F4F6;
-  
-  /* Chart Colors */
-  --color-chart-1:         #7C3AED;
-  --color-chart-2:         #10B981;
-  --color-chart-3:         #F59E0B;
+  --color-pink:           #FBCFE8;
+  --color-pink-dark:      #EC4899;
 
-  /* Shadows */
-  --shadow-fox:            0 4px 20px rgba(0, 0, 0, 0.03);
-  --shadow-fox-lg:         0 10px 40px rgba(0, 0, 0, 0.06);
+  --color-slate-900:      #111827;
+  --color-slate-600:      #4B5563;
+  --color-slate-400:      #9CA3AF;
 
-  /* Radius */
-  --radius-fox:            1.5rem;
-  --radius-fox-lg:         2.5rem;
+  --color-border:         #F3F4F6;
+
+  /* ── InternBridge Dark Palette ── */
+  --color-ink:            #0a0a0a;   /* deepest dark background */
+  --color-ink-2:          #141414;   /* section background variant */
+  --color-paper:          #f4f1eb;   /* warm off-white text on dark */
+  --color-paper-2:        #ede9e0;   /* slightly deeper warm white */
+  --color-acid:           #c8f53b;   /* primary accent — acid green */
+  --color-acid-dark:      #b8e22a;   /* hover state of acid green */
+  --color-muted:          #6b6660;   /* muted text on light backgrounds */
+  --color-border-warm:    #d4cfc6;   /* warm border for light sections */
+
+  /* ── Chart Colors ── */
+  --color-chart-1:        #7C3AED;
+  --color-chart-2:        #10B981;
+  --color-chart-3:        #F59E0B;
+  --color-chart-4:        #c8f53b;   /* acid green for dark charts */
+
+  /* ── Shadows ── */
+  --shadow-fox:           0 4px 20px rgba(0, 0, 0, 0.03);
+  --shadow-fox-lg:        0 10px 40px rgba(0, 0, 0, 0.06);
+  --shadow-ink:           0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-acid:          0 0 24px rgba(200, 245, 59, 0.2);
+
+  /* ── Radius ── */
+  --radius-fox:           1.5rem;
+  --radius-fox-lg:        2.5rem;
+  --radius-pill:          9999px;
 }
 
 /* ─────────────────────────────────── BASE ─────────────────────────────────── */
@@ -55,10 +70,19 @@
     --accent:     var(--color-brand);
   }
 
+  /* Dark mode root — apply to any wrapper with class="dark" or data-theme="dark" */
+  .dark, [data-theme="dark"] {
+    --background: var(--color-ink);
+    --surface:    var(--color-ink-2);
+    --text:       var(--color-paper);
+    --border:     rgba(255, 255, 255, 0.07);
+    --accent:     var(--color-acid);
+  }
+
   body {
     background-color: var(--background);
     color: var(--text);
-    font-size: 13px; /* Reduced for density */
+    font-size: 13px;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -70,32 +94,221 @@
 
 /* ─────────────────────────────────── UTILITIES ─────────────────────────────────── */
 @layer utilities {
+
+  /* ── Existing light cards ── */
   .fox-card {
     @apply bg-white rounded-fox border border-slate-50 shadow-fox transition-all duration-300;
   }
-  
+
   .fox-card-lg {
     @apply bg-white rounded-fox-lg border border-slate-50 shadow-fox-lg;
   }
 
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  /* ── InternBridge dark cards ── */
+  .ink-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: var(--radius-fox);
+    backdrop-filter: blur(10px);
+    transition: border-color 0.2s ease, transform 0.2s ease;
   }
+
+  .ink-card:hover {
+    border-color: rgba(200, 245, 59, 0.25);
+    transform: translateY(-2px);
+  }
+
+  /* Solid dark card (no glass) */
+  .ink-card-solid {
+    background: var(--color-ink-2);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: var(--radius-fox);
+    transition: border-color 0.2s ease;
+  }
+
+  /* Acid-green highlight card */
+  .acid-card {
+    background: var(--color-acid);
+    border-radius: var(--radius-fox);
+    color: var(--color-ink);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .acid-card:hover {
+    background: var(--color-acid-dark);
+    transform: translateY(-2px);
+  }
+
+  /* ── Buttons ── */
+  .btn-acid {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 10px 24px;
+    border-radius: var(--radius-pill);
+    background: var(--color-acid);
+    color: var(--color-ink);
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s ease, transform 0.18s ease;
+    text-decoration: none;
+  }
+
+  .btn-acid:hover {
+    background: var(--color-acid-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-ink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 10px 24px;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-paper);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease;
+    text-decoration: none;
+  }
+
+  .btn-ink:hover {
+    border-color: var(--color-acid);
+    color: var(--color-acid);
+  }
+
+  /* ── Typography helpers for dark sections ── */
+  .text-paper   { color: var(--color-paper); }
+  .text-paper-2 { color: var(--color-paper-2); }
+  .text-acid    { color: var(--color-acid); }
+  .text-muted-warm { color: var(--color-muted); }
+
+  /* ── Status chips (pipeline) ── */
+  .chip-applied    { background: #f0eeff; color: #534AB7; }
+  .chip-reviewing  { background: #e0f5ef; color: #0a6048; }
+  .chip-interview  { background: #fef3e2; color: #8a5200; }
+  .chip-hired      { background: #e8f5d8; color: #3a6910; }
+  .chip-rejected   { background: #fdeaea; color: #c0292a; }
+
+  /* Base chip style */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+  }
+
+  /* ── Marquee ── */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 24s linear infinite;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ── Scroll reveal ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── Logo hex shape ── */
+  .logo-hex {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--color-acid);
+  }
+
+  /* ── Glow effects ── */
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+  }
+
+  .glow-acid {
+    box-shadow: 0 0 24px rgba(200, 245, 59, 0.2);
+  }
+
+  /* ── Outlined text (hero effect) ── */
+  .text-outlined {
+    -webkit-text-stroke: 1.5px rgba(244, 241, 235, 0.5);
+    color: transparent;
+  }
+
+  .text-outlined-ink {
+    -webkit-text-stroke: 1.5px var(--color-ink);
+    color: transparent;
+  }
+
+  /* ── Noise overlay (apply to a ::before pseudo on sections) ── */
+  .noise-overlay {
+    position: relative;
+  }
+
+  .noise-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 0;
+  }
+
+  /* ── Grid overlay (CTA section texture) ── */
+  .grid-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.025) 0px, rgba(0,0,0,0.025) 1px, transparent 1px, transparent 72px),
+      repeating-linear-gradient(0deg,  rgba(0,0,0,0.025) 0px, rgba(0,0,0,0.025) 1px, transparent 1px, transparent 72px);
+    pointer-events: none;
+  }
+
+  /* ── Scrollbar hide ── */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
 
-  .glow-purple {
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
-  }
-
+  /* ── Animations ── */
   .animate-fade-in {
     animation: fadeIn 0.4s ease-out forwards;
   }
 
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 }

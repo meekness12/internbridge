@@ -25,7 +25,7 @@ export const PremiumTimeline: React.FC<PremiumTimelineProps> = ({
   actionLabel = "Full Audit Log"
 }) => {
   return (
-    <div className="card bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm h-full">
+    <div className="card bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm h-full">
       <div className="p-6 border-b border-slate-50 flex items-center justify-between">
         <div>
           <div className="text-[13px] font-bold text-[var(--color-navy)]">{title}</div>
@@ -48,7 +48,7 @@ export const PremiumTimeline: React.FC<PremiumTimelineProps> = ({
               <div>
                 <div className="text-sm font-bold text-[var(--color-navy)]">{item.title}</div>
                 <div className="text-[10px] font-mono font-bold text-slate-400 mt-1 uppercase tracking-wider">{item.meta}</div>
-                <div className="text-[12px] text-slate-500 mt-2 leading-relaxed max-w-2xl">{item.body}</div>
+                <div className="text-[12px] text-[var(--color-muted)] mt-2 leading-relaxed max-w-2xl">{item.body}</div>
               </div>
             </div>
           ))}

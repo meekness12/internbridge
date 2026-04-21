@@ -24,13 +24,13 @@ export const PremiumCard: React.FC<PremiumCardProps> = ({
   alert = false
 }) => {
   return (
-    <div className={`kpi ${kpiColor} bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden group`}>
-      <div className={`kpi-icon ${color} w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-4 bg-slate-50 border border-slate-100 transition-transform group-hover:scale-110`}>
+    <div className={`kpi ${kpiColor} bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden group`}>
+      <div className={`kpi-icon ${color} w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-4 bg-[var(--background)] border border-[var(--border)] transition-transform group-hover:scale-110`}>
         {icon}
       </div>
-      <div className="kpi-label text-[9px] font-mono font-bold text-slate-500 uppercase tracking-widest mb-1.5">{label}</div>
+      <div className="kpi-label text-[9px] font-mono font-bold text-[var(--color-muted)] uppercase tracking-widest mb-1.5">{label}</div>
       <div className="kpi-val text-3xl font-serif font-black text-[var(--color-navy)] leading-none -tracking-tight">{value}</div>
-      <div className={`kpi-delta mt-3.5 text-[10px] font-mono font-bold ${trend.includes('↑') ? 'text-emerald-700' : 'text-slate-500'}`}>
+      <div className={`kpi-delta mt-3.5 text-[10px] font-mono font-bold ${trend.includes('↑') ? 'text-emerald-700' : 'text-[var(--color-muted)]'}`}>
         {trend}
       </div>
       {alert && <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-red-600 animate-pulse"></div>}

@@ -121,8 +121,8 @@ const SuperAdminDashboard: React.FC = () => {
         
         {/* 2. Greetings Row */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-0">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-tight">
-            Good Morning, <span className="text-[var(--color-brand)]">Admin!</span> 👋
+          <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text)] tracking-tight leading-tight">
+            Good Morning, <span className="text-[var(--accent)]">Admin!</span> 👋
           </h2>
           <button className="h-12 w-full sm:w-auto px-6 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center sm:justify-start gap-3 shadow-xl hover:bg-black transition-all">
             System Overview <ChevronDown size={16} className="text-slate-400" />
@@ -134,7 +134,7 @@ const SuperAdminDashboard: React.FC = () => {
           {kpis.map((kpi, i) => (
             <div key={i} className={`${kpi.bgColor} p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-hrm border border-white/50 flex flex-col justify-between group hover:scale-[1.02] transition-transform duration-500`}>
               <div className="flex items-start justify-between mb-4 sm:mb-6">
-                <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white flex items-center justify-center ${kpi.iconColor} shadow-sm group-hover:rotate-6 transition-transform`}>
+                <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-[var(--surface)] flex items-center justify-center ${kpi.iconColor} shadow-sm group-hover:rotate-6 transition-transform`}>
                   {i === 0 ? <Building2 size={20} className="sm:w-6 sm:h-6" /> : i === 1 ? <Users size={20} className="sm:w-6 sm:h-6" /> : i === 2 ? <Briefcase size={20} className="sm:w-6 sm:h-6" /> : <ShieldAlert size={20} className="sm:w-6 sm:h-6" />}
                 </div>
                 <div className="hidden sm:flex flex-col items-end">
@@ -156,10 +156,10 @@ const SuperAdminDashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Real Summary Column */}
-          <div className="lg:col-span-6 bg-white rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
+          <div className="lg:col-span-6 bg-[var(--surface)] rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
             <div className="flex items-center justify-between mb-8">
-               <h3 className="text-lg font-bold text-slate-900 tracking-tight">Platform Statistics</h3>
-               <button className="text-slate-300 hover:text-slate-900 transition-colors"><MoreVertical size={20} /></button>
+               <h3 className="text-lg font-bold text-[var(--text)] tracking-tight">Platform Statistics</h3>
+               <button className="text-slate-300 hover:text-[var(--text)] transition-colors"><MoreVertical size={20} /></button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
@@ -168,33 +168,33 @@ const SuperAdminDashboard: React.FC = () => {
                 { label: 'Academic Auditors', value: (roleDistribution['SUPERVISOR'] || 0).toString(), color: 'bg-rose-50 text-rose-500', icon: <Briefcase size={16} /> },
                 { label: 'Institutional Admins', value: (roleDistribution['SCHOOL_ADMIN'] || 0).toString(), color: 'bg-indigo-50 text-indigo-500', icon: <Database size={16} /> },
               ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-6 rounded-3xl bg-slate-50/50 hover:bg-slate-50 transition-colors group">
+                <div key={i} className="flex items-center justify-between p-6 rounded-3xl bg-[var(--background)]/50 hover:bg-[var(--background)] transition-colors group">
                    <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 ${item.color} rounded-xl flex items-center justify-center transition-transform group-hover:scale-110`}>
                         {item.icon}
                       </div>
-                      <span className="text-sm font-bold text-slate-600 tracking-tight">{item.label}</span>
+                      <span className="text-sm font-bold text-[var(--color-muted)] tracking-tight">{item.label}</span>
                    </div>
-                   <span className="text-lg font-black text-slate-900">{item.value}</span>
+                   <span className="text-lg font-black text-[var(--text)]">{item.value}</span>
                 </div>
               ))}
             </div>
-            <div className="mt-8 p-6 bg-[var(--color-brand)]/5 rounded-3xl border border-[var(--color-brand)]/10 flex items-center justify-between">
+            <div className="mt-8 p-6 bg-[var(--accent)]/5 rounded-3xl border border-[var(--accent)]/10 flex items-center justify-between">
                <div className="flex items-center gap-4">
-                  <TrendingUp className="text-[var(--color-brand)]" size={24} />
+                  <TrendingUp className="text-[var(--accent)]" size={24} />
                   <div>
                     <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Placement Velocity</div>
-                    <div className="text-sm font-bold text-slate-900">Optimal Growth Pattern Detected</div>
+                    <div className="text-sm font-bold text-[var(--text)]">Optimal Growth Pattern Detected</div>
                   </div>
                </div>
-               <div className="text-2xl font-black text-[var(--color-brand)]">{placementRate}%</div>
+               <div className="text-2xl font-black text-[var(--accent)]">{placementRate}%</div>
             </div>
           </div>
 
           {/* Real Population Distribution */}
-          <div className="lg:col-span-6 bg-white rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
+          <div className="lg:col-span-6 bg-[var(--surface)] rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
             <div className="flex items-center justify-between mb-8">
-               <h3 className="text-lg font-bold text-slate-900 tracking-tight">Population Distribution</h3>
+               <h3 className="text-lg font-bold text-[var(--text)] tracking-tight">Population Distribution</h3>
                <div className="px-3 py-1 bg-slate-900 text-white rounded-lg text-[10px] font-black uppercase flex items-center gap-2">
                   Live Registry <ChevronDown size={12} />
                </div>
@@ -216,7 +216,7 @@ const SuperAdminDashboard: React.FC = () => {
                </svg>
                <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Intern %</span>
-                  <span className="text-5xl font-black text-slate-900 tracking-tighter">
+                  <span className="text-5xl font-black text-[var(--text)] tracking-tighter">
                     {totalUserCount > 0 ? Math.round((roleDistribution['INTERN'] || 0) / totalUserCount * 100) : 0}%
                   </span>
                </div>
@@ -234,7 +234,7 @@ const SuperAdminDashboard: React.FC = () => {
                        <div className={`w-3 h-3 rounded-full ${l.color} shadow-sm`}></div>
                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{l.label}</span>
                     </div>
-                    <span className="text-xs font-black text-slate-900">{l.val}</span>
+                    <span className="text-xs font-black text-[var(--text)]">{l.val}</span>
                  </div>
                ))}
             </div>
@@ -245,9 +245,9 @@ const SuperAdminDashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* Real Audit Tasks Table */}
-          <div className="bg-white rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
+          <div className="bg-[var(--surface)] rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
             <div className="flex items-center justify-between mb-8">
-               <h3 className="text-lg font-bold text-slate-900 tracking-tight">System Audit Log</h3>
+               <h3 className="text-lg font-bold text-[var(--text)] tracking-tight">System Audit Log</h3>
                <div className="px-4 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg">
                   Recent <ChevronDown size={14} />
                </div>
@@ -264,9 +264,9 @@ const SuperAdminDashboard: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {auditLogs.slice(0, 5).map((log, i) => (
-                    <tr key={i} className="group hover:bg-slate-50/50 transition-colors">
+                    <tr key={i} className="group hover:bg-[var(--background)]/50 transition-colors">
                       <td className="py-5">
-                         <div className="flex items-center gap-3 text-sm font-bold text-slate-900 tracking-tight group-hover:text-[var(--color-teal)] transition-colors">
+                         <div className="flex items-center gap-3 text-sm font-bold text-[var(--text)] tracking-tight group-hover:text-[var(--color-teal)] transition-colors">
                             <input type="checkbox" checked={log.status === 'SUCCESS'} readOnly className="w-4 h-4 rounded border-slate-300 text-[var(--color-teal)] focus:ring-0" />
                             {log.action}
                          </div>
@@ -294,9 +294,9 @@ const SuperAdminDashboard: React.FC = () => {
           </div>
 
           {/* Real Verification Queue Table */}
-          <div className="bg-white rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
+          <div className="bg-[var(--surface)] rounded-[2.5rem] p-10 shadow-hrm border border-slate-50">
             <div className="flex items-center justify-between mb-8">
-               <h3 className="text-lg font-bold text-slate-900 tracking-tight">Active Verifications</h3>
+               <h3 className="text-lg font-bold text-[var(--text)] tracking-tight">Active Verifications</h3>
                <div className="px-4 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg">
                   Global <ChevronDown size={14} />
                </div>
@@ -313,13 +313,13 @@ const SuperAdminDashboard: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {users.slice(0, 5).map((user, i) => (
-                    <tr key={i} className="group hover:bg-slate-50/50 transition-colors">
+                    <tr key={i} className="group hover:bg-[var(--background)]/50 transition-colors">
                       <td className="py-5">
                          <div className="flex items-center gap-4">
                             <div className="w-8 h-8 rounded-full bg-slate-900 text-white text-[10px] flex items-center justify-center font-bold">
                                {user.name[0]}
                             </div>
-                            <span className="text-sm font-bold text-slate-900 tracking-tight">{user.name}</span>
+                            <span className="text-sm font-bold text-[var(--text)] tracking-tight">{user.name}</span>
                          </div>
                       </td>
                       <td className="py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{user.role.replace('_', ' ')}</td>

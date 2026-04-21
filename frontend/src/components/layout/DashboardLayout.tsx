@@ -72,14 +72,14 @@ const DashboardLayout: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen flex bg-[#F8F9FB] font-sans text-slate-900">
+    <div className="min-h-screen flex bg-[var(--background)] font-sans text-[var(--text)]">
       
       {/* ── Sidebar (White & Minimalist) ── */}
-      <aside className="w-60 bg-white border-r border-slate-100 flex flex-col fixed inset-y-0 z-[100] hidden lg:flex">
+      <aside className="w-60 bg-[var(--surface)] border-r border-[var(--border)] flex flex-col fixed inset-y-0 z-[100] hidden lg:flex">
          <div className="p-8 mb-4">
             <Link to="/dashboard" className="flex items-center gap-3 no-underline group">
-               <div className="w-8 h-8 bg-[var(--color-brand)] rounded-lg flex items-center justify-center text-white font-black text-lg shadow-lg">i</div>
-               <span className="text-xl font-bold tracking-tight text-slate-900">InternLink</span>
+               <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center text-white font-black text-lg shadow-lg">i</div>
+               <span className="text-xl font-bold tracking-tight text-[var(--text)]">InternLink</span>
             </Link>
          </div>
 
@@ -95,12 +95,12 @@ const DashboardLayout: React.FC = () => {
                            to={item.path} 
                            className={`flex items-center gap-4 px-4 h-12 rounded-2xl transition-all no-underline text-sm font-semibold ${
                               isActive 
-                                 ? 'bg-[var(--color-brand-light)] text-[var(--color-brand)]' 
-                                 : 'text-slate-500 hover:bg-slate-50'
+                                 ? 'bg-[var(--color-brand-light)] text-[var(--accent)]' 
+                                 : 'text-[var(--color-muted)] hover:bg-[var(--background)]'
                            }`}
                         >
                            {/* @ts-expect-error: Lucide icon props are not explicitly typed for cloning */}
-                           {React.cloneElement(item.icon as React.ReactElement, { className: isActive ? 'text-[var(--color-brand)]' : 'text-slate-400' })}
+                           {React.cloneElement(item.icon as React.ReactElement, { className: isActive ? 'text-[var(--accent)]' : 'text-slate-400' })}
                            <span>{item.label}</span>
                         </Link>
                      );
@@ -111,11 +111,11 @@ const DashboardLayout: React.FC = () => {
             {/* Bottom Section Card (Foxstocks inspired) */}
             <div className="mt-auto mb-8 px-4">
                <div className="bg-[#F3FCE2] rounded-[2rem] p-6 relative overflow-hidden group">
-                  <div className="w-10 h-10 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center mb-4">
+                  <div className="w-10 h-10 rounded-full bg-[var(--surface)]/50 backdrop-blur-sm flex items-center justify-center mb-4">
                      <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></div>
                   </div>
                   <h4 className="text-sm font-bold text-slate-800 mb-2 leading-tight">Thoughts Time</h4>
-                  <p className="text-[11px] text-slate-600 leading-relaxed font-medium">Efficient talent mapping requires focus. Sync your logs daily.</p>
+                  <p className="text-[11px] text-[var(--color-muted)] leading-relaxed font-medium">Efficient talent mapping requires focus. Sync your logs daily.</p>
                </div>
             </div>
          </div>
@@ -134,32 +134,32 @@ const DashboardLayout: React.FC = () => {
       {/* ── Main Content Area ── */}
       <div className="flex-1 flex flex-col lg:pl-60">
          {/* Topbar: Clean & Minimalist */}
-         <header className="h-16 flex items-center justify-between px-8 sticky top-0 z-[90] bg-[#F8F9FB]/80 backdrop-blur-md">
-            <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+         <header className="h-16 flex items-center justify-between px-8 sticky top-0 z-[90] bg-[var(--background)]/80 backdrop-blur-md">
+            <h2 className="text-xl font-bold text-[var(--text)] tracking-tight">
                Hello {userProfile?.name?.split(' ')[0] || 'User'},
             </h2>
 
             <div className="flex items-center gap-8">
                <div className="relative group hidden md:block">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--color-brand)] transition-colors" size={18} />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[var(--accent)] transition-colors" size={18} />
                   <input 
                     type="text" 
                     placeholder="Search for applications..."
-                    className="w-80 h-11 bg-slate-200/50 border-none rounded-2xl pl-12 pr-6 text-sm font-medium outline-none focus:bg-white focus:ring-4 focus:ring-[var(--color-brand)]/5 transition-all"
+                    className="w-80 h-11 bg-slate-200/50 border-none rounded-2xl pl-12 pr-6 text-sm font-medium outline-none focus:bg-[var(--surface)] focus:ring-4 focus:ring-[var(--accent)]/5 transition-all"
                   />
                </div>
                
                <div className="flex items-center gap-4">
-                  <button className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center text-slate-400 hover:text-slate-900 shadow-sm">
+                  <button className="w-11 h-11 rounded-2xl bg-[var(--surface)] flex items-center justify-center text-slate-400 hover:text-[var(--text)] shadow-sm">
                      <Bell size={20} />
                   </button>
                   <div className="relative">
                      <button 
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
-                        className="w-11 h-11 rounded-2xl bg-white overflow-hidden shadow-sm border border-slate-50 p-0.5"
+                        className="w-11 h-11 rounded-2xl bg-[var(--surface)] overflow-hidden shadow-sm border border-slate-50 p-0.5"
                      >
                         <div className={`w-full h-full rounded-2xl flex items-center justify-center text-white font-black text-xs ${
-                           isCompany ? 'bg-amber-500' : 'bg-[var(--color-brand)]'
+                           isCompany ? 'bg-amber-500' : 'bg-[var(--accent)]'
                         }`}>
                            {userProfile?.name ? userProfile.name.split(' ').map((n: string) => n[0]).join('') : 'IB'}
                         </div>
@@ -171,7 +171,7 @@ const DashboardLayout: React.FC = () => {
                            name: userProfile?.name || 'Aisha Ibrahim',
                            role: userProfile?.role?.replace('_', ' ') || role.replace('_', ' '),
                            initials: userProfile?.name ? userProfile.name.split(' ').map((n: string) => n[0]).join('') : 'AI',
-                           avatarColor: isCompany ? 'bg-amber-500' : 'bg-[var(--color-brand)]'
+                           avatarColor: isCompany ? 'bg-amber-500' : 'bg-[var(--accent)]'
                         }}
                      />
                   </div>
@@ -186,7 +186,7 @@ const DashboardLayout: React.FC = () => {
       </div>
 
       {/* Mobile Nav: Simplified Bottom Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[150] bg-white border-t border-slate-100 flex items-center justify-around h-16 pb-safe px-4 shadow-lg">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[150] bg-[var(--surface)] border-t border-[var(--border)] flex items-center justify-around h-16 pb-safe px-4 shadow-lg">
          {navItems.slice(0, 4).map((item, idx) => {
             const isActive = location.pathname === item.path;
             return (
@@ -194,7 +194,7 @@ const DashboardLayout: React.FC = () => {
                   key={idx} 
                   to={item.path} 
                   className={`flex flex-col items-center justify-center gap-1 transition-all ${
-                     isActive ? 'text-[var(--color-brand)]' : 'text-slate-400'
+                     isActive ? 'text-[var(--accent)]' : 'text-slate-400'
                   }`}
                >
                   {/* @ts-expect-error: Lucide icon props are not explicitly typed for cloning */}

@@ -32,10 +32,10 @@ const IndustryPartners: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {partners.map((p, i) => (
-          <div key={i} className="card group bg-white border border-slate-200 rounded-2xl p-8 hover:border-[var(--color-gold)] transition-all relative overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-xl">
+          <div key={i} className="card group bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 hover:border-[var(--color-gold)] transition-all relative overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-xl">
              <div>
                 <div className="flex justify-between items-start mb-8">
-                   <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-[var(--color-navy)] font-serif font-bold text-xl group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-inner">
+                   <div className="w-14 h-14 bg-[var(--background)] border border-[var(--border)] rounded-2xl flex items-center justify-center text-[var(--color-navy)] font-serif font-bold text-xl group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-inner">
                       {p.logo}
                    </div>
                    <div className={`px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-[0.2em] border ${
@@ -47,10 +47,10 @@ const IndustryPartners: React.FC = () => {
                 <div className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-widest mb-6 opacity-60">{p.sector}</div>
                 
                 <div className="space-y-4">
-                   <div className="flex items-center gap-3 text-xs font-bold text-slate-500">
+                   <div className="flex items-center gap-3 text-xs font-bold text-[var(--color-muted)]">
                       <MapPin size={14} className="text-[var(--color-gold)]" /> {p.location}
                    </div>
-                   <div className="flex items-center gap-3 text-xs font-bold text-slate-500">
+                   <div className="flex items-center gap-3 text-xs font-bold text-[var(--color-muted)]">
                       <Calendar size={14} className="text-[var(--color-gold)]" /> Renewal: {p.renewal}
                    </div>
                 </div>
@@ -61,15 +61,15 @@ const IndustryPartners: React.FC = () => {
                   <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">Active Placements</div>
                   <div className="text-lg font-serif font-bold text-[var(--color-navy)]">{p.interns}</div>
                 </div>
-                <button className="h-10 w-10 bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center text-slate-300 group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-sm">
+                <button className="h-10 w-10 bg-[var(--background)] border border-[var(--border)] rounded-full flex items-center justify-center text-slate-300 group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-sm">
                    <ArrowUpRight size={18} />
                 </button>
              </div>
           </div>
         ))}
         
-        <div className="card border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center gap-6 group hover:border-[var(--color-gold)] transition-all cursor-pointer bg-[#FDFCF9]/50">
-           <div className="w-16 h-16 bg-white border border-slate-100 rounded-full flex items-center justify-center text-slate-200 group-hover:text-[var(--color-gold)] group-hover:scale-110 transition-all shadow-sm">
+        <div className="card border-2 border-dashed border-[var(--border)] rounded-2xl p-8 flex flex-col items-center justify-center gap-6 group hover:border-[var(--color-gold)] transition-all cursor-pointer bg-[#FDFCF9]/50">
+           <div className="w-16 h-16 bg-[var(--surface)] border border-[var(--border)] rounded-full flex items-center justify-center text-slate-200 group-hover:text-[var(--color-gold)] group-hover:scale-110 transition-all shadow-sm">
               <Plus size={32} />
            </div>
            <div className="text-center">

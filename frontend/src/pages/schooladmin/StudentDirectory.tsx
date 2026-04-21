@@ -49,7 +49,7 @@ const StudentDirectory: React.FC = () => {
         }
       />
 
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[var(--surface)] p-4 rounded-2xl border border-[var(--border)] shadow-sm">
         <div className="relative group w-full md:w-96">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[var(--color-gold)] transition-colors" size={18} />
           <input 
@@ -57,25 +57,25 @@ const StudentDirectory: React.FC = () => {
             placeholder="Search by name, student ID, or department..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-11 bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)] transition-all"
+            className="w-full h-11 bg-[var(--background)] border border-[var(--border)] rounded-xl pl-12 pr-5 text-xs outline-none focus:ring-1 focus:ring-[var(--color-gold)] transition-all"
           />
         </div>
         <div className="flex gap-3 w-full md:w-auto">
-          <button className="flex-1 md:flex-none h-11 px-5 flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 transition-all">
+          <button className="flex-1 md:flex-none h-11 px-5 flex items-center justify-center gap-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-[10px] font-bold uppercase tracking-widest text-[var(--color-muted)] hover:bg-[var(--background)] transition-all">
             <Filter size={16} /> Filters
           </button>
           <div className="h-11 w-[1px] bg-slate-100 hidden md:block mx-1"></div>
-          <div className="flex bg-slate-50 p-1 rounded-xl">
-            <button className="px-4 py-1.5 bg-white shadow-sm rounded-lg text-[10px] font-black uppercase text-[var(--color-navy)]">All</button>
-            <button className="px-4 py-1.5 text-[10px] font-black uppercase text-slate-400 hover:text-slate-600">Placed</button>
+          <div className="flex bg-[var(--background)] p-1 rounded-xl">
+            <button className="px-4 py-1.5 bg-[var(--surface)] shadow-sm rounded-lg text-[10px] font-black uppercase text-[var(--color-navy)]">All</button>
+            <button className="px-4 py-1.5 text-[10px] font-black uppercase text-slate-400 hover:text-[var(--color-muted)]">Placed</button>
           </div>
         </div>
       </div>
 
-      <div className="card shadow-sm border border-slate-200 rounded-2xl overflow-hidden bg-white">
+      <div className="card shadow-sm border border-[var(--border)] rounded-2xl overflow-hidden bg-[var(--surface)]">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-slate-50/50 border-b border-slate-100">
+            <tr className="bg-[var(--background)]/50 border-b border-[var(--border)]">
               <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Student Identity</th>
               <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Academic Cluster</th>
               <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Residency Status</th>
@@ -86,10 +86,10 @@ const StudentDirectory: React.FC = () => {
           </thead>
           <tbody className="divide-y divide-slate-50">
             {students.map((student) => (
-              <tr key={student.id} className="group hover:bg-slate-50/50 transition-colors cursor-pointer">
+              <tr key={student.id} className="group hover:bg-[var(--background)]/50 transition-colors cursor-pointer">
                 <td className="px-8 py-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-[var(--color-navy)] font-bold text-xs group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-inner">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-[var(--color-navy)] font-bold text-xs group-hover:bg-[var(--color-navy)] group-hover:text-white transition-all shadow-inner">
                       {student.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
@@ -100,7 +100,7 @@ const StudentDirectory: React.FC = () => {
                 </td>
                 <td className="px-8 py-6">
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-tighter leading-none">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[var(--color-muted)] uppercase tracking-tighter leading-none">
                       <GraduationCap size={14} className="text-indigo-400" /> {student.department}
                     </div>
                     <div className="flex items-center gap-2 text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none">
@@ -117,7 +117,7 @@ const StudentDirectory: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-8 py-6">
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-500 italic">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[var(--color-muted)] italic">
                     <Building2 size={14} className="text-slate-300" /> {student.company}
                   </div>
                 </td>

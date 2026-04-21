@@ -60,7 +60,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-white font-sans text-slate-900 overflow-hidden">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[var(--surface)] font-sans text-[var(--text)] overflow-hidden">
       
       {/* Left Column: Illustrative Hero */}
       <div className="hidden lg:flex flex-col w-[60%] bg-[#FFF5EE] relative p-20 items-center justify-center overflow-hidden">
@@ -75,10 +75,10 @@ const Login: React.FC = () => {
            />
            
            <div className="mt-16 space-y-4">
-              <h1 className="text-5xl font-bold tracking-tight text-slate-900 break-words max-w-lg mx-auto leading-tight">
-                 Elevate your <span className="text-[var(--color-brand)]">career trajectory.</span>
+              <h1 className="text-5xl font-bold tracking-tight text-[var(--text)] break-words max-w-lg mx-auto leading-tight">
+                 Elevate your <span className="text-[var(--accent)]">career trajectory.</span>
               </h1>
-              <p className="text-slate-500 font-medium text-lg max-w-sm mx-auto leading-relaxed">
+              <p className="text-[var(--color-muted)] font-medium text-lg max-w-sm mx-auto leading-relaxed">
                  Join the verified registry for global talent and academic excellence.
               </p>
            </div>
@@ -86,16 +86,16 @@ const Login: React.FC = () => {
       </div>
 
       {/* Right Column: Functional Authentication */}
-      <div className="flex-1 flex flex-col justify-center items-center p-8 md:p-20 relative bg-white">
+      <div className="flex-1 flex flex-col justify-center items-center p-8 md:p-20 relative bg-[var(--surface)]">
         <div className="w-full max-w-[420px] animate-fade-up">
           
           {/* Mobile Identity */}
           <div className="lg:hidden flex justify-center mb-12">
-            <div className="w-14 h-14 bg-[var(--color-brand)] rounded-2xl flex items-center justify-center text-white font-serif font-black text-xl shadow-xl">IB</div>
+            <div className="w-14 h-14 bg-[var(--accent)] rounded-2xl flex items-center justify-center text-white font-serif font-black text-xl shadow-xl">IB</div>
           </div>
 
           <div className="mb-12">
-             <h2 className="text-4xl font-bold text-slate-900 mb-2">Login to your Account</h2>
+             <h2 className="text-4xl font-bold text-[var(--text)] mb-2">Login to your Account</h2>
              <p className="text-slate-400 text-sm font-medium">Verify your credentials to continue your journey.</p>
           </div>
 
@@ -107,15 +107,15 @@ const Login: React.FC = () => {
             )}
             
             {/* Google SSO Placeholder */}
-            <button type="button" className="w-full h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center gap-4 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
+            <button type="button" className="w-full h-14 bg-[var(--surface)] border border-[var(--border)] rounded-xl flex items-center justify-center gap-4 text-xs font-bold text-[var(--color-muted)] hover:bg-[var(--background)] transition-all shadow-sm">
                <img src="https://www.google.com/favicon.ico" alt="G" className="w-4 h-4" />
                Continue with Google Cloud
             </button>
 
             <div className="relative flex items-center py-2">
-               <div className="flex-grow border-t border-slate-100"></div>
+               <div className="flex-grow border-t border-[var(--border)]"></div>
                <span className="flex-shrink mx-4 text-[9px] font-black text-slate-300 uppercase tracking-widest">or sign in with email</span>
-               <div className="flex-grow border-t border-slate-100"></div>
+               <div className="flex-grow border-t border-[var(--border)]"></div>
             </div>
 
             <div className="space-y-3">
@@ -126,7 +126,7 @@ const Login: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="mail@abc.com" 
-                  className="w-full h-14 bg-slate-50 border border-slate-100 rounded-xl px-6 text-sm font-medium focus:bg-white focus:border-[var(--color-brand)] outline-none transition-all placeholder:text-slate-300 shadow-sm"
+                  className="w-full h-14 bg-[var(--background)] border border-[var(--border)] rounded-xl px-6 text-sm font-medium focus:bg-[var(--surface)] focus:border-[var(--accent)] outline-none transition-all placeholder:text-slate-300 shadow-sm"
                   required
                 />
               </div>
@@ -135,7 +135,7 @@ const Login: React.FC = () => {
             <div className="space-y-3">
               <div className="flex justify-between items-center px-1">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] block">Password</label>
-                <button type="button" className="text-[10px] font-bold text-[var(--color-brand)] hover:underline transition-all">Forgot Password?</button>
+                <button type="button" className="text-[10px] font-bold text-[var(--accent)] hover:underline transition-all">Forgot Password?</button>
               </div>
               <div className="relative group/input">
                 <input 
@@ -143,13 +143,13 @@ const Login: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••" 
-                  className="w-full h-14 bg-slate-50 border border-slate-100 rounded-xl px-6 text-sm font-medium focus:bg-white focus:border-[var(--color-brand)] outline-none transition-all placeholder:text-slate-300 shadow-sm font-mono tracking-widest"
+                  className="w-full h-14 bg-[var(--background)] border border-[var(--border)] rounded-xl px-6 text-sm font-medium focus:bg-[var(--surface)] focus:border-[var(--accent)] outline-none transition-all placeholder:text-slate-300 shadow-sm font-mono tracking-widest"
                   required
                 />
                 <button 
                   type="button" 
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-900 transition-colors"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-[var(--text)] transition-colors"
                 >
                   {showPassword ? <Sparkles size={18} /> : <Eye size={18} />}
                 </button>
@@ -159,17 +159,17 @@ const Login: React.FC = () => {
             <div className="flex items-center justify-between px-1">
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <div className="relative flex items-center">
-                    <input type="checkbox" className="peer appearance-none w-4 h-4 bg-white border border-slate-200 rounded checked:bg-[var(--color-brand)] checked:border-[var(--color-brand)] transition-all cursor-pointer" />
+                    <input type="checkbox" className="peer appearance-none w-4 h-4 bg-[var(--surface)] border border-[var(--border)] rounded checked:bg-[var(--accent)] checked:border-[var(--accent)] transition-all cursor-pointer" />
                     <CheckCircle2 size={10} className="absolute inset-0 m-auto text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
                   </div>
-                  <span className="text-[11px] text-slate-400 font-medium group-hover:text-slate-600 transition-colors">Remember Me</span>
+                  <span className="text-[11px] text-slate-400 font-medium group-hover:text-[var(--color-muted)] transition-colors">Remember Me</span>
                 </label>
             </div>
 
             <button 
               type="submit" 
               disabled={isLoading}
-              className="w-full h-16 bg-[var(--color-brand)] hover:bg-[#4338CA] text-white rounded-xl text-[12px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-4 transition-all shadow-xl shadow-indigo-500/10 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+              className="w-full h-16 bg-[var(--accent)] hover:bg-[#4338CA] text-white rounded-xl text-[12px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-4 transition-all shadow-xl shadow-indigo-500/10 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
             >
               {isLoading ? (
                 <RefreshCw size={24} className="animate-spin text-white" />
@@ -187,7 +187,7 @@ const Login: React.FC = () => {
                Don't have an account?{' '}
                <button 
                  onClick={() => navigate('/register')}
-                 className="text-[var(--color-brand)] font-extrabold hover:underline"
+                 className="text-[var(--accent)] font-extrabold hover:underline"
                >
                  Create an Account
                </button>
