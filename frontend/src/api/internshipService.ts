@@ -8,6 +8,10 @@ export interface InternshipDTO {
   status: string;
   deadline: string;
   companyName: string;
+  location?: string;
+  stipend?: string;
+  duration?: string;
+  type?: 'REMOTE' | 'HYBRID' | 'ON_SITE';
 }
 
 export interface InternshipRequest {
@@ -16,6 +20,10 @@ export interface InternshipRequest {
   requiredSkills: string;
   deadline: string;
   companyId: string;
+  location?: string;
+  stipend?: string;
+  duration?: string;
+  type?: 'REMOTE' | 'HYBRID' | 'ON_SITE';
 }
 
 

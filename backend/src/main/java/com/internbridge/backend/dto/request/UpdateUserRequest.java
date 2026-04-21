@@ -1,6 +1,7 @@
 package com.internbridge.backend.dto.request;
 
-import com.internbridge.backend.entity.Role;
+import com.internbridge.backend.entity
+        .Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

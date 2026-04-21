@@ -35,6 +35,10 @@ public class InternshipServiceImpl implements InternshipService {
                 .deadline(requestDTO.getDeadline())
                 .companyAdmin(companyAdmin)
                 .status(InternshipStatus.OPEN)
+                .location(requestDTO.getLocation())
+                .stipend(requestDTO.getStipend())
+                .duration(requestDTO.getDuration())
+                .type(requestDTO.getType())
                 .build();
 
         Internship savedInternship = internshipRepository.save(internship);
@@ -74,6 +78,10 @@ public class InternshipServiceImpl implements InternshipService {
         internship.setDescription(requestDTO.getDescription());
         internship.setRequiredSkills(requestDTO.getRequiredSkills());
         internship.setDeadline(requestDTO.getDeadline());
+        internship.setLocation(requestDTO.getLocation());
+        internship.setStipend(requestDTO.getStipend());
+        internship.setDuration(requestDTO.getDuration());
+        internship.setType(requestDTO.getType());
 
         Internship updatedInternship = internshipRepository.save(internship);
         return mapToResponseDTO(updatedInternship);
@@ -103,6 +111,10 @@ public class InternshipServiceImpl implements InternshipService {
                 .status(internship.getStatus() != null ? internship.getStatus().name() : "UNKNOWN")
                 .companyName(internship.getCompanyAdmin() != null ? 
                         internship.getCompanyAdmin().getCompanyName() : "Unknown Company")
+                .location(internship.getLocation())
+                .stipend(internship.getStipend())
+                .duration(internship.getDuration())
+                .type(internship.getType())
                 .build();
     }
 }

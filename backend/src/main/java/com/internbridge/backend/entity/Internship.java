@@ -52,4 +52,14 @@ public class Internship {
     private InternshipStatus status = InternshipStatus.OPEN;
 
     private LocalDate deadline;
+
+    private String location;
+    
+    private String stipend;
+    
+    private String duration;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "internship_type")
+    private InternshipType type;
 }
