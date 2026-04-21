@@ -40,6 +40,14 @@ const userService = {
   },
 
   /**
+   * Update an existing user's details.
+   */
+  updateUser: async (userId: string, data: Partial<CreateUserRequest>): Promise<UserDTO> => {
+    const response = await api.put<UserDTO>(`/users/${userId}`, data);
+    return response.data;
+  },
+
+  /**
    * Update user status (Active/Suspended/Deactivated).
    */
   updateStatus: async (userId: string, status: UserDTO['status']): Promise<UserDTO> => {

@@ -1,6 +1,7 @@
 package com.internbridge.backend.controller;
 
 import com.internbridge.backend.dto.request.CreateUserRequest;
+import com.internbridge.backend.dto.request.UpdateUserRequest;
 import com.internbridge.backend.dto.request.UpdateStatusRequest;
 import com.internbridge.backend.dto.response.UserResponse;
 import com.internbridge.backend.service.UserService;
@@ -27,6 +28,11 @@ public class UserController {
     @PostMapping("/provision")
     public ResponseEntity<UserResponse> provisionUser(@RequestBody CreateUserRequest request) {
         return new ResponseEntity<>(userService.provisionUser(request), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
     @PatchMapping("/{id}/status")

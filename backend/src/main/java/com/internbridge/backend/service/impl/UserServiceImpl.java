@@ -1,6 +1,7 @@
 package com.internbridge.backend.service.impl;
 
 import com.internbridge.backend.dto.request.CreateUserRequest;
+import com.internbridge.backend.dto.request.UpdateUserRequest;
 import com.internbridge.backend.dto.request.UpdateStatusRequest;
 import com.internbridge.backend.dto.response.UserResponse;
 import com.internbridge.backend.entity.CompanyAdmin;
@@ -72,6 +73,32 @@ public class UserServiceImpl implements UserService {
         user.setRole(request.getRole());
         user.setStatus(UserStatus.ACTIVE);
         
+        return mapToResponse(userRepository.save(user));
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUser(UUID userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User identity not found in central registry"));
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        
+        if (request.getRole() != null) {
+            user.setRole(request.getRole());
+        }
+
+        // Handle institution updates based on role
+        if (request.getInstitution() != null) {
+            if (user instanceof CompanyAdmin) {
+                ((CompanyAdmin) user).setCompanyName(request.getInstitution());
+            } else if (user instanceof SchoolAdmin) {
+                ((SchoolAdmin) user).setSchoolName(request.getInstitution());
+            }
+        }
+
         return mapToResponse(userRepository.save(user));
     }
 

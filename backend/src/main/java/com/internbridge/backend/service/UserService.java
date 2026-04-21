@@ -1,6 +1,7 @@
 package com.internbridge.backend.service;
 
 import com.internbridge.backend.dto.request.CreateUserRequest;
+import com.internbridge.backend.dto.request.UpdateUserRequest;
 import com.internbridge.backend.dto.request.UpdateStatusRequest;
 import com.internbridge.backend.dto.response.UserResponse;
 import com.internbridge.backend.entity.UserStatus;
@@ -10,6 +11,7 @@ import java.util.UUID;
 public interface UserService {
     List<UserResponse> getAllUsers();
     UserResponse provisionUser(CreateUserRequest request);
+    UserResponse updateUser(UUID userId, UpdateUserRequest request);
     UserResponse updateStatus(UUID userId, UpdateStatusRequest request);
     UserResponse updateProfileByEmail(String email, com.internbridge.backend.dto.request.UpdateProfileRequest request);
     void deleteUser(UUID userId);

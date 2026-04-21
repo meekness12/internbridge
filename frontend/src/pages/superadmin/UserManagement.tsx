@@ -9,7 +9,8 @@ import {
   Zap,
   Lock,
   Fingerprint,
-  RefreshCw
+  RefreshCw,
+  Edit3
 } from 'lucide-react';
 import { PremiumHeader } from '../../components/ui/PremiumHeader';
 import { useToast } from '../../context/ToastContext';
@@ -28,12 +29,14 @@ const UserManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState<string | null>(null);
   const [newUser, setNewUser] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
-    role: 'INTERN' as UserDTO['role']
+    role: 'INTERN' as UserDTO['role'],
+    institution: ''
   });
 
   const fetchUsers = React.useCallback(async () => {
@@ -63,15 +66,42 @@ const UserManagement: React.FC = () => {
     e.preventDefault();
     try {
       setIsLoading(true);
-      toast('User created successfully.', 'success', 'Management');
+      if (isEditing) {
+        await userService.updateUser(isEditing, {
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          email: newUser.email,
+          role: newUser.role,
+          institution: newUser.institution
+        });
+        toast('User updated successfully.', 'success', 'Management');
+      } else {
+        await userService.provisionUser(newUser);
+        toast('User created successfully.', 'success', 'Management');
+      }
       setIsModalOpen(false);
-      setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'INTERN' });
+      setIsEditing(null);
+      setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'INTERN', institution: '' });
       fetchUsers();
     } catch {
-      toast('Failed to create user.', 'error', 'Error');
+      toast(isEditing ? 'Failed to update user.' : 'Failed to create user.', 'error', 'Error');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleEdit = (user: UserDTO) => {
+    const [firstName, ...lastNameParts] = user.name.split(' ');
+    setNewUser({
+      firstName,
+      lastName: lastNameParts.join(' '),
+      email: user.email,
+      password: '', // Leave blank for editing
+      role: user.role,
+      institution: user.institution || ''
+    });
+    setIsEditing(user.id);
+    setIsModalOpen(true);
   };
 
   const handleStatusChange = async (userId: string, newStatus: UserDTO['status']) => {
@@ -111,7 +141,11 @@ const UserManagement: React.FC = () => {
         eyebrowColor="text-[var(--accent)]"
         primaryAction={
           <button 
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setIsEditing(null);
+              setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'INTERN', institution: '' });
+              setIsModalOpen(true);
+            }}
             className="h-14 px-10 bg-slate-900 text-white rounded-2xl flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.25em] shadow-2xl hover:bg-black transition-all"
           >
             Add New User <UserPlus size={20} className="text-[var(--accent)]" />
@@ -200,7 +234,14 @@ const UserManagement: React.FC = () => {
                   </div>
                </div>
 
-               <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => handleEdit(user)}
+                    className="w-12 h-12 bg-[var(--background)] text-slate-400 hover:bg-[var(--accent)] hover:text-white rounded-2xl flex items-center justify-center transition-all shadow-sm"
+                    title="Edit User"
+                  >
+                    <Edit3 size={20} />
+                  </button>
                   {user.status !== 'SUSPENDED' ? (
                     <button 
                       onClick={() => handleStatusChange(user.id, 'SUSPENDED')}
@@ -246,8 +287,8 @@ const UserManagement: React.FC = () => {
             <div className="p-12">
                <div className="flex items-center justify-between mb-10">
                   <div>
-                     <h3 className="text-3xl font-serif font-black text-[var(--text)] italic leading-none">Add New <span className="text-slate-400 not-italic">User</span></h3>
-                     <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-2">New User Registration Form</p>
+                     <h3 className="text-3xl font-serif font-black text-[var(--text)] italic leading-none">{isEditing ? 'Update' : 'Add New'} <span className="text-slate-400 not-italic">User</span></h3>
+                     <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-2">{isEditing ? 'Modify Account Credentials' : 'New User Registration Form'}</p>
                   </div>
                   <button onClick={() => setIsModalOpen(false)} className="w-12 h-12 rounded-2xl bg-[var(--background)] text-slate-300 hover:text-rose-500 transition-all flex items-center justify-center">
                     <X size={24} />
@@ -299,24 +340,36 @@ const UserManagement: React.FC = () => {
                         <option value="COMPANY_ADMIN">Company Admin</option>
                         <option value="SUPERVISOR">Supervisor</option>
                         <option value="SCHOOL_ADMIN">School Admin</option>
+                        <option value="SUPER_ADMIN">Super Admin</option>
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-300 ml-1">Password</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-300 ml-1">Password {isEditing && '(Leave blank to keep current)'}</label>
                       <input 
-                        type="password" required 
+                        type="password" required={!isEditing}
                         value={newUser.password}
                         onChange={(e) => setNewUser({...newUser, password: e.target.value})}
                         className="w-full h-14 bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--accent)]" 
                       />
                     </div>
                   </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-300 ml-1">Affiliation / Institution</label>
+                    <input 
+                      type="text"
+                      placeholder="e.g., University Name or Company Name"
+                      value={newUser.institution}
+                      onChange={(e) => setNewUser({...newUser, institution: e.target.value})}
+                      className="w-full h-14 bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl px-6 text-sm outline-none focus:ring-1 focus:ring-[var(--accent)]" 
+                    />
+                  </div>
   
                   <button 
                     type="submit"
                     className="w-full h-16 bg-slate-900 text-white rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 mt-4"
                   >
-                    Create User <ShieldCheck size={20} className="text-[var(--accent)]" />
+                    {isEditing ? 'Save Changes' : 'Create User'} <ShieldCheck size={20} className="text-[var(--accent)]" />
                   </button>
               </form>
             </div>
