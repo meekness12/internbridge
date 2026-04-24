@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Home, 
   Briefcase, 
@@ -25,6 +25,7 @@ const DashboardLayout: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [userProfile, setUserProfile] = React.useState<UserProfile | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const role = localStorage.getItem('role') || 'INTERN'; 
   
   React.useEffect(() => {
@@ -150,7 +151,7 @@ const DashboardLayout: React.FC = () => {
                </div>
                
                <div className="flex items-center gap-4">
-                  <button className="w-11 h-11 rounded-2xl bg-[var(--surface)] flex items-center justify-center text-slate-400 hover:text-[var(--text)] shadow-sm">
+                  <button onClick={() => navigate('/dashboard/notifications')} className="w-11 h-11 rounded-2xl bg-[var(--surface)] flex items-center justify-center text-slate-400 hover:text-[var(--text)] shadow-sm">
                      <Bell size={20} />
                   </button>
                   <div className="relative">
